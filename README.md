@@ -1,13 +1,16 @@
 # Talk2Notes 🎙️📝
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > Transform audio and video lectures into structured, comprehensive notes using AI
 
 Talk2Notes is an open-source web application that automatically transcribes audio and video files and generates well-organized lecture notes complete with summaries, key concepts, definitions, example problems, and action items.
+
+📖 **[View All Documentation](DOCS.md)** | ⚡ **[Quick Start (5 min)](QUICKSTART.md)** | 🔧 **[Setup Guide](SETUP.md)**
 
 ## ✨ Features
 
@@ -23,7 +26,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 
 ### Prerequisites
 
-- Node.js 18+ and npm 9+
+- Node.js 18.18+ and pnpm 8+
 - FFmpeg installed on your system
 - API key for your chosen AI provider (OpenAI, Groq, Deepgram, or Anthropic)
 
@@ -32,14 +35,14 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/talk2notes.git
+git clone https://github.com/taufiqelrahman/talk2notes.git
 cd talk2notes
 ```
 
 2. **Install dependencies**
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. **Set up environment variables**
@@ -58,11 +61,13 @@ OPENAI_API_KEY=your_api_key_here
 4. **Install FFmpeg** (if not already installed)
 
 **macOS:**
+
 ```bash
 brew install ffmpeg
 ```
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt-get install ffmpeg
 ```
@@ -73,7 +78,7 @@ Download from [ffmpeg.org](https://ffmpeg.org/download.html)
 5. **Run the development server**
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -210,11 +215,13 @@ GROQ_MODEL=whisper-large-v3
 Processes uploaded file and returns lecture notes.
 
 **Parameters:**
+
 - `formData`: FormData containing the uploaded file
 
 **Returns:**
+
 ```typescript
-MutationResult<LectureNotes>
+MutationResult<LectureNotes>;
 ```
 
 #### `validateFileMutation(formData: FormData)`
@@ -222,8 +229,9 @@ MutationResult<LectureNotes>
 Validates uploaded file without processing.
 
 **Returns:**
+
 ```typescript
-MutationResult<{ fileType: string; size: number }>
+MutationResult<{ fileType: string; size: number }>;
 ```
 
 ### Core Functions
@@ -245,27 +253,27 @@ Extracts audio from video file using FFmpeg.
 ### Type Checking
 
 ```bash
-npm run type-check
+pnpm type-check
 ```
 
 ### Linting
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ### Formatting
 
 ```bash
-npm run format
-npm run format:check
+pnpm format
+pnpm format:check
 ```
 
 ### Building for Production
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 ## 🚢 Deployment
@@ -319,7 +327,16 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `test:` - Adding or updating tests
 - `chore:` - Maintenance tasks
 
-## 📄 License
+## 📚 Documentation
+
+- [Quick Start](QUICKSTART.md) - Get started in 5 minutes
+- [Setup Guide](SETUP.md) - Detailed installation, configuration, and pnpm guide
+- [CLI Reference](CLI-REFERENCE.md) - Complete command-line reference
+- [Architecture](ARCHITECTURE.md) - System design and structure
+- [Project Structure](PROJECT-STRUCTURE.md) - Code organization
+- [Contributing](CONTRIBUTING.md) - How to contribute
+
+## �📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -330,11 +347,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [FFmpeg](https://ffmpeg.org/) - Audio/video processing
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Formidable](https://github.com/node-formidable/formidable) - File uploads
+- [pnpm](https://pnpm.io/) - Fast, disk space efficient package manager
 
 ## 📞 Support
 
-- 📫 Issues: [GitHub Issues](https://github.com/yourusername/talk2notes/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/talk2notes/discussions)
+- 📫 Issues: [GitHub Issues](https://github.com/taufiqelrahman/talk2notes/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/taufiqelrahman/talk2notes/discussions)
 - 📖 Docs: [Architecture Documentation](ARCHITECTURE.md)
 
 ## 🗺️ Roadmap

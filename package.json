@@ -1,0 +1,56 @@
+{
+  "name": "talk2notes",
+  "version": "1.0.0",
+  "description": "Open-source web application that converts audio/video lectures into structured notes using AI",
+  "author": "Talk2Notes Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taufiqelrahman/talk2notes.git"
+  },
+  "keywords": [
+    "transcription",
+    "ai",
+    "lecture-notes",
+    "openai",
+    "nextjs",
+    "education"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "openai": "^4.28.0",
+    "formidable": "^3.5.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/formidable": "^3.4.5",
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "typescript": "^5.3.3",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0",
+    "prettier": "^3.2.4",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1"
+  },
+  "engines": {
+    "node": ">=18.18.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.14.0"
+}

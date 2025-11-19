@@ -1,0 +1,41 @@
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+
+# Production
+build/
+dist/
+.next/
+out/
+
+# Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
+.env
+.env*.local
+.vercel
+
+# Uploads
+uploads/
+tmp/
+*.tmp
