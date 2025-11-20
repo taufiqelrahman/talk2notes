@@ -3,7 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import type { MutationResult, LectureNotes, UploadedFile, ProcessingState } from '@/types';
 import { validateFile } from '@/utils/validateFile';
-import { extractAudioFromVideo, cleanupTempFile, compressAudioIfNeeded } from '@/lib/ffmpeg';
+import {
+  extractAudioFromVideo,
+  cleanupTempFile,
+  compressAudioIfNeeded,
+  checkFFmpegAvailable,
+} from '@/lib/ffmpeg';
 import { transcribeAudio, summarizeTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
 import { promises as fs } from 'fs';
@@ -27,6 +32,19 @@ export async function createTranscriptionMutation(
       return {
         success: false,
         error: validation.error,
+      };
+    }
+
+    // Check FFmpeg availability for video files
+    if (validation.fileType === 'video' && !checkFFmpegAvailable()) {
+      return {
+        success: false,
+        error:
+          'FFmpeg is not installed or not found. FFmpeg is required for video processing.\n' +
+          'Install instructions:\n' +
+          '  • macOS: brew install ffmpeg\n' +
+          '  • Ubuntu/Debian: sudo apt install ffmpeg\n' +
+          '  • Windows: Download from https://ffmpeg.org/download.html',
       };
     }
 

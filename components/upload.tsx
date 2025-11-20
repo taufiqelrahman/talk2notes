@@ -273,6 +273,36 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
                   </button>
                 )}
               </div>
+
+              {/* Info message for large files */}
+              {selectedFile && selectedFile.size > 10 * 1024 * 1024 && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex gap-2">
+                    <svg
+                      className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium">
+                        Large file detected ({formatFileSize(selectedFile.size)})
+                      </p>
+                      <p className="text-xs mt-1">
+                        This file will be automatically compressed to ~8MB for optimal upload
+                        reliability. Processing may take a bit longer.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

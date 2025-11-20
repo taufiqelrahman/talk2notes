@@ -14,10 +14,18 @@ All notable changes to Talk2Notes will be documented in this file.
 - **Educational tips**: Rotating tips and best practices during processing (changes every 5s)
 - **Smart time estimation**: Automatic ETA based on file size
 - **Smooth progress simulation**: Realistic progress animation between actual milestones
+- **Large file warning**: Info banner for files > 10MB explaining auto-compression
 - **New components**:
   - `ProcessingSteps` - Step-by-step visual progress
   - `ProcessingTips` - Rotating educational content
   - Enhanced `ProgressIndicator` with details and time estimates
+
+#### Changed
+
+- **File size limits relaxed**: Audio files now accept up to 25MB (was 10MB hard reject)
+- **Video size limit increased**: Videos now accept up to 500MB (was 200MB)
+- **Smarter validation**: Files 10-25MB accepted with auto-compression notice
+- **Better user feedback**: Warning banners instead of hard rejections for large files
 
 #### Improved
 
@@ -26,6 +34,7 @@ All notable changes to Talk2Notes will be documented in this file.
 - **User education**: Tips teach optimization and best practices
 - **Visual feedback**: Color-coded steps (gray → blue → green)
 - **Animation polish**: Smooth transitions and GPU-accelerated effects
+- **Flexibility**: Users can now upload larger files that will be auto-compressed
 
 #### UX Enhancements
 
@@ -34,6 +43,7 @@ All notable changes to Talk2Notes will be documented in this file.
 - Compression step only shows for files > 10MB
 - Extraction step only shows for video files
 - Tips educate users on file optimization and features
+- Blue info banner warns users about auto-compression for 10-25MB files
 
 ## [2.0.0] - 2025-11-20
 

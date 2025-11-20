@@ -90,21 +90,87 @@ experimental: {
 
 ## 🎵 FFmpeg Errors
 
-### Error: `FFmpeg extraction failed`
+### Error: `spawn /usr/local/bin/ffprobe ENOENT` or `FFmpeg not found`
 
-**Causes & Solutions**:
+**Cause**: FFmpeg or FFprobe binaries are not installed or not found in the expected path.
 
-1. **FFmpeg not installed**:
+**✅ Quick Fix**:
+
+```bash
+# Check if FFmpeg is installed
+pnpm check:ffmpeg
+
+# Or manually check
+which ffmpeg
+which ffprobe
+```
+
+**Solutions**:
+
+1. **Install FFmpeg** (if not installed):
+
+   **macOS:**
 
    ```bash
-   # Check installation
+   brew install ffmpeg
+   ```
+
+   **Ubuntu/Debian:**
+
+   ```bash
+   sudo apt update
+   sudo apt install ffmpeg
+   ```
+
+   **Windows:**
+   - Download from [ffmpeg.org](https://ffmpeg.org/download.html)
+   - Extract and add to PATH
+   - Restart terminal/IDE
+
+2. **Verify installation**:
+
+   ```bash
+   ffmpeg -version
+   ffprobe -version
+   ```
+
+3. **Auto-detection** (v2.1+):
+   - App now auto-detects FFmpeg location
+   - Checks common paths: `/usr/local/bin`, `/opt/homebrew/bin`, `/usr/bin`
+   - No manual configuration needed in most cases
+
+4. **Manual configuration** (if auto-detect fails):
+
+   Add to `.env.local`:
+
+   ```bash
+   FFMPEG_PATH=/your/custom/path/to/ffmpeg
+   FFPROBE_PATH=/your/custom/path/to/ffprobe
+   ```
+
+5. **Restart server** after installation:
+   ```bash
+   # Stop server (Ctrl+C)
+   pnpm dev
+   ```
+
+### Error: `FFmpeg extraction failed`
+
+**Other Causes & Solutions**:
+
+1. **Corrupted video file**:
    ffmpeg -version
 
    # Install on macOS
+
    brew install ffmpeg
 
    # Install on Ubuntu
+
    sudo apt install ffmpeg
+
+   ```
+
    ```
 
 2. **Corrupted video file**:
@@ -247,15 +313,17 @@ pnpm dev
 
 ---
 
-## 📊 File Size Guidelines (Updated v2.0)
+## 📊 File Size Guidelines (Updated v2.1)
 
 ### ✅ Recommended Limits (Best Reliability)
 
-| File Type   | Recommended      | Max Allowed   | Notes                     |
-| ----------- | ---------------- | ------------- | ------------------------- |
-| Audio (mp3) | **< 10MB**       | 25MB          | Auto-compressed if > 10MB |
-| Video (mp4) | **< 200MB**      | No hard limit | Audio extracted at 48kbps |
-| Duration    | **< 25 minutes** | ~60 minutes   | Longer = larger files     |
+| File Type   | Recommended      | Max Allowed  | Notes                      |
+| ----------- | ---------------- | ------------ | -------------------------- |
+| Audio (mp3) | **< 10MB**       | **25MB** ✨  | Auto-compressed if 10-25MB |
+| Video (mp4) | **< 300MB**      | **500MB** ✨ | Audio extracted at 48kbps  |
+| Duration    | **< 25 minutes** | ~60 minutes  | Longer = larger files      |
+
+**✨ New in v2.1:** Increased limits! Files up to 25MB (audio) and 500MB (video) now accepted with automatic compression.
 
 ### 🎯 Target Quality Settings
 

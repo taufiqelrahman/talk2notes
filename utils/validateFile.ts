@@ -81,30 +81,31 @@ export function validateFile(
     };
   }
 
-  // For audio files, enforce 10MB soft limit for reliability
+  // For audio files, check against OpenAI's 25MB hard limit
+  // Files > 10MB will be auto-compressed during processing
   if (isAudio) {
     const sizeMB = size / (1024 * 1024);
-    if (sizeMB > 10) {
+    if (sizeMB > 25) {
       return {
         valid: false,
         error:
-          `Audio file is ${sizeMB.toFixed(2)}MB. For best reliability, please keep files under 10MB. ` +
-          `Try compressing: ffmpeg -i input.mp3 -ar 16000 -ac 1 -b:a 48k output.mp3`,
+          `Audio file is ${sizeMB.toFixed(2)}MB, exceeding OpenAI Whisper's 25MB limit. ` +
+          `Please compress: ffmpeg -i input.mp3 -ar 16000 -ac 1 -b:a 48k output.mp3`,
       };
     }
+    // Note: Files 10-25MB will be automatically compressed to ~8MB during processing
   }
 
-  // For video files, estimate audio size and enforce stricter limits
+  // For video files, estimate audio size and enforce reasonable limits
   if (isVideo) {
     const videoSizeMB = size / (1024 * 1024);
-    // Very rough estimate: 48kbps audio = ~0.36MB per minute
-    // For 10MB audio limit = ~27 minutes max
-    if (videoSizeMB > 200) {
+    // Allow larger videos since we extract and compress audio efficiently
+    if (videoSizeMB > 500) {
       return {
         valid: false,
         error:
-          `Video file is ${videoSizeMB.toFixed(2)}MB. Please use videos under 200MB (approximately 25 minutes). ` +
-          `For longer videos, extract and compress audio first.`,
+          `Video file is ${videoSizeMB.toFixed(2)}MB. Please use videos under 500MB. ` +
+          `For longer videos, consider splitting or extracting audio first.`,
       };
     }
   }

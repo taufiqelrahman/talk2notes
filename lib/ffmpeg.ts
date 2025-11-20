@@ -1,13 +1,79 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 import ffmpeg from 'fluent-ffmpeg';
 import type { TranscriptionSegment } from '@/types';
 
-const FFMPEG_PATH = process.env.FFMPEG_PATH || 'ffmpeg';
-const FFPROBE_PATH = process.env.FFPROBE_PATH || 'ffprobe';
+// Auto-detect FFmpeg and FFprobe paths
+function detectBinaryPath(binaryName: string): string {
+  // Try common locations
+  const commonPaths = [
+    `/usr/local/bin/${binaryName}`,
+    `/opt/homebrew/bin/${binaryName}`,
+    `/usr/bin/${binaryName}`,
+    binaryName, // Try system PATH
+  ];
+
+  // First, try to use 'which' command to find the binary
+  try {
+    const result = execSync(`which ${binaryName}`, { encoding: 'utf8' }).trim();
+    if (result) {
+      console.log(`[FFmpeg] Found ${binaryName} at: ${result}`);
+      return result;
+    }
+  } catch (error) {
+    // 'which' command failed, continue to try common paths
+  }
+
+  // Try each common path
+  for (const testPath of commonPaths) {
+    try {
+      execSync(`${testPath} -version`, { stdio: 'ignore' });
+      console.log(`[FFmpeg] Found ${binaryName} at: ${testPath}`);
+      return testPath;
+    } catch (error) {
+      // Path doesn't work, try next
+    }
+  }
+
+  // Fallback to just the binary name (might work if in PATH)
+  console.warn(`[FFmpeg] Could not find ${binaryName}, using default: ${binaryName}`);
+  return binaryName;
+}
+
+const FFMPEG_PATH = process.env.FFMPEG_PATH || detectBinaryPath('ffmpeg');
+const FFPROBE_PATH = process.env.FFPROBE_PATH || detectBinaryPath('ffprobe');
+
+console.log(`[FFmpeg] Configured paths:`, { FFMPEG_PATH, FFPROBE_PATH });
 
 ffmpeg.setFfmpegPath(FFMPEG_PATH);
 ffmpeg.setFfprobePath(FFPROBE_PATH);
+
+// Validate FFmpeg installation on module load
+function validateFFmpegInstallation(): boolean {
+  try {
+    execSync(`${FFMPEG_PATH} -version`, { stdio: 'ignore' });
+    execSync(`${FFPROBE_PATH} -version`, { stdio: 'ignore' });
+    console.log(`[FFmpeg] ✓ FFmpeg and FFprobe are working`);
+    return true;
+  } catch (error) {
+    console.error(
+      `[FFmpeg] ✗ FFmpeg or FFprobe not found!`,
+      `\n  Please install FFmpeg:`,
+      `\n    macOS: brew install ffmpeg`,
+      `\n    Ubuntu: sudo apt install ffmpeg`,
+      `\n    Windows: https://ffmpeg.org/download.html`
+    );
+    return false;
+  }
+}
+
+// Run validation check
+const isFFmpegAvailable = validateFFmpegInstallation();
+
+export function checkFFmpegAvailable(): boolean {
+  return isFFmpegAvailable;
+}
 
 export interface AudioExtractionResult {
   audioPath: string;
@@ -101,7 +167,20 @@ export async function getAudioDuration(filePath: string): Promise<number> {
   return new Promise((resolve, reject) => {
     ffmpeg.ffprobe(filePath, (err, metadata) => {
       if (err) {
-        reject(new Error(`Failed to probe audio file: ${err.message}`));
+        // Check if it's a binary not found error
+        if (err.message && (err.message.includes('ENOENT') || err.message.includes('spawn'))) {
+          reject(
+            new Error(
+              `FFprobe binary not found. Please install FFmpeg:\n` +
+                `  macOS: brew install ffmpeg\n` +
+                `  Ubuntu: sudo apt install ffmpeg\n` +
+                `  Windows: Download from https://ffmpeg.org/download.html\n` +
+                `Current ffprobe path: ${FFPROBE_PATH}`
+            )
+          );
+        } else {
+          reject(new Error(`Failed to probe audio file: ${err.message}`));
+        }
       } else {
         resolve(metadata.format.duration || 0);
       }

@@ -65,7 +65,16 @@ sudo apt install ffmpeg
 
 ```bash
 ffmpeg -version
+ffprobe -version
 ```
+
+**Quick check** (after cloning the repo):
+
+```bash
+pnpm check:ffmpeg
+```
+
+This will verify FFmpeg is properly installed and show the detected paths.
 
 ### 3. Get API Keys
 

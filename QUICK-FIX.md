@@ -15,13 +15,15 @@ ffmpeg -i your-file.mp3 -ar 16000 -ac 1 -b:a 48k compressed.mp3
 
 ---
 
-## 🎯 File Size Recommendations
+## 🎯 File Size Recommendations (Updated v2.1)
 
-| Duration  | File Size | What to Do                            |
-| --------- | --------- | ------------------------------------- |
-| 0-20 min  | < 10MB    | ✅ Upload directly - Best reliability |
-| 20-40 min | 10-20MB   | ⚠️ Auto-compressed by app             |
-| 40-60 min | > 20MB    | ❌ Compress manually first            |
+| Duration  | File Size | What to Do                                     |
+| --------- | --------- | ---------------------------------------------- |
+| 0-20 min  | < 10MB    | ✅ Upload directly - Fastest, no compression   |
+| 20-50 min | 10-25MB   | ✅ Upload directly - Auto-compressed to ~8MB   |
+| 50+ min   | > 25MB    | ⚠️ Compress manually first (exceeds API limit) |
+
+**New in v2.1:** Files 10-25MB now accepted! Auto-compression happens seamlessly during processing.
 
 ---
 
