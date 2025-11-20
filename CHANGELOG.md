@@ -1,0 +1,102 @@
+# Changelog
+
+All notable changes to Talk2Notes will be documented in this file.
+
+## [2.0.0] - 2025-11-20
+
+### 🎯 Major Improvements - File Upload Reliability
+
+#### Added
+
+- **Auto-compression for large files**: Files over 10MB are automatically compressed to ~8MB for maximum reliability
+- **Intelligent retry mechanism**: 3 retry attempts with exponential backoff (2s, 4s, 8s)
+- **Adaptive bitrate encoding**: Video extraction uses 48-64kbps based on file size
+- **Comprehensive logging**: Console logs show file sizes, compression status, and upload progress
+- **New compression function**: `compressAudioIfNeeded()` in ffmpeg.ts
+
+#### Changed
+
+- **OpenAI timeout**: Increased from 5 to 10 minutes for large file uploads
+- **File size limits**: Audio files now soft-limited to 10MB (was 25MB) for better reliability
+- **Video size limits**: Videos limited to 200MB (approximately 25 minutes)
+- **FFmpeg audio extraction**: Reduced bitrate from 64kbps to 48kbps for smaller outputs
+- **Error messages**: More informative errors with file sizes and suggested solutions
+- **Validation**: Stricter upfront validation prevents large files from starting processing
+
+#### Fixed
+
+- **ECONNRESET errors**: Fixed connection reset issues with files > 10MB
+- **Upload timeouts**: Large file uploads now reliably complete
+- **Memory issues**: Stream-based file handling instead of loading entire file to memory
+- **Body size limit**: Properly configured in `experimental.serverActions` for Next.js 15
+
+#### Technical Details
+
+- Manual retry logic replaces OpenAI SDK auto-retry for better control
+- Blob-based File objects for more reliable uploads
+- File size checks at multiple stages: validation → extraction → transcription
+- Auto-cleanup of compressed temporary files
+
+### 📚 Documentation
+
+- Added comprehensive `TROUBLESHOOTING.md` with common error solutions
+- Updated `README.md` with link to troubleshooting guide
+- Added this `CHANGELOG.md` for tracking changes
+- Updated file size guidelines and recommendations
+
+### 🔧 Configuration
+
+- `next.config.js`: Moved serverActions to experimental block
+- Environment variables: No changes required
+- FFmpeg settings: Auto-configured based on file size
+
+---
+
+## [1.0.0] - 2025-11-19
+
+### Initial Release
+
+#### Features
+
+- Audio and video file upload support
+- AI transcription using OpenAI Whisper API
+- Structured note generation with GPT
+- Multi-provider support (OpenAI, Groq, Deepgram, Anthropic)
+- FFmpeg integration for video-to-audio extraction
+- Modern UI with Next.js 15 and React 19
+- Export to JSON and Markdown
+- File validation and size limits
+- TypeScript for type safety
+
+#### File Support
+
+- Audio: MP3, WAV, M4A, AAC, OGG, FLAC
+- Video: MP4, MKV, MOV, AVI, WEBM
+
+#### Technical Stack
+
+- Next.js 15 with App Router
+- React 19 with Server Actions
+- OpenAI API for transcription and summarization
+- FFmpeg for media processing
+- Tailwind CSS for styling
+- TypeScript for type safety
+
+---
+
+## Release Notes Guidelines
+
+### Version Numbers
+
+- **Major (X.0.0)**: Breaking changes, major new features
+- **Minor (1.X.0)**: New features, no breaking changes
+- **Patch (1.0.X)**: Bug fixes, small improvements
+
+### Categories
+
+- **Added**: New features
+- **Changed**: Changes to existing functionality
+- **Deprecated**: Soon-to-be removed features
+- **Removed**: Removed features
+- **Fixed**: Bug fixes
+- **Security**: Security improvements

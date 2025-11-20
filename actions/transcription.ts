@@ -1,16 +1,12 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import type {
-  MutationResult,
-  LectureNotes,
-  UploadedFile,
-  ProcessingState,
-} from '@/types';
+import type { MutationResult, LectureNotes, UploadedFile, ProcessingState } from '@/types';
 import { validateFile } from '@/utils/validateFile';
-import { extractAudioFromVideo, cleanupTempFile } from '@/lib/ffmpeg';
+import { extractAudioFromVideo, cleanupTempFile, compressAudioIfNeeded } from '@/lib/ffmpeg';
 import { transcribeAudio, summarizeTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
+import { promises as fs } from 'fs';
 
 export async function createTranscriptionMutation(
   formData: FormData
@@ -38,11 +34,31 @@ export async function createTranscriptionMutation(
 
     let audioPath = uploadedFile.filepath;
     let tempAudioPath: string | null = null;
+    let compressedAudioPath: string | null = null;
 
     if (validation.fileType === 'video') {
       const extractionResult = await extractAudioFromVideo(uploadedFile.filepath);
       tempAudioPath = extractionResult.audioPath;
       audioPath = tempAudioPath;
+    }
+
+    // Check if audio needs compression before transcription
+    const stats = await fs.stat(audioPath);
+    const sizeMB = stats.size / (1024 * 1024);
+
+    console.log(`[Transcription] Audio file size: ${sizeMB.toFixed(2)}MB`);
+
+    // Auto-compress if file > 10MB for better reliability
+    if (sizeMB > 10) {
+      console.log(`[Transcription] File > 10MB, compressing for better reliability...`);
+      compressedAudioPath = await compressAudioIfNeeded(audioPath, 8); // Target 8MB
+
+      // Use compressed version for transcription
+      audioPath = compressedAudioPath;
+
+      const newStats = await fs.stat(audioPath);
+      const newSizeMB = newStats.size / (1024 * 1024);
+      console.log(`[Transcription] Using compressed audio: ${newSizeMB.toFixed(2)}MB`);
     }
 
     const transcriptionResult = await transcribeAudio(audioPath, {
@@ -56,6 +72,10 @@ export async function createTranscriptionMutation(
       { detailLevel: 'detailed' }
     );
 
+    // Cleanup temporary files
+    if (compressedAudioPath) {
+      await cleanupTempFile(compressedAudioPath);
+    }
     if (tempAudioPath) {
       await cleanupTempFile(tempAudioPath);
     }

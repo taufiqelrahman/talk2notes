@@ -18,7 +18,7 @@ const VIDEO_FORMATS = process.env.ALLOWED_VIDEO_FORMATS?.split(',') || [
   'webm',
 ];
 
-const MAX_FILE_SIZE = (parseInt(process.env.MAX_FILE_SIZE_MB || '100', 10) * 1024 * 1024);
+const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE_MB || '100', 10) * 1024 * 1024;
 
 const AUDIO_MIME_TYPES = [
   'audio/mpeg',
@@ -45,7 +45,9 @@ export const FileSchema = z.object({
   filepath: z.string(),
   originalFilename: z.string(),
   mimetype: z.string(),
-  size: z.number().max(MAX_FILE_SIZE, `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`),
+  size: z
+    .number()
+    .max(MAX_FILE_SIZE, `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`),
 });
 
 export function validateFile(
@@ -77,6 +79,34 @@ export function validateFile(
       valid: false,
       error: `Invalid file format. Allowed formats: ${[...AUDIO_FORMATS, ...VIDEO_FORMATS].join(', ')}`,
     };
+  }
+
+  // For audio files, enforce 10MB soft limit for reliability
+  if (isAudio) {
+    const sizeMB = size / (1024 * 1024);
+    if (sizeMB > 10) {
+      return {
+        valid: false,
+        error:
+          `Audio file is ${sizeMB.toFixed(2)}MB. For best reliability, please keep files under 10MB. ` +
+          `Try compressing: ffmpeg -i input.mp3 -ar 16000 -ac 1 -b:a 48k output.mp3`,
+      };
+    }
+  }
+
+  // For video files, estimate audio size and enforce stricter limits
+  if (isVideo) {
+    const videoSizeMB = size / (1024 * 1024);
+    // Very rough estimate: 48kbps audio = ~0.36MB per minute
+    // For 10MB audio limit = ~27 minutes max
+    if (videoSizeMB > 200) {
+      return {
+        valid: false,
+        error:
+          `Video file is ${videoSizeMB.toFixed(2)}MB. Please use videos under 200MB (approximately 25 minutes). ` +
+          `For longer videos, extract and compress audio first.`,
+      };
+    }
   }
 
   return {

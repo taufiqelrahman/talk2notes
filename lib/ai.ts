@@ -8,7 +8,8 @@ import type {
   SummarizationOptions,
 } from '@/types';
 
-const AI_PROVIDER = (process.env.AI_PROVIDER as 'openai' | 'groq' | 'deepgram' | 'anthropic') || 'openai';
+const AI_PROVIDER =
+  (process.env.AI_PROVIDER as 'openai' | 'groq' | 'deepgram' | 'anthropic') || 'openai';
 
 export function getAIConfig(): AIConfig {
   switch (AI_PROVIDER) {
@@ -74,31 +75,97 @@ async function transcribeWithOpenAI(
   config: AIConfig,
   options: TranscriptionOptions
 ): Promise<TranscriptionResult> {
-  const openai = new OpenAI({ apiKey: config.apiKey });
+  // Check file size - OpenAI Whisper has 25MB limit
+  const stats = await fs.stat(audioPath);
+  const fileSizeMB = stats.size / (1024 * 1024);
 
-  const audioFile = await fs.readFile(audioPath);
-  const file = new File([audioFile], 'audio.mp3', { type: 'audio/mp3' });
+  if (fileSizeMB > 25) {
+    throw new Error(
+      `Audio file is ${fileSizeMB.toFixed(2)}MB. OpenAI Whisper API has a 25MB limit. ` +
+        `Please use a shorter audio file or compress it further.`
+    );
+  }
 
-  const response = await openai.audio.transcriptions.create({
-    file: file,
-    model: config.transcriptionModel,
-    language: options.language,
-    prompt: options.prompt,
-    temperature: options.temperature || 0,
-    response_format: 'verbose_json',
+  // For files > 10MB, reduce quality to be safer
+  const shouldCompress = fileSizeMB > 10;
+
+  console.log(
+    `[Transcription] File size: ${fileSizeMB.toFixed(2)}MB${shouldCompress ? ' - Will attempt compression' : ''}`
+  );
+
+  const openai = new OpenAI({
+    apiKey: config.apiKey,
+    timeout: 600000, // Increase to 10 minutes for larger files
+    maxRetries: 0, // Disable auto-retry, we'll handle it manually
   });
 
-  return {
-    text: response.text,
-    duration: response.duration,
-    language: response.language,
-    segments: response.segments?.map((seg: any, idx: number) => ({
-      id: idx,
-      start: seg.start,
-      end: seg.end,
-      text: seg.text,
-    })),
-  };
+  // Manual retry logic with exponential backoff
+  let lastError: any;
+  const maxAttempts = 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`[Transcription] Attempt ${attempt}/${maxAttempts}...`);
+
+      // Read file and create File object
+      const audioBuffer = await fs.readFile(audioPath);
+      const blob = new Blob([audioBuffer], { type: 'audio/mpeg' });
+      const file = new File([blob], 'audio.mp3', { type: 'audio/mpeg' });
+
+      console.log(`[Transcription] Uploading ${file.size} bytes to OpenAI...`);
+
+      const response = await openai.audio.transcriptions.create({
+        file: file,
+        model: config.transcriptionModel,
+        language: options.language,
+        prompt: options.prompt,
+        temperature: options.temperature || 0,
+        response_format: 'verbose_json',
+      });
+
+      console.log(`[Transcription] Success! Duration: ${response.duration}s`);
+
+      return {
+        text: response.text,
+        duration: response.duration,
+        language: response.language,
+        segments: response.segments?.map((seg: any, idx: number) => ({
+          id: idx,
+          start: seg.start,
+          end: seg.end,
+          text: seg.text,
+        })),
+      };
+    } catch (error: any) {
+      lastError = error;
+      console.error(`[Transcription] Attempt ${attempt} failed:`, error.message);
+
+      // Don't retry on authentication errors or invalid files
+      if (error.status === 401 || error.status === 400) {
+        throw error;
+      }
+
+      // If it's a connection error and we have attempts left, wait and retry
+      if (
+        attempt < maxAttempts &&
+        (error.code === 'ECONNRESET' || error.type === 'system' || error.code === 'ETIMEDOUT')
+      ) {
+        const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff: 2s, 4s, 8s
+        console.log(`[Transcription] Waiting ${waitTime / 1000}s before retry...`);
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  // If we got here, all retries failed
+  throw new Error(
+    `Failed to transcribe after ${maxAttempts} attempts. File size: ${fileSizeMB.toFixed(2)}MB. ` +
+      `Last error: ${lastError?.message || 'Unknown error'}. ` +
+      `Try with a smaller file (< 10MB recommended) or check your internet connection.`
+  );
 }
 
 async function transcribeWithGroq(
