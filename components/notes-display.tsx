@@ -49,7 +49,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
 
   const handleDownloadTranscript = () => {
     if (!notes.transcript) return;
-    
+
     let content = `# ${notes.title}\n\n`;
     content += `## Full Transcript\n\n`;
     content += `Source: ${notes.metadata.originalFilename}\n`;
@@ -72,7 +72,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
   const handleDownloadMarkdown = () => {
     let markdown = `# ${notes.title}\n\n`;
     markdown += `## Summary\n\n${notes.summary}\n\n`;
-    
+
     if (notes.paragraphs.length > 0) {
       markdown += `## Detailed Notes\n\n`;
       notes.paragraphs.forEach((para) => {
@@ -157,18 +157,6 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            {notes.transcript && (
-              <button
-                onClick={handleDownloadTranscript}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1"
-                title="Download full transcript"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                </svg>
-                Transcript
-              </button>
-            )}
             <button
               onClick={handleDownloadMarkdown}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
@@ -239,16 +227,14 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
               notes.keyConcepts.map((concept, idx) => (
                 <div key={idx} className="border-l-4 border-primary-500 pl-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {concept.concept}
-                    </h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{concept.concept}</h3>
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded ${
                         concept.importance === 'high'
                           ? 'bg-red-100 text-red-800'
                           : concept.importance === 'medium'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-green-100 text-green-800'
                       }`}
                     >
                       {concept.importance}
@@ -286,9 +272,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
             {notes.exampleProblems.length > 0 ? (
               notes.exampleProblems.map((problem, idx) => (
                 <div key={idx} className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Problem {idx + 1}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Problem {idx + 1}</h3>
                   <div className="space-y-3">
                     <div>
                       <span className="text-sm font-medium text-gray-600">Problem:</span>
@@ -344,13 +328,20 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
                     className="px-3 py-1.5 text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
                     </svg>
                     Download TXT
                   </button>
                 </div>
                 <div className="prose prose-sm max-w-none">
-                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{notes.transcript}</p>
+                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                    {notes.transcript}
+                  </p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
                   <p>Word count: {notes.metadata.wordCount.toLocaleString()}</p>

@@ -236,6 +236,72 @@ async function transcribeWithDeepgram(
   };
 }
 
+export async function translateTranscript(
+  transcript: string,
+  targetLanguage: 'english' | 'indonesian'
+): Promise<string> {
+  if (targetLanguage === 'english') {
+    return transcript; // No translation needed for English
+  }
+
+  const config = getAIConfig();
+
+  if (!config.apiKey) {
+    throw new Error(`API key not configured for provider: ${config.provider}`);
+  }
+
+  console.log(`[Translation] Translating transcript to Indonesian...`);
+
+  const prompt = `Translate the following transcript to Bahasa Indonesia. 
+
+IMPORTANT RULES:
+1. Translate naturally and fluently to Indonesian
+2. Preserve ALL Arabic text (Quranic verses, Hadith, Islamic terms) exactly as written with harakat
+3. For Arabic quotes, keep format: "Arabic text (transliteration) - Indonesian translation"
+4. Keep technical terms in original language if commonly used in Indonesian
+5. Maintain paragraph structure and formatting
+6. Keep names, places, and proper nouns in original form
+
+Transcript to translate:
+
+${transcript}
+
+Translated transcript in Bahasa Indonesia:`;
+
+  try {
+    if (config.provider === 'openai' || config.provider === 'groq') {
+      const openai = new OpenAI({
+        apiKey: config.apiKey,
+        baseURL: config.provider === 'groq' ? 'https://api.groq.com/openai/v1' : undefined,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: config.summarizationModel,
+        messages: [
+          { 
+            role: 'system', 
+            content: 'You are a professional translator specializing in Indonesian language. You preserve Arabic text and provide accurate, natural translations.' 
+          },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0.3,
+      });
+
+      const translated = response.choices[0].message.content || transcript;
+      console.log(`[Translation] ✓ Translation complete`);
+      return translated;
+    } else {
+      // For other providers, return original transcript
+      console.log(`[Translation] Translation not supported for provider: ${config.provider}`);
+      return transcript;
+    }
+  } catch (error) {
+    console.error('[Translation] Translation failed:', error);
+    // Return original transcript if translation fails
+    return transcript;
+  }
+}
+
 export async function summarizeTranscript(
   transcript: string,
   originalFilename: string,

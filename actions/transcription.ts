@@ -10,7 +10,7 @@ import {
   checkFFmpegAvailable,
   getFFmpegValidationDetails,
 } from '@/lib/ffmpeg';
-import { transcribeAudio, summarizeTranscript } from '@/lib/ai';
+import { transcribeAudio, summarizeTranscript, translateTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
 import { promises as fs } from 'fs';
 
@@ -81,8 +81,15 @@ export async function createTranscriptionMutation(
       temperature: 0,
     });
 
+    // Translate transcript if Indonesian is selected
+    let finalTranscript = transcriptionResult.text;
+    if (language === 'indonesian') {
+      console.log('[Transcription] Translating transcript to Indonesian...');
+      finalTranscript = await translateTranscript(transcriptionResult.text, 'indonesian');
+    }
+
     const lectureNotes = await summarizeTranscript(
-      transcriptionResult.text,
+      finalTranscript,
       uploadedFile.originalFilename,
       {
         detailLevel: 'detailed',
@@ -90,10 +97,10 @@ export async function createTranscriptionMutation(
       }
     );
 
-    // Add full transcript to the response
+    // Add full transcript to the response (already translated if needed)
     const notesWithTranscript = {
       ...lectureNotes,
-      transcript: transcriptionResult.text,
+      transcript: finalTranscript,
     };
 
     // Cleanup temporary files
