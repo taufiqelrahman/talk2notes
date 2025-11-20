@@ -143,23 +143,34 @@ vim .env
 code .env
 ```
 
-**Minimum required configuration:**
+**Minimum required configuration (Groq - Free!):**
+
+```env
+AI_PROVIDER=groq
+GROQ_API_KEY=gsk_your_actual_key_here
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+```
+
+**Alternative: OpenAI (Paid):**
 
 ```env
 AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-actual-key-here
+OPENAI_TRANSCRIPTION_MODEL=whisper-1
+OPENAI_SUMMARIZATION_MODEL=gpt-4-turbo-preview
 ```
 
 **Full configuration example:**
 
 ```env
-# AI Service Configuration
-AI_PROVIDER=openai
+# AI Service Configuration (Default: Groq - Free!)
+AI_PROVIDER=groq
 
-# OpenAI Configuration
-OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxx
-OPENAI_TRANSCRIPTION_MODEL=whisper-1
-OPENAI_SUMMARIZATION_MODEL=gpt-4-turbo-preview
+# Groq Configuration
+GROQ_API_KEY=gsk_your_actual_key_here
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
 
 # Upload Configuration
 MAX_FILE_SIZE_MB=100

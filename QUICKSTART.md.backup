@@ -1,249 +1,126 @@
-# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Talk2Notes - Quick Start Guide
+# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Talk2Notes - Quick Start Guide
 
+Get Talk2Notes running in 5 minutes.Get Talk2Notes running in 5 minutes.Get up and running with Talk2Notes in 5 minutes!
 
+## Prerequisites## Prerequisites## Prerequisites
 
-Get Talk2Notes running in 5 minutes with **free Groq API** (no credit card needed!)Get Talk2Notes running in 5 minutes.Get Talk2Notes running in 5 minutes.Get up and running with Talk2Notes in 5 minutes!
+- Node.js 18.18+- Node.js 18+✅ Node.js 18+ installed
 
-
-
-## Prerequisites## Prerequisites## Prerequisites## Prerequisites
-
-
-
-- ✅ Node.js 18.18+ installed- Node.js 18.18+- Node.js 18+✅ Node.js 18+ installed
-
-- ✅ pnpm 8+ installed  
-
-- ✅ FFmpeg installed- pnpm 8+
-
-- ✅ Groq API key (free, get in 30 seconds!)
+- pnpm 8+
 
 - FFmpeg installed- pnpm 8+✅ npm 9+ installed
 
-## 🚀 Installation (3 Steps)
-
 - API key from OpenAI/Groq/Deepgram/Anthropic
-
-### 1. Clone & Install
 
 - FFmpeg installed✅ FFmpeg installed
 
-```bash
+## 1. Install
 
-git clone https://github.com/taufiqelrahman/talk2notes.git## 1. Install
-
-cd talk2notes
-
-pnpm install- API key from OpenAI/Groq/Deepgram/Anthropic✅ OpenAI API key ready
-
-```
+- API key from OpenAI/Groq/Deepgram/Anthropic✅ OpenAI API key ready
 
 ````bash
 
-### 2. Get Free API Key
-
 # Clone repository## 1. Install## Installation (One Command)
-
-**Option A: Groq (Recommended - Free!)** 🆓
 
 git clone https://github.com/yourusername/talk2notes.git
 
-1. Go to: https://console.groq.com/keys
-
-2. Sign up with Google/GitHub (30 seconds)cd talk2notes`bash`bash
-
-3. Click "Create API Key"
-
-4. Copy key starting with `gsk_...`
+cd talk2notes`bash`bash
 
 
 
-**Option B: OpenAI (Requires Payment)** 💳# Install dependencies# Clone repositorygit clone https://github.com/taufiqelrahman/talk2notes.git && cd talk2notes && ./setup.sh
-
-- Get key: https://platform.openai.com/api-keys
+# Install dependencies# Clone repositorygit clone https://github.com/taufiqelrahman/talk2notes.git && cd talk2notes && ./setup.sh
 
 pnpm install
 
-### 3. Configure
-
 git clone https://github.com/yourusername/talk2notes.git```
 
-```bash
-
-# Copy example config# Setup environment
-
-cp .env.example .env
+# Setup environment
 
 cp .env.example .envcd talk2notes
 
-# Edit and add your API key
-
-nano .env````
-
-```
+````
 
 Or manually:
 
-Add your Groq key:
+## 2. Configure
 
-```env## 2. Configure
+# Install dependencies
 
-AI_PROVIDER=groq
-
-GROQ_API_KEY=gsk_your_actual_key_here# Install dependencies
-
-GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatileEdit `.env` and add your API key:
-
-```
+Edit `.env` and add your API key:
 
 pnpm install```bash
 
-## ▶️ Run
-
 `````env
 
-```bash
-
-pnpm devAI_PROVIDER=openai# 1. Clone
-
-```
+AI_PROVIDER=openai# 1. Clone
 
 OPENAI_API_KEY=sk-your-key-here
 
-Open http://localhost:3000 🎉
-
 ```# Setup environmentgit clone https://github.com/taufiqelrahman/talk2notes.git
 
-## 🎯 Your First Transcription
 
 
+**Get API Keys:**cp .env.example .envcd talk2notes
 
-1. **Upload:** Drag & drop an audio/video file
+- OpenAI: https://platform.openai.com/api-keys
 
-2. **Wait:** Processing takes 30s - 3 min (depending on file size)**Get API Keys:**cp .env.example .envcd talk2notes
-
-3. **View:** See your structured lecture notes
-
-4. **Download:** Export as JSON or Markdown- OpenAI: https://platform.openai.com/api-keys
+- Groq (faster): https://console.groq.com````
 
 
-
-## 📁 Supported Formats- Groq (faster): https://console.groq.com````
-
-
-
-**Audio:** MP3, WAV, M4A, AAC, OGG, FLAC  
-
-**Video:** MP4, MKV, MOV, AVI, WEBM
 
 ## 3. Install FFmpeg# 2. Install
 
-## 🔧 FFmpeg Setup
 
-
-
-If you don't have FFmpeg:
 
 ```bash## 2. Configurepnpm install
 
-```bash
-
-# macOS# macOS
+# macOS
 
 brew install ffmpeg
 
-brew install ffmpeg
 
-# Ubuntu/Debian
+
+# Ubuntu/DebianEdit `.env` and add your API key:# 3. Configure
 
 sudo apt install ffmpeg
 
+cp .env.example .env
 
+# Verify
 
-# Verify# Ubuntu/DebianEdit `.env` and add your API key:# 3. Configure
-
-ffmpeg -version
-
-```sudo apt install ffmpeg
-
-
-
-## 🆚 Provider Comparisoncp .env.example .env
-
-
-
-| Feature | Groq (Default) | OpenAI |# Verify
-
-|---------|----------------|--------|
-
-| **Cost** | 🆓 Free | 💰 Paid |ffmpeg -version```envnano .env  # Add your OPENAI_API_KEY
-
-| **Setup** | 30 seconds | Need credit card |
-
-| **Speed** | ⚡ Very Fast | Normal |`````
-
-| **Quality** | ✅ Excellent | ✅ Excellent |
-
-| **Daily Limit** | ~240 hours | Depends on plan |AI_PROVIDER=openai
-
-
-
-## ❓ Common Issues## 4. Run
-
-
-
-| Problem | Solution |OPENAI_API_KEY=sk-your-key-here# 4. Run
-
-|---------|----------|
-
-| FFmpeg not found | Install: `brew install ffmpeg` (macOS) |````bash
-
-| Port 3000 in use | Run: `PORT=3001 pnpm dev` |
-
-| API key invalid | Check `.env` has correct key (starts with `gsk_` for Groq) |pnpm dev```pnpm dev
-
-| Error 429 quota | Using OpenAI? Switch to Groq (free!) |
-
-````
-
-## 📚 Next Steps
+ffmpeg -version```envnano .env  # Add your OPENAI_API_KEY
 
 `````
 
-- Read [Groq Setup Guide](GROQ-SETUP.md) for detailed configuration
+AI_PROVIDER=openai
 
-- Check [Troubleshooting](TROUBLESHOOTING.md) if you hit issuesOpen http://localhost:3000
+## 4. Run
 
-- See [Setup Guide](SETUP.md) for advanced configuration
+OPENAI_API_KEY=sk-your-key-here# 4. Run
+
+````bash
+
+pnpm dev```pnpm dev
+
+````
+
+`````
+
+Open http://localhost:3000
 
 **Get API Keys:**
 
-## 💡 Pro Tips
-
 ## 5. Use
 
-1. **Start with Groq** - It's free and fast!
+- OpenAI: https://platform.openai.com/api-keys## Your First Transcription
 
-2. **Use files < 10MB** - For fastest processing- OpenAI: https://platform.openai.com/api-keys## Your First Transcription
+1. Upload an audio/video file (drag & drop)
 
-3. **Video files auto-extract audio** - No need to convert manually
+2. Wait for processing (30s - 3min depending on file size)- Groq (faster): https://console.groq.com
 
-4. **Files 10-25MB auto-compress** - But may take longer1. Upload an audio/video file (drag & drop)
+3. View your structured notes
 
-
-
----2. Wait for processing (30s - 3min depending on file size)- Groq (faster): https://console.groq.com
-
-
-
-**Total time:** 5 minutes ⏱️  3. View your structured notes
-
-**Cost:** $0 (with Groq) 💸  
-
-**Next:** Upload your first lecture! 🎓4. Download as JSON or Markdown1. **Open the app:** http://localhost:3000
-
+4. Download as JSON or Markdown1. **Open the app:** http://localhost:3000
 
 
 

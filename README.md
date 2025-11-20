@@ -14,8 +14,9 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 
 ## ✨ Features
 
-- 🎯 **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
-- 🤖 **AI-Powered**: Transcription and summarization using OpenAI, Groq, Deepgram, or Anthropic
+- � **Free to Use**: Default Groq integration with generous free tier (no credit card required!)
+- �🎯 **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
+- 🤖 **AI-Powered**: Transcription and summarization using Groq (default), OpenAI, Deepgram, or Anthropic
 - 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
 - 💾 **Export Options**: Download as JSON or Markdown
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
@@ -28,7 +29,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 
 - Node.js 18.18+ and pnpm 8+
 - FFmpeg installed on your system
-- API key for your chosen AI provider (OpenAI, Groq, Deepgram, or Anthropic)
+- Groq API key (free, no credit card!) or other AI provider
 
 ### Installation
 
@@ -45,20 +46,26 @@ cd talk2notes
 pnpm install
 ```
 
-3. **Set up environment variables**
+3. **Get free API key**
+
+Go to https://console.groq.com/keys and sign up (30 seconds, no credit card needed!)
+
+4. **Set up environment variables**
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and add your API keys:
+Edit `.env` and add your Groq API key:
 
 ```env
-AI_PROVIDER=openai
-OPENAI_API_KEY=your_api_key_here
+AI_PROVIDER=groq
+GROQ_API_KEY=gsk_your_key_here
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
 ```
 
-4. **Install FFmpeg** (if not already installed)
+5. **Install FFmpeg** (if not already installed)
 
 **macOS:**
 
@@ -75,7 +82,7 @@ sudo apt-get install ffmpeg
 **Windows:**
 Download from [ffmpeg.org](https://ffmpeg.org/download.html)
 
-5. **Run the development server**
+6. **Run the development server**
 
 ```bash
 pnpm dev
