@@ -88,14 +88,10 @@ export async function createTranscriptionMutation(
       finalTranscript = await translateTranscript(transcriptionResult.text, 'indonesian');
     }
 
-    const lectureNotes = await summarizeTranscript(
-      finalTranscript,
-      uploadedFile.originalFilename,
-      {
-        detailLevel: 'detailed',
-        language: language,
-      }
-    );
+    const lectureNotes = await summarizeTranscript(finalTranscript, uploadedFile.originalFilename, {
+      detailLevel: 'detailed',
+      language: language,
+    });
 
     // Add full transcript to the response (already translated if needed)
     const notesWithTranscript = {

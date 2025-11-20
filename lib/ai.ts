@@ -252,22 +252,6 @@ export async function translateTranscript(
 
   console.log(`[Translation] Translating transcript to Indonesian...`);
 
-  const prompt = `Translate the following transcript to Bahasa Indonesia. 
-
-IMPORTANT RULES:
-1. Translate naturally and fluently to Indonesian
-2. Preserve ALL Arabic text (Quranic verses, Hadith, Islamic terms) exactly as written with harakat
-3. For Arabic quotes, keep format: "Arabic text (transliteration) - Indonesian translation"
-4. Keep technical terms in original language if commonly used in Indonesian
-5. Maintain paragraph structure and formatting
-6. Keep names, places, and proper nouns in original form
-
-Transcript to translate:
-
-${transcript}
-
-Translated transcript in Bahasa Indonesia:`;
-
   try {
     if (config.provider === 'openai' || config.provider === 'groq') {
       const openai = new OpenAI({
@@ -278,11 +262,14 @@ Translated transcript in Bahasa Indonesia:`;
       const response = await openai.chat.completions.create({
         model: config.summarizationModel,
         messages: [
-          { 
-            role: 'system', 
-            content: 'You are a professional translator specializing in Indonesian language. You preserve Arabic text and provide accurate, natural translations.' 
+          {
+            role: 'system',
+            content: `You are a professional translator. Translate the text to natural, fluent Bahasa Indonesia. Rules: (1) Preserve ALL Arabic text exactly as written with harakat, (2) For Arabic quotes use format: "Arabic text (transliteration) - Indonesian translation", (3) Keep technical terms in original if commonly used in Indonesian, (4) Maintain paragraph structure, (5) Keep names and proper nouns in original form. Output ONLY the translated text with NO preamble, explanation, or rule listing.`,
           },
-          { role: 'user', content: prompt },
+          {
+            role: 'user',
+            content: transcript,
+          },
         ],
         temperature: 0.3,
       });

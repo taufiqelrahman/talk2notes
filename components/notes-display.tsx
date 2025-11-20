@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { LectureNotes } from '@/types';
 
 interface NotesDisplayProps {
@@ -193,16 +195,20 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
 
       <div className="p-6">
         {activeTab === 'summary' && (
-          <div className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">{notes.summary}</p>
+          <div className="space-y-6">
+            <div className="prose prose-lg max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{notes.summary}</ReactMarkdown>
+            </div>
             {notes.bulletPoints.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {notes.bulletPoints.map((point, idx) => (
                     <li key={idx} className="flex items-start">
-                      <span className="text-primary-600 mr-2">•</span>
-                      <span className="text-gray-700">{point}</span>
+                      <span className="text-primary-600 mr-3 mt-1">•</span>
+                      <div className="prose prose-sm max-w-none flex-1">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{point}</ReactMarkdown>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -212,11 +218,11 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
         )}
 
         {activeTab === 'paragraphs' && (
-          <div className="space-y-4">
+          <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-em:text-gray-600 prose-ul:text-gray-700 prose-ol:text-gray-700">
             {notes.paragraphs.map((para, idx) => (
-              <p key={idx} className="text-gray-700 leading-relaxed">
-                {para}
-              </p>
+              <div key={idx} className="mb-6">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{para}</ReactMarkdown>
+              </div>
             ))}
           </div>
         )}
@@ -225,8 +231,8 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
           <div className="space-y-6">
             {notes.keyConcepts.length > 0 ? (
               notes.keyConcepts.map((concept, idx) => (
-                <div key={idx} className="border-l-4 border-primary-500 pl-4">
-                  <div className="flex items-center gap-2 mb-2">
+                <div key={idx} className="border-l-4 border-primary-500 pl-4 py-1">
+                  <div className="flex items-center gap-2 mb-3">
                     <h3 className="text-lg font-semibold text-gray-900">{concept.concept}</h3>
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded ${
@@ -240,7 +246,9 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
                       {concept.importance}
                     </span>
                   </div>
-                  <p className="text-gray-700">{concept.explanation}</p>
+                  <div className="prose prose-sm max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{concept.explanation}</ReactMarkdown>
+                  </div>
                 </div>
               ))
             ) : (
@@ -253,11 +261,15 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
           <div className="space-y-4">
             {notes.definitions.length > 0 ? (
               notes.definitions.map((def, idx) => (
-                <div key={idx} className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{def.term}</h3>
-                  <p className="text-gray-700 mb-2">{def.definition}</p>
+                <div key={idx} className="bg-gray-50 rounded-lg p-5">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{def.term}</h3>
+                  <div className="prose prose-sm max-w-none mb-2">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{def.definition}</ReactMarkdown>
+                  </div>
                   {def.context && (
-                    <p className="text-sm text-gray-600 italic">Context: {def.context}</p>
+                    <div className="text-sm text-gray-600 italic mt-3 pt-3 border-t border-gray-200">
+                      <strong>Context:</strong> {def.context}
+                    </div>
                   )}
                 </div>
               ))
@@ -271,23 +283,39 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
           <div className="space-y-6">
             {notes.exampleProblems.length > 0 ? (
               notes.exampleProblems.map((problem, idx) => (
-                <div key={idx} className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Problem {idx + 1}</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <span className="text-sm font-medium text-gray-600">Problem:</span>
-                      <p className="text-gray-700 mt-1">{problem.problem}</p>
+                <div key={idx} className="border border-gray-200 rounded-lg p-5 bg-white">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Problem {idx + 1}</h3>
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <span className="text-sm font-semibold text-blue-900 block mb-2">
+                        Problem:
+                      </span>
+                      <div className="prose prose-sm max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{problem.problem}</ReactMarkdown>
+                      </div>
                     </div>
                     {problem.solution && (
-                      <div>
-                        <span className="text-sm font-medium text-gray-600">Solution:</span>
-                        <p className="text-gray-700 mt-1">{problem.solution}</p>
+                      <div className="bg-green-50 rounded-lg p-4">
+                        <span className="text-sm font-semibold text-green-900 block mb-2">
+                          Solution:
+                        </span>
+                        <div className="prose prose-sm max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {problem.solution}
+                          </ReactMarkdown>
+                        </div>
                       </div>
                     )}
                     {problem.explanation && (
-                      <div>
-                        <span className="text-sm font-medium text-gray-600">Explanation:</span>
-                        <p className="text-gray-700 mt-1">{problem.explanation}</p>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <span className="text-sm font-semibold text-gray-900 block mb-2">
+                          Explanation:
+                        </span>
+                        <div className="prose prose-sm max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {problem.explanation}
+                          </ReactMarkdown>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -308,7 +336,9 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
                     type="checkbox"
                     className="mt-1 h-4 w-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
                   />
-                  <span className="text-gray-700">{item}</span>
+                  <div className="prose prose-sm max-w-none flex-1">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{item}</ReactMarkdown>
+                  </div>
                 </div>
               ))
             ) : (

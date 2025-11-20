@@ -28,27 +28,30 @@
     "find:ffmpeg": "bash scripts/find-ffmpeg.sh"
   },
   "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "formidable": "^3.5.1",
     "next": "^15.0.0",
+    "openai": "^4.28.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "openai": "^4.28.0",
-    "formidable": "^3.5.1",
-    "fluent-ffmpeg": "^2.1.2",
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "@types/formidable": "^3.4.5",
     "@types/node": "^20.11.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/formidable": "^3.4.5",
-    "@types/fluent-ffmpeg": "^2.1.24",
-    "typescript": "^5.3.3",
+    "autoprefixer": "^10.4.17",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
-    "prettier": "^3.2.4",
-    "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",
-    "tailwindcss": "^3.4.1"
+    "prettier": "^3.2.4",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": ">=18.18.0",
