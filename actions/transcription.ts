@@ -8,6 +8,7 @@ import {
   cleanupTempFile,
   compressAudioIfNeeded,
   checkFFmpegAvailable,
+  getFFmpegValidationDetails,
 } from '@/lib/ffmpeg';
 import { transcribeAudio, summarizeTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
@@ -39,12 +40,7 @@ export async function createTranscriptionMutation(
     if (validation.fileType === 'video' && !checkFFmpegAvailable()) {
       return {
         success: false,
-        error:
-          'FFmpeg is not installed or not found. FFmpeg is required for video processing.\n' +
-          'Install instructions:\n' +
-          '  • macOS: brew install ffmpeg\n' +
-          '  • Ubuntu/Debian: sudo apt install ffmpeg\n' +
-          '  • Windows: Download from https://ffmpeg.org/download.html',
+        error: getFFmpegValidationDetails(),
       };
     }
 

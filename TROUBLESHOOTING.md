@@ -92,34 +92,54 @@ experimental: {
 
 ### Error: `spawn /usr/local/bin/ffprobe ENOENT` or `FFmpeg not found`
 
-**Cause**: FFmpeg or FFprobe binaries are not installed or not found in the expected path.
+**Cause**: FFmpeg is not installed, or the app can't find it.
 
-**✅ Quick Fix**:
+**✅ Quick Fix (3 steps)**:
 
 ```bash
-# Check if FFmpeg is installed
-pnpm check:ffmpeg
+# Step 1: Find your FFmpeg paths
+pnpm find:ffmpeg
 
-# Or manually check
-which ffmpeg
-which ffprobe
+# Step 2: Copy the paths shown, create .env.local:
+cp .env.example .env.local
+
+# Step 3: Edit .env.local and add the paths (uncomment and set):
+# FFMPEG_PATH=/opt/homebrew/bin/ffmpeg
+# FFPROBE_PATH=/opt/homebrew/bin/ffprobe
+
+# Then restart: pnpm dev
 ```
 
-**Solutions**:
+**Detailed Solutions**:
 
-1. **Install FFmpeg** (if not installed):
+1. **Check installation status**:
+
+   ```bash
+   # Run the finder script
+   pnpm find:ffmpeg
+
+   # This will:
+   # - Find FFmpeg on your system
+   # - Test if it works
+   # - Show exact paths to add to .env.local
+   ```
+
+2. **If FFmpeg is NOT installed**:
 
    **macOS:**
 
    ```bash
+   # Install with Homebrew
    brew install ffmpeg
+
+   # Find paths after install
+   pnpm find:ffmpeg
    ```
 
    **Ubuntu/Debian:**
 
    ```bash
-   sudo apt update
-   sudo apt install ffmpeg
+   sudo apt update && sudo apt install ffmpeg
    ```
 
    **Windows:**
@@ -127,32 +147,56 @@ which ffprobe
    - Extract and add to PATH
    - Restart terminal/IDE
 
-2. **Verify installation**:
+3. **If FFmpeg IS installed but not detected**:
 
    ```bash
-   ffmpeg -version
-   ffprobe -version
+   # Find the actual paths
+   which ffmpeg
+   which ffprobe
+
+   # Or use the helper
+   pnpm find:ffmpeg
    ```
 
-3. **Auto-detection** (v2.1+):
-   - App now auto-detects FFmpeg location
-   - Checks common paths: `/usr/local/bin`, `/opt/homebrew/bin`, `/usr/bin`
-   - No manual configuration needed in most cases
-
-4. **Manual configuration** (if auto-detect fails):
-
-   Add to `.env.local`:
+   Then create `.env.local` (copy from `.env.example`) and add:
 
    ```bash
-   FFMPEG_PATH=/your/custom/path/to/ffmpeg
-   FFPROBE_PATH=/your/custom/path/to/ffprobe
+   FFMPEG_PATH=/actual/path/to/ffmpeg
+   FFPROBE_PATH=/actual/path/to/ffprobe
    ```
 
-5. **Restart server** after installation:
+   **Common paths**:
+   - macOS (M1/M2): `/opt/homebrew/bin/ffmpeg`
+   - macOS (Intel): `/usr/local/bin/ffmpeg`
+   - Linux: `/usr/bin/ffmpeg`
+
+4. **Verify it works**:
+
    ```bash
-   # Stop server (Ctrl+C)
+   # Test the binaries directly
+   /opt/homebrew/bin/ffmpeg -version
+   /opt/homebrew/bin/ffprobe -version
+   ```
+
+5. **After configuration**:
+
+   ```bash
+   # MUST restart the dev server
+   # Stop with Ctrl+C, then:
    pnpm dev
    ```
+
+**Auto-detection (v2.1+)**:
+
+- App tries to find FFmpeg automatically
+- Checks: `/opt/homebrew/bin`, `/usr/local/bin`, `/usr/bin`, `/opt/local/bin`
+- If auto-detection fails, manual configuration via `.env.local` is required
+
+**Still not working?**
+
+1. Make sure FFmpeg is executable: `ls -la $(which ffmpeg)`
+2. Check file permissions: `chmod +x /path/to/ffmpeg /path/to/ffprobe`
+3. Verify PATH in dev server: Add `console.log(process.env.PATH)` to see environment
 
 ### Error: `FFmpeg extraction failed`
 

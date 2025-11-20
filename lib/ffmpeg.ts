@@ -4,40 +4,52 @@ import { execSync } from 'child_process';
 import ffmpeg from 'fluent-ffmpeg';
 import type { TranscriptionSegment } from '@/types';
 
-// Auto-detect FFmpeg and FFprobe paths
+// Auto-detect FFmpeg and FFprobe paths with runtime verification
 function detectBinaryPath(binaryName: string): string {
-  // Try common locations
+  console.log(`[FFmpeg] Detecting ${binaryName}...`);
+
+  // Try common installation locations directly first (faster)
   const commonPaths = [
-    `/usr/local/bin/${binaryName}`,
-    `/opt/homebrew/bin/${binaryName}`,
-    `/usr/bin/${binaryName}`,
-    binaryName, // Try system PATH
+    `/opt/homebrew/bin/${binaryName}`, // M1/M2 Mac (Homebrew)
+    `/usr/local/bin/${binaryName}`, // Intel Mac (Homebrew)
+    `/usr/bin/${binaryName}`, // Linux
+    `/opt/local/bin/${binaryName}`, // MacPorts
   ];
 
-  // First, try to use 'which' command to find the binary
+  for (const testPath of commonPaths) {
+    try {
+      // Simple existence check - don't verify at module load
+      const result = execSync(`test -f "${testPath}" && echo "exists"`, {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      }).trim();
+
+      if (result === 'exists') {
+        console.log(`[FFmpeg] Found ${binaryName} at: ${testPath}`);
+        return testPath;
+      }
+    } catch (error) {
+      // This path doesn't exist, try next
+    }
+  }
+
+  // Try 'which' command as fallback
   try {
-    const result = execSync(`which ${binaryName}`, { encoding: 'utf8' }).trim();
-    if (result) {
-      console.log(`[FFmpeg] Found ${binaryName} at: ${result}`);
+    const result = execSync(`which ${binaryName}`, {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+
+    if (result && result.length > 0) {
+      console.log(`[FFmpeg] Found ${binaryName} via 'which': ${result}`);
       return result;
     }
   } catch (error) {
-    // 'which' command failed, continue to try common paths
+    console.log(`[FFmpeg] 'which' command failed for ${binaryName}`);
   }
 
-  // Try each common path
-  for (const testPath of commonPaths) {
-    try {
-      execSync(`${testPath} -version`, { stdio: 'ignore' });
-      console.log(`[FFmpeg] Found ${binaryName} at: ${testPath}`);
-      return testPath;
-    } catch (error) {
-      // Path doesn't work, try next
-    }
-  }
-
-  // Fallback to just the binary name (might work if in PATH)
-  console.warn(`[FFmpeg] Could not find ${binaryName}, using default: ${binaryName}`);
+  // Last resort: just use the binary name (rely on PATH at runtime)
+  console.warn(`[FFmpeg] Using binary name as fallback: ${binaryName}`);
   return binaryName;
 }
 
@@ -46,33 +58,89 @@ const FFPROBE_PATH = process.env.FFPROBE_PATH || detectBinaryPath('ffprobe');
 
 console.log(`[FFmpeg] Configured paths:`, { FFMPEG_PATH, FFPROBE_PATH });
 
+// Set paths for fluent-ffmpeg
 ffmpeg.setFfmpegPath(FFMPEG_PATH);
 ffmpeg.setFfprobePath(FFPROBE_PATH);
 
-// Validate FFmpeg installation on module load
-function validateFFmpegInstallation(): boolean {
+// Runtime validation - checks every time it's called
+function validateFFmpegInstallation(): { isValid: boolean; details: string } {
+  const errors: string[] = [];
+
+  // Test FFmpeg
   try {
-    execSync(`${FFMPEG_PATH} -version`, { stdio: 'ignore' });
-    execSync(`${FFPROBE_PATH} -version`, { stdio: 'ignore' });
-    console.log(`[FFmpeg] ✓ FFmpeg and FFprobe are working`);
-    return true;
+    execSync(`"${FFMPEG_PATH}" -version`, { stdio: 'ignore', timeout: 5000 });
+    console.log(`[FFmpeg] ✓ ffmpeg is working (${FFMPEG_PATH})`);
+  } catch (error: any) {
+    const errorMsg = `ffmpeg not executable at: ${FFMPEG_PATH}`;
+    console.error(`[FFmpeg] ${errorMsg}`, error.message);
+    errors.push(errorMsg);
+
+    // Try alternative paths
+    const alternatives = [
+      '/opt/homebrew/bin/ffmpeg',
+      '/usr/local/bin/ffmpeg',
+      '/usr/bin/ffmpeg',
+    ].filter((p) => p !== FFMPEG_PATH);
+
+    errors.push(`Tried: ${FFMPEG_PATH}`);
+    errors.push(`Try setting FFMPEG_PATH in .env.local to one of: ${alternatives.join(', ')}`);
+  }
+
+  // Test FFprobe
+  try {
+    execSync(`"${FFPROBE_PATH}" -version`, { stdio: 'ignore', timeout: 5000 });
+    console.log(`[FFmpeg] ✓ ffprobe is working (${FFPROBE_PATH})`);
+  } catch (error: any) {
+    const errorMsg = `ffprobe not executable at: ${FFPROBE_PATH}`;
+    console.error(`[FFmpeg] ${errorMsg}`, error.message);
+    errors.push(errorMsg);
+
+    // Try alternative paths
+    const alternatives = [
+      '/opt/homebrew/bin/ffprobe',
+      '/usr/local/bin/ffprobe',
+      '/usr/bin/ffprobe',
+    ].filter((p) => p !== FFPROBE_PATH);
+
+    errors.push(`Tried: ${FFPROBE_PATH}`);
+    errors.push(`Try setting FFPROBE_PATH in .env.local to one of: ${alternatives.join(', ')}`);
+  }
+
+  if (errors.length > 0) {
+    const details =
+      `FFmpeg not available:\n\n${errors.join('\n')}\n\n` +
+      `Quick fix:\n` +
+      `1. Install: brew install ffmpeg\n` +
+      `2. Find paths: which ffmpeg && which ffprobe\n` +
+      `3. Create .env.local with:\n` +
+      `   FFMPEG_PATH=/your/actual/path/to/ffmpeg\n` +
+      `   FFPROBE_PATH=/your/actual/path/to/ffprobe\n` +
+      `4. Restart the dev server`;
+
+    return { isValid: false, details };
+  }
+
+  return { isValid: true, details: 'FFmpeg is available and working' };
+}
+
+// Export validation functions (no pre-validation at module load)
+export function checkFFmpegAvailable(): boolean {
+  try {
+    const result = validateFFmpegInstallation();
+    return result.isValid;
   } catch (error) {
-    console.error(
-      `[FFmpeg] ✗ FFmpeg or FFprobe not found!`,
-      `\n  Please install FFmpeg:`,
-      `\n    macOS: brew install ffmpeg`,
-      `\n    Ubuntu: sudo apt install ffmpeg`,
-      `\n    Windows: https://ffmpeg.org/download.html`
-    );
+    console.error('[FFmpeg] Validation error:', error);
     return false;
   }
 }
 
-// Run validation check
-const isFFmpegAvailable = validateFFmpegInstallation();
-
-export function checkFFmpegAvailable(): boolean {
-  return isFFmpegAvailable;
+export function getFFmpegValidationDetails(): string {
+  try {
+    const result = validateFFmpegInstallation();
+    return result.details;
+  } catch (error: any) {
+    return `FFmpeg validation error: ${error.message}`;
+  }
 }
 
 export interface AudioExtractionResult {

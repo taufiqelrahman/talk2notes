@@ -24,7 +24,8 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "check:ffmpeg": "bash scripts/check-ffmpeg.sh"
+    "check:ffmpeg": "bash scripts/check-ffmpeg.sh",
+    "find:ffmpeg": "bash scripts/find-ffmpeg.sh"
   },
   "dependencies": {
     "next": "^15.0.0",
