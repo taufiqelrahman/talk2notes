@@ -1,18 +1,12 @@
 # Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Talk2Notes - Quick Start Guide
 
-
-
 Get Talk2Notes running in 5 minutes with **free Groq API** (no credit card needed!)Get Talk2Notes running in 5 minutes.Get Talk2Notes running in 5 minutes.Get up and running with Talk2Notes in 5 minutes!
-
-
 
 ## Prerequisites## Prerequisites## Prerequisites## Prerequisites
 
-
-
 - ✅ Node.js 18.18+ installed- Node.js 18.18+- Node.js 18+✅ Node.js 18+ installed
 
-- ✅ pnpm 8+ installed  
+- ✅ pnpm 8+ installed
 
 - ✅ FFmpeg installed- pnpm 8+
 
@@ -38,7 +32,7 @@ pnpm install- API key from OpenAI/Groq/Deepgram/Anthropic✅ OpenAI API key read
 
 ```
 
-````bash
+``````bash
 
 ### 2. Get Free API Key
 
@@ -134,7 +128,7 @@ Open http://localhost:3000 🎉
 
 
 
-**Audio:** MP3, WAV, M4A, AAC, OGG, FLAC  
+**Audio:** MP3, WAV, M4A, AAC, OGG, FLAC
 
 **Video:** MP4, MKV, MOV, AVI, WEBM
 
@@ -206,7 +200,7 @@ ffmpeg -version
 
 | Error 429 quota | Using OpenAI? Switch to Groq (free!) |
 
-````
+``````
 
 ## 📚 Next Steps
 
@@ -240,7 +234,7 @@ ffmpeg -version
 
 **Total time:** 5 minutes ⏱️  3. View your structured notes
 
-**Cost:** $0 (with Groq) 💸  
+**Cost:** $0 (with Groq) 💸
 
 **Next:** Upload your first lecture! 🎓4. Download as JSON or Markdown1. **Open the app:** http://localhost:3000
 

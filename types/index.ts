@@ -102,4 +102,5 @@ export interface TranscriptionOptions {
 export interface SummarizationOptions {
   detailLevel?: 'concise' | 'detailed' | 'comprehensive';
   focusAreas?: string[];
+  language?: 'english' | 'indonesian';
 }

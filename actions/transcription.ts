@@ -19,6 +19,7 @@ export async function createTranscriptionMutation(
 ): Promise<MutationResult<LectureNotes>> {
   try {
     const file = formData.get('file') as File | null;
+    const language = (formData.get('language') as 'english' | 'indonesian') || 'english';
 
     if (!file) {
       return {
@@ -83,7 +84,10 @@ export async function createTranscriptionMutation(
     const lectureNotes = await summarizeTranscript(
       transcriptionResult.text,
       uploadedFile.originalFilename,
-      { detailLevel: 'detailed' }
+      { 
+        detailLevel: 'detailed',
+        language: language
+      }
     );
 
     // Cleanup temporary files

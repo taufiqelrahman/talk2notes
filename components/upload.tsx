@@ -17,6 +17,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [language, setLanguage] = useState<'english' | 'indonesian'>('english');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +107,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
+      formData.append('language', language);
 
       // Validation phase (5-15%)
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -306,6 +308,44 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             </div>
           )}
         </div>
+
+        {/* Language Selection */}
+        {selectedFile && !isUploading && (
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Output Language / Bahasa Output
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setLanguage('english')}
+                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${
+                  language === 'english'
+                    ? 'border-primary-500 bg-primary-50 text-primary-700 font-medium'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <span className="text-2xl mr-2">🇬🇧</span>
+                <span>English</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('indonesian')}
+                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${
+                  language === 'indonesian'
+                    ? 'border-primary-500 bg-primary-50 text-primary-700 font-medium'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <span className="text-2xl mr-2">🇮🇩</span>
+                <span>Bahasa Indonesia</span>
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              📖 Arabic text (Quran/Hadith) will be preserved with transliteration and translation
+            </p>
+          </div>
+        )}
 
         {isUploading && (
           <div className="space-y-4">

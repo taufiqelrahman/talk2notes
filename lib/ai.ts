@@ -322,8 +322,38 @@ export async function summarizeTranscript(
 function buildSummarizationPrompt(options: SummarizationOptions): string {
   const detailLevel = options.detailLevel || 'detailed';
   const focusAreas = options.focusAreas?.join(', ') || 'all topics';
+  const language = options.language || 'english';
+  
+  const languageInstruction = language === 'indonesian' 
+    ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
+
+IMPORTANT RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
+- Keep ALL Arabic text in its original form with proper harakat (diacritics)
+- Add transliteration in parentheses after the Arabic text
+- Then provide Indonesian translation
+- Format: "Arabic text (transliteration) - Indonesian translation"
+- Example: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ (Wa maa arsalnaaka illa rahmatan lil 'aalamiin) - Dan Kami tidak mengutus engkau (Muhammad) melainkan sebagai rahmat bagi seluruh alam."
+
+FORMATTING:
+- Title: In Indonesian
+- Summary: In Indonesian  
+- Paragraphs: In Indonesian (keep Arabic quotes with transliteration + translation as specified)
+- Bullet points: In Indonesian
+- Concepts: Indonesian names with Indonesian explanations
+- Definitions: Indonesian terms with Indonesian definitions
+- Action items: In Indonesian`
+    : `Generate notes in English. Use clear, academic English.
+
+RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
+- Keep ALL Arabic text in its original form with proper harakat (diacritics)
+- Add transliteration in parentheses after the Arabic text
+- Then provide English translation
+- Format: "Arabic text (transliteration) - English translation"
+- Example: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ (Wa maa arsalnaaka illa rahmatan lil 'aalamiin) - And We have not sent you except as a mercy to all the worlds."`;
 
   return `You are an expert academic note-taker. Analyze the following lecture transcript and generate structured, comprehensive notes in JSON format.
+
+${languageInstruction}
 
 Focus on: ${focusAreas}
 Detail level: ${detailLevel}
@@ -361,7 +391,8 @@ Generate a JSON object with the following structure:
 Rules:
 - Extract all key concepts, definitions, and examples mentioned
 - Organize information logically and hierarchically
-- Use clear, academic language
+- Use clear, academic language in the specified language (${language === 'indonesian' ? 'Bahasa Indonesia' : 'English'})
+- For Arabic text (Quran, Hadith): ALWAYS preserve original Arabic with harakat, add transliteration, then translation
 - Identify relationships between concepts
 - Highlight important formulas, theories, or frameworks
 - Note any examples, case studies, or illustrations used
