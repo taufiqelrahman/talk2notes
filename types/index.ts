@@ -59,9 +59,17 @@ export interface NotesMetadata {
 }
 
 export interface ProcessingState {
-  step: 'uploading' | 'extracting' | 'transcribing' | 'summarizing' | 'complete' | 'error';
+  step:
+    | 'uploading'
+    | 'extracting'
+    | 'compressing'
+    | 'transcribing'
+    | 'summarizing'
+    | 'complete'
+    | 'error';
   progress: number;
   message: string;
+  details?: string; // Additional details like file size, duration, etc.
 }
 
 export interface MutationResult<T> {

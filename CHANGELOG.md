@@ -2,6 +2,39 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.1.0] - 2025-11-20
+
+### 🎨 Enhanced User Experience - Progress Tracking
+
+#### Added
+
+- **Visual processing steps**: 6-step progress indicator with icons and animations
+- **Detailed progress bar**: Percentage tracking with shimmer effects and mini-step indicators
+- **Real-time status updates**: File size, operation details, and estimated completion time
+- **Educational tips**: Rotating tips and best practices during processing (changes every 5s)
+- **Smart time estimation**: Automatic ETA based on file size
+- **Smooth progress simulation**: Realistic progress animation between actual milestones
+- **New components**:
+  - `ProcessingSteps` - Step-by-step visual progress
+  - `ProcessingTips` - Rotating educational content
+  - Enhanced `ProgressIndicator` with details and time estimates
+
+#### Improved
+
+- **Progress visibility**: Users see exactly what's happening at each stage
+- **Wait time perception**: Estimated times and tips reduce anxiety
+- **User education**: Tips teach optimization and best practices
+- **Visual feedback**: Color-coded steps (gray → blue → green)
+- **Animation polish**: Smooth transitions and GPU-accelerated effects
+
+#### UX Enhancements
+
+- Progress now shows: Validate → Upload → Extract → Compress → Transcribe → Generate
+- Each step has descriptive details (e.g., "Converting video to audio format...")
+- Compression step only shows for files > 10MB
+- Extraction step only shows for video files
+- Tips educate users on file optimization and features
+
 ## [2.0.0] - 2025-11-20
 
 ### 🎯 Major Improvements - File Upload Reliability
