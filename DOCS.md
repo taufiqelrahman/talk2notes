@@ -4,20 +4,23 @@ Welcome to Talk2Notes documentation. Find the guide you need below.
 
 ## 📖 Getting Started
 
-| Document                     | Purpose                               | Time   |
-| ---------------------------- | ------------------------------------- | ------ |
-| [Quick Start](QUICKSTART.md) | Get running in 5 minutes              | 5 min  |
-| [Setup Guide](SETUP.md)      | Detailed installation & configuration | 15 min |
-| [README](README.md)          | Project overview & features           | 10 min |
+| Document                              | Purpose                               | Time   |
+| ------------------------------------- | ------------------------------------- | ------ |
+| [Quick Start](QUICKSTART.md)          | Get running in 5 minutes              | 5 min  |
+| [Setup Guide](SETUP.md)               | Detailed installation & configuration | 15 min |
+| [README](README.md)                   | Project overview & features           | 10 min |
+| [Groq Setup](GROQ-SETUP.md)           | Free AI provider (no credit card)     | 3 min  |
+| [Troubleshooting](TROUBLESHOOTING.md) | Fix common errors                     | -      |
 
 ## 💻 Development
 
-| Document                                  | Purpose                        |
-| ----------------------------------------- | ------------------------------ |
-| [CLI Reference](CLI-REFERENCE.md)         | All commands & troubleshooting |
-| [Architecture](ARCHITECTURE.md)           | System design & patterns       |
-| [Project Structure](PROJECT-STRUCTURE.md) | Code organization              |
-| [Contributing](CONTRIBUTING.md)           | How to contribute              |
+| Document                                  | Purpose                  |
+| ----------------------------------------- | ------------------------ |
+| [CLI Reference](CLI-REFERENCE.md)         | All commands & scripts   |
+| [Architecture](ARCHITECTURE.md)           | System design & patterns |
+| [Project Structure](PROJECT-STRUCTURE.md) | Code organization        |
+| [Contributing](CONTRIBUTING.md)           | How to contribute        |
+| [Changelog](CHANGELOG.md)                 | Version history          |
 
 ## 🏗️ Documentation Structure
 
@@ -39,8 +42,9 @@ Welcome to Talk2Notes documentation. Find the guide you need below.
 **I want to...**
 
 - ⚡ Start using the app → [Quick Start](QUICKSTART.md)
+- 🆓 Use free AI (no credit card) → [Groq Setup](GROQ-SETUP.md)
 - 🔧 Set up development environment → [Setup Guide](SETUP.md)
-- 🐛 Debug an issue → [CLI Reference](CLI-REFERENCE.md) (Troubleshooting section)
+- 🐛 Fix errors → [Troubleshooting](TROUBLESHOOTING.md)
 - 🏗️ Understand the architecture → [Architecture](ARCHITECTURE.md)
 - 🤝 Contribute code → [Contributing](CONTRIBUTING.md)
 - 📁 Find a specific file → [Project Structure](PROJECT-STRUCTURE.md)

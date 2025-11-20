@@ -2,6 +2,41 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.2.0] - 2025-11-20
+
+### 🆓 Free AI Provider Support
+
+#### Added
+
+- **Groq integration**: Free AI provider with generous tier (no credit card needed)
+- **GROQ-SETUP.md**: Complete guide for setting up Groq
+- Separate model configuration for transcription and summarization
+- Support for `llama-3.3-70b-versatile` for note generation
+
+#### Fixed
+
+- Groq model configuration bug (was using Whisper model for summarization)
+- Now uses proper models: `whisper-large-v3` for transcription, `llama-3.3-70b-versatile` for summarization
+
+#### Changed
+
+- Environment variables: `GROQ_MODEL` → `GROQ_TRANSCRIPTION_MODEL` + `GROQ_SUMMARIZATION_MODEL`
+- Updated `.env.example` with correct Groq configuration
+
+### 📚 Documentation Cleanup
+
+#### Removed
+
+- **QUICK-FIX.md**: Content merged into TROUBLESHOOTING.md
+- **FFMPEG-FIX.md**: Content merged into TROUBLESHOOTING.md
+- **PROGRESS-FEATURE.md**: Content moved to CHANGELOG.md
+
+#### Changed
+
+- **DOCS.md**: Updated index with streamlined structure
+- **README.md**: Updated links to reflect new documentation structure
+- Improved navigation and discoverability
+
 ## [2.1.0] - 2025-11-20
 
 ### 🎨 Enhanced User Experience - Progress Tracking
