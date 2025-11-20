@@ -122,6 +122,25 @@ AI_PROVIDER=groq
 
 Restart server after changing!
 
+## 🌍 Language Support
+
+Groq mendukung fitur bilingual Talk2Notes:
+
+**English (Default):**
+
+- Transcription dan notes dalam bahasa Inggris
+
+**Indonesian:**
+
+- Automatic translation transcript ke Bahasa Indonesia
+- Notes di-generate dalam Bahasa Indonesia
+- **Perfect untuk konten Islami:**
+  - Preserves teks Arab (ayat Quran, Hadits) dengan harakat
+  - Format: "teks Arab (transliterasi) - terjemahan Indonesia"
+  - Istilah teknis Islam tetap dalam bahasa Arab
+
+Pilih language di UI sebelum upload file!
+
 ## 💡 Pro Tips
 
 1. **Groq untuk transcription** (gratis & cepat)
@@ -137,6 +156,7 @@ Restart server after changing!
    ```
 
 3. **File size limit**: Sama seperti OpenAI (25MB audio)
+4. **Pakai mode Indonesian**: Bagus untuk kajian/ceramah Islam dengan konten Arab
 
 ## 📚 References
 

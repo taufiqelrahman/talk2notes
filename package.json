@@ -1,7 +1,7 @@
 {
   "name": "talk2notes",
-  "version": "2.2.0",
-  "description": "Open-source web application that converts audio/video lectures into structured notes using AI",
+  "version": "2.3.0",
+  "description": "Open-source bilingual web app that converts audio/video lectures into structured notes using AI with markdown formatting",
   "author": "Talk2Notes Contributors",
   "license": "MIT",
   "repository": {
@@ -13,8 +13,13 @@
     "ai",
     "lecture-notes",
     "openai",
+    "groq",
     "nextjs",
-    "education"
+    "education",
+    "bilingual",
+    "indonesian",
+    "markdown",
+    "islamic-content"
   ],
   "scripts": {
     "dev": "next dev",

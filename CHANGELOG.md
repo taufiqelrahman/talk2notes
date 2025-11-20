@@ -2,6 +2,36 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.3.0] - 2025-11-20
+
+### 🌍 Bilingual Support & Enhanced Display
+
+#### Added
+
+- **Language Selection**: Choose between English (🇬🇧) or Indonesian (🇮🇩) for notes generation
+- **Transcript Translation**: Automatic translation to Bahasa Indonesia when selected
+- **Islamic Content Handling**: Special preservation of Arabic text with harakat, transliteration, and translations
+- **Full Transcript Tab**: New dedicated tab to view complete transcription
+- **Transcript Download**: Separate TXT download button for transcript
+- **Markdown Rendering**: Beautiful formatted display using `react-markdown` and `remark-gfm`
+  - Support for bold, italic, lists, code blocks
+  - Tailwind prose styling for professional typography
+  - Applied across all tabs (Summary, Detailed Notes, Concepts, Definitions, Problems, Actions)
+
+#### Changed
+
+- Translation prompt optimized to output clean content without instructions preamble
+- Enhanced UI for Problems tab with color-coded sections (blue/green/gray backgrounds)
+- Improved Action Items display with flex layout for markdown content
+- System message approach for translation instead of user prompt with rules
+
+#### Technical
+
+- Added dependencies: `react-markdown@9.x`, `remark-gfm`, `rehype-raw`
+- New function: `translateTranscript()` in `lib/ai.ts`
+- Extended types: `language?: 'english' | 'indonesian'` in `SummarizationOptions`
+- Extended types: `transcript?: string` in `LectureNotes`
+
 ## [2.2.0] - 2025-11-20
 
 ### 🆓 Free AI Provider Support

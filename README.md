@@ -15,12 +15,16 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 ## ✨ Features
 
 - � **Free to Use**: Default Groq integration with generous free tier (no credit card required!)
-- �🎯 **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
+- � **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
 - 🤖 **AI-Powered**: Transcription and summarization using Groq (default), OpenAI, Deepgram, or Anthropic
-- 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
-- 💾 **Export Options**: Download as JSON or Markdown
+- 🌍 **Bilingual Support**: Generate notes in English or Indonesian (Bahasa Indonesia)
+- � **Full Transcript**: View and download complete transcription with translation
+- �📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
+- ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
+- 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
 - 🎨 **Modern UI**: Clean, responsive interface built with Next.js and Tailwind CSS
+- 🕌 **Islamic Content**: Preserves Arabic text with harakat, transliteration, and translations
 - 🔒 **Secure**: File validation and size limits for safe uploads
 
 ## 🚀 Quick Start
@@ -95,10 +99,62 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Basic Usage
 
 1. Visit the application homepage
-2. Drag and drop or click to upload an audio/video file
-3. Wait for processing (transcription + summarization)
-4. View your structured notes
-5. Download as JSON or Markdown
+2. Select your preferred language (🇬🇧 English or 🇮🇩 Indonesian)
+3. Drag and drop or click to upload an audio/video file
+4. Wait for processing (transcription + summarization)
+5. View your structured notes with beautiful markdown formatting
+6. Download notes as JSON/Markdown or transcript as TXT
+
+### Language Support
+
+**English (Default)**
+
+- Original transcription in English
+- Notes generated in English
+
+**Bahasa Indonesia**
+
+- Automatic translation of transcript to Indonesian
+- Notes generated in Indonesian
+- **Special handling for Islamic content:**
+  - Preserves Arabic text (Quranic verses, Hadith) with harakat
+  - Maintains format: "Arabic text (transliteration) - Indonesian translation"
+  - Keeps technical Islamic terms in original Arabic when commonly used
+
+### Viewing Notes
+
+The application provides multiple tabs for organized viewing:
+
+- **Summary**: Overview with key takeaways and bullet points
+- **Detailed Notes**: Full paragraphs with markdown formatting
+- **Key Concepts**: Important concepts with explanations
+- **Definitions**: Technical terms and their definitions
+- **Examples**: Sample problems with solutions
+- **Action Items**: Actionable tasks with checkboxes
+- **Full Transcript**: Complete transcription with download option
+
+### Markdown Support
+
+All notes are rendered with beautiful markdown formatting:
+
+- **Bold** and _italic_ text
+- Bulleted and numbered lists
+- `Code blocks` and inline code
+- Links and references
+- Proper typography with Tailwind prose
+
+AI-generated notes can include markdown syntax which will be automatically rendered for better readability.
+
+### Export Options
+
+**Download Notes:**
+
+- **JSON**: Complete structured data with all fields
+- **Markdown**: Formatted document ready for sharing
+
+**Download Transcript:**
+
+- **TXT**: Plain text transcript in selected language
 
 ### Supported Providers
 

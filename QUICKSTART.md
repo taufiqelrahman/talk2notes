@@ -1,202 +1,120 @@
-# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Quick Start - 5 Minutes to First Transcription# Talk2Notes - Quick Start Guide
+# Quick Start - 5 Minutes to First Transcription
 
-Get Talk2Notes running in 5 minutes with **free Groq API** (no credit card needed!)Get Talk2Notes running in 5 minutes.Get Talk2Notes running in 5 minutes.Get up and running with Talk2Notes in 5 minutes!
+Get Talk2Notes running in 5 minutes with **free Groq API** (no credit card needed!)
 
-## Prerequisites## Prerequisites## Prerequisites## Prerequisites
+## Prerequisites
 
-- ✅ Node.js 18.18+ installed- Node.js 18.18+- Node.js 18+✅ Node.js 18+ installed
-
+- ✅ Node.js 18.18+ installed
 - ✅ pnpm 8+ installed
-
-- ✅ FFmpeg installed- pnpm 8+
-
+- ✅ FFmpeg installed
 - ✅ Groq API key (free, get in 30 seconds!)
-
-- FFmpeg installed- pnpm 8+✅ npm 9+ installed
 
 ## 🚀 Installation (3 Steps)
 
-- API key from OpenAI/Groq/Deepgram/Anthropic
-
 ### 1. Clone & Install
 
-- FFmpeg installed✅ FFmpeg installed
-
 ```bash
-
-git clone https://github.com/taufiqelrahman/talk2notes.git## 1. Install
-
+git clone https://github.com/taufiqelrahman/talk2notes.git
 cd talk2notes
-
-pnpm install- API key from OpenAI/Groq/Deepgram/Anthropic✅ OpenAI API key ready
-
+pnpm install
 ```
-
-``````bash
 
 ### 2. Get Free API Key
 
-# Clone repository## 1. Install## Installation (One Command)
-
 **Option A: Groq (Recommended - Free!)** 🆓
 
-git clone https://github.com/yourusername/talk2notes.git
-
 1. Go to: https://console.groq.com/keys
-
-2. Sign up with Google/GitHub (30 seconds)cd talk2notes`bash`bash
-
+2. Sign up with Google/GitHub (30 seconds)
 3. Click "Create API Key"
-
 4. Copy key starting with `gsk_...`
 
-
-
-**Option B: OpenAI (Requires Payment)** 💳# Install dependencies# Clone repositorygit clone https://github.com/taufiqelrahman/talk2notes.git && cd talk2notes && ./setup.sh
+**Option B: OpenAI (Requires Payment)** 💳
 
 - Get key: https://platform.openai.com/api-keys
 
-pnpm install
-
 ### 3. Configure
 
-git clone https://github.com/yourusername/talk2notes.git```
-
 ```bash
-
-# Copy example config# Setup environment
-
+# Copy example config
 cp .env.example .env
 
-cp .env.example .envcd talk2notes
-
 # Edit and add your API key
-
-nano .env````
-
+nano .env
 ```
-
-Or manually:
 
 Add your Groq key:
 
-```env## 2. Configure
-
+```env
 AI_PROVIDER=groq
-
-GROQ_API_KEY=gsk_your_actual_key_here# Install dependencies
-
+GROQ_API_KEY=gsk_your_actual_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatileEdit `.env` and add your API key:
-
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
 ```
-
-pnpm install```bash
 
 ## ▶️ Run
 
-`````env
-
 ```bash
-
-pnpm devAI_PROVIDER=openai# 1. Clone
-
+pnpm dev
 ```
-
-OPENAI_API_KEY=sk-your-key-here
 
 Open http://localhost:3000 🎉
 
-```# Setup environmentgit clone https://github.com/taufiqelrahman/talk2notes.git
-
 ## 🎯 Your First Transcription
 
+1. **Select Language:** Choose 🇬🇧 English or 🇮🇩 Indonesian
+2. **Upload:** Drag & drop an audio/video file
+3. **Wait:** Processing takes 30s - 3 min (depending on file size)
+4. **View:** See your structured lecture notes with markdown formatting
+5. **Download:** Export notes as JSON/Markdown or transcript as TXT
 
+## 🌍 Language Features
 
-1. **Upload:** Drag & drop an audio/video file
+**English:** Original transcription and notes in English
 
-2. **Wait:** Processing takes 30s - 3 min (depending on file size)**Get API Keys:**cp .env.example .envcd talk2notes
+**Indonesian:**
 
-3. **View:** See your structured lecture notes
+- Automatic transcript translation to Bahasa Indonesia
+- Notes generated in Indonesian
+- Special handling for Islamic content (preserves Arabic text with harakat)
 
-4. **Download:** Export as JSON or Markdown- OpenAI: https://platform.openai.com/api-keys
-
-
-
-## 📁 Supported Formats- Groq (faster): https://console.groq.com````
-
-
+## 📁 Supported Formats
 
 **Audio:** MP3, WAV, M4A, AAC, OGG, FLAC
 
 **Video:** MP4, MKV, MOV, AVI, WEBM
 
-## 3. Install FFmpeg# 2. Install
-
 ## 🔧 FFmpeg Setup
-
-
 
 If you don't have FFmpeg:
 
-```bash## 2. Configurepnpm install
-
 ```bash
-
-# macOS# macOS
-
-brew install ffmpeg
-
+# macOS
 brew install ffmpeg
 
 # Ubuntu/Debian
-
 sudo apt install ffmpeg
 
-
-
-# Verify# Ubuntu/DebianEdit `.env` and add your API key:# 3. Configure
-
+# Verify
 ffmpeg -version
+```
 
-```sudo apt install ffmpeg
+## 🆚 Provider Comparison
 
+| Feature         | Groq (Default) | OpenAI           |
+| --------------- | -------------- | ---------------- |
+| **Cost**        | 🆓 Free        | 💰 Paid          |
+| **Setup**       | 30 seconds     | Need credit card |
+| **Speed**       | ⚡ Very Fast   | Normal           |
+| **Quality**     | ✅ Excellent   | ✅ Excellent     |
+| **Daily Limit** | ~240 hours     | Depends on plan  |
 
+## ❓ Common Issues
 
-## 🆚 Provider Comparisoncp .env.example .env
-
-
-
-| Feature | Groq (Default) | OpenAI |# Verify
-
-|---------|----------------|--------|
-
-| **Cost** | 🆓 Free | 💰 Paid |ffmpeg -version```envnano .env  # Add your OPENAI_API_KEY
-
-| **Setup** | 30 seconds | Need credit card |
-
-| **Speed** | ⚡ Very Fast | Normal |`````
-
-| **Quality** | ✅ Excellent | ✅ Excellent |
-
-| **Daily Limit** | ~240 hours | Depends on plan |AI_PROVIDER=openai
-
-
-
-## ❓ Common Issues## 4. Run
-
-
-
-| Problem | Solution |OPENAI_API_KEY=sk-your-key-here# 4. Run
-
-|---------|----------|
-
-| FFmpeg not found | Install: `brew install ffmpeg` (macOS) |````bash
-
-| Port 3000 in use | Run: `PORT=3001 pnpm dev` |
-
-| API key invalid | Check `.env` has correct key (starts with `gsk_` for Groq) |pnpm dev```pnpm dev
+| Problem          | Solution                                                   |
+| ---------------- | ---------------------------------------------------------- |
+| FFmpeg not found | Install: `brew install ffmpeg` (macOS)                     |
+| Port 3000 in use | Run: `PORT=3001 pnpm dev`                                  |
+| API key invalid  | Check `.env` has correct key (starts with `gsk_` for Groq) |
 
 | Error 429 quota | Using OpenAI? Switch to Groq (free!) |
 
@@ -478,3 +396,4 @@ pnpm start
 ---
 
 **That's it!** You're ready to transcribe lectures. 🎉
+``````
