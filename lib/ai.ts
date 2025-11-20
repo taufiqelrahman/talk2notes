@@ -23,8 +23,8 @@ export function getAIConfig(): AIConfig {
     case 'groq':
       return {
         provider: 'groq',
-        transcriptionModel: process.env.GROQ_MODEL || 'whisper-large-v3',
-        summarizationModel: process.env.GROQ_MODEL || 'mixtral-8x7b-32768',
+        transcriptionModel: process.env.GROQ_TRANSCRIPTION_MODEL || 'whisper-large-v3',
+        summarizationModel: process.env.GROQ_SUMMARIZATION_MODEL || 'llama-3.3-70b-versatile',
         apiKey: process.env.GROQ_API_KEY || '',
       };
     case 'deepgram':

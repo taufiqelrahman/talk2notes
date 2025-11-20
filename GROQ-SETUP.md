@@ -39,8 +39,11 @@ AI_PROVIDER=groq
 # Add your Groq API key
 GROQ_API_KEY=gsk_your_key_here
 
-# Use Groq's Whisper model
-GROQ_MODEL=whisper-large-v3
+# Transcription model (Whisper for audio-to-text)
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
+
+# Summarization model (LLM for generating notes)
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
 
 # Comment out or remove OpenAI key
 # OPENAI_API_KEY=...
@@ -83,6 +86,17 @@ Upload audio/video file dan cek console logs:
 | **Cost** (paid) | $0.006/min          | Free/Cheap        |
 
 ## 🔧 Troubleshooting
+
+### Error: "model does not support chat completions"
+
+**Fixed!** Pastikan config di `.env.local` pakai 2 model berbeda:
+
+```bash
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3     # For audio transcription
+GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile  # For note generation
+```
+
+Jangan pakai `GROQ_MODEL` (deprecated).
 
 ### Error: "Invalid API Key"
 
