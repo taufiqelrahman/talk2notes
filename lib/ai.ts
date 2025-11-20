@@ -323,9 +323,10 @@ function buildSummarizationPrompt(options: SummarizationOptions): string {
   const detailLevel = options.detailLevel || 'detailed';
   const focusAreas = options.focusAreas?.join(', ') || 'all topics';
   const language = options.language || 'english';
-  
-  const languageInstruction = language === 'indonesian' 
-    ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
+
+  const languageInstruction =
+    language === 'indonesian'
+      ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
 
 IMPORTANT RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
 - Keep ALL Arabic text in its original form with proper harakat (diacritics)
@@ -342,7 +343,7 @@ FORMATTING:
 - Concepts: Indonesian names with Indonesian explanations
 - Definitions: Indonesian terms with Indonesian definitions
 - Action items: In Indonesian`
-    : `Generate notes in English. Use clear, academic English.
+      : `Generate notes in English. Use clear, academic English.
 
 RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
 - Keep ALL Arabic text in its original form with proper harakat (diacritics)

@@ -21,6 +21,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
     { id: 'definitions', label: 'Definitions' },
     { id: 'problems', label: 'Examples' },
     { id: 'actions', label: 'Action Items' },
+    { id: 'transcript', label: 'Full Transcript' },
   ];
 
   const formatDate = (dateString: string): string => {
@@ -40,6 +41,28 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
     const a = document.createElement('a');
     a.href = url;
     a.download = `${notes.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_notes.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadTranscript = () => {
+    if (!notes.transcript) return;
+    
+    let content = `# ${notes.title}\n\n`;
+    content += `## Full Transcript\n\n`;
+    content += `Source: ${notes.metadata.originalFilename}\n`;
+    content += `Generated: ${formatDate(notes.metadata.generatedAt)}\n`;
+    content += `Word Count: ${notes.metadata.wordCount.toLocaleString()}\n\n`;
+    content += `---\n\n`;
+    content += notes.transcript;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${notes.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_transcript.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -133,7 +156,19 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
               <span>Generated: {formatDate(notes.metadata.generatedAt)}</span>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            {notes.transcript && (
+              <button
+                onClick={handleDownloadTranscript}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1"
+                title="Download full transcript"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                </svg>
+                Transcript
+              </button>
+            )}
             <button
               onClick={handleDownloadMarkdown}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
@@ -294,6 +329,36 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
               ))
             ) : (
               <p className="text-gray-500 text-center py-8">No action items identified</p>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'transcript' && (
+          <div className="space-y-4">
+            {notes.transcript ? (
+              <div className="bg-gray-50 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Full Transcript</h3>
+                  <button
+                    onClick={handleDownloadTranscript}
+                    className="px-3 py-1.5 text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download TXT
+                  </button>
+                </div>
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{notes.transcript}</p>
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
+                  <p>Word count: {notes.metadata.wordCount.toLocaleString()}</p>
+                  <p>Characters: {notes.transcript.length.toLocaleString()}</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-8">Transcript not available</p>
             )}
           </div>
         )}

@@ -28,6 +28,7 @@ export interface LectureNotes {
   definitions: Definition[];
   exampleProblems: ExampleProblem[];
   actionItems: string[];
+  transcript?: string;
   metadata: NotesMetadata;
 }
 

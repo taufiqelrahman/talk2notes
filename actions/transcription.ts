@@ -84,11 +84,17 @@ export async function createTranscriptionMutation(
     const lectureNotes = await summarizeTranscript(
       transcriptionResult.text,
       uploadedFile.originalFilename,
-      { 
+      {
         detailLevel: 'detailed',
-        language: language
+        language: language,
       }
     );
+
+    // Add full transcript to the response
+    const notesWithTranscript = {
+      ...lectureNotes,
+      transcript: transcriptionResult.text,
+    };
 
     // Cleanup temporary files
     if (compressedAudioPath) {
@@ -103,7 +109,7 @@ export async function createTranscriptionMutation(
 
     return {
       success: true,
-      data: lectureNotes,
+      data: notesWithTranscript,
     };
   } catch (error) {
     console.error('Transcription mutation failed:', error);
