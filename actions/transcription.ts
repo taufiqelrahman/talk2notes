@@ -76,6 +76,10 @@ export async function createTranscriptionMutation(
           transcriptText = await translateTranscript(transcriptText, 'indonesian');
         }
 
+        // Format transcript with paragraphs and sections
+        const { formatTranscript } = await import('@/lib/ai');
+        const formattedTranscript = await formatTranscript(transcriptText, language);
+
         // Summarize
         const lectureNotes = await summarizeTranscript(transcriptText, originalFilename, {
           language,
@@ -92,7 +96,7 @@ export async function createTranscriptionMutation(
           success: true,
           data: {
             ...lectureNotes,
-            transcript: transcriptText,
+            transcript: formattedTranscript,
           },
         };
       } catch (error) {
@@ -175,15 +179,20 @@ export async function createTranscriptionMutation(
       finalTranscript = await translateTranscript(transcriptionResult.text, 'indonesian');
     }
 
+    // Format transcript with paragraphs and sections
+    const { formatTranscript } = await import('@/lib/ai');
+    console.log('[Transcription] Formatting transcript with paragraphs and sections...');
+    const formattedTranscript = await formatTranscript(finalTranscript, language);
+
     const lectureNotes = await summarizeTranscript(finalTranscript, uploadedFile.originalFilename, {
       detailLevel: 'detailed',
       language: language,
     });
 
-    // Add full transcript to the response (already translated if needed)
+    // Add full transcript to the response (already formatted)
     const notesWithTranscript = {
       ...lectureNotes,
-      transcript: finalTranscript,
+      transcript: formattedTranscript,
     };
 
     // Cleanup temporary files

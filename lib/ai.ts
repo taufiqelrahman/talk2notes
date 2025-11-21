@@ -360,6 +360,126 @@ Output the translated transcript directly without any preamble, headers, or expl
 }
 
 /**
+ * Format transcript with paragraphs and sections for better readability
+ */
+export async function formatTranscript(
+  transcript: string,
+  language: 'english' | 'indonesian' = 'english'
+): Promise<string> {
+  const config = getAIConfig();
+
+  if (!config.apiKey) {
+    // If no API key, just add basic paragraphs every ~500 characters
+    return addBasicParagraphs(transcript);
+  }
+
+  try {
+    const systemPrompt =
+      language === 'indonesian'
+        ? `Kamu adalah asisten yang memformat transkrip menjadi lebih mudah dibaca.
+
+Tugas kamu:
+1. Baca transkrip dan identifikasi topik/tema utama
+2. Pisahkan menjadi bagian-bagian dengan sub judul yang relevan
+3. Format setiap bagian menjadi paragraf yang rapi (pisahkan setiap 3-5 kalimat)
+4. Jangan ubah atau hilangkan konten apapun, hanya format ulang
+5. Gunakan format markdown dengan ## untuk sub judul
+
+Format output:
+## Sub Judul Bagian 1
+
+Paragraf pertama dengan 3-5 kalimat.
+
+Paragraf kedua dengan 3-5 kalimat.
+
+## Sub Judul Bagian 2
+
+Dan seterusnya...
+
+PENTING: Pertahankan semua dalil (ayat Quran/Hadits) dengan teks Arab, transliterasi, terjemahan, dan referensinya.`
+        : `You are an assistant that formats transcripts for better readability.
+
+Your task:
+1. Read the transcript and identify main topics/themes
+2. Split into sections with relevant subheadings
+3. Format each section into neat paragraphs (split every 3-5 sentences)
+4. Don't change or remove any content, only reformat
+5. Use markdown format with ## for subheadings
+
+Output format:
+## Subheading 1
+
+First paragraph with 3-5 sentences.
+
+Second paragraph with 3-5 sentences.
+
+## Subheading 2
+
+And so on...
+
+IMPORTANT: Preserve all dalil (Quranic verses/Hadith) with Arabic text, transliteration, translation, and references.`;
+
+    if (config.provider === 'openai' || config.provider === 'groq') {
+      const openai = new OpenAI({
+        apiKey: config.apiKey,
+        baseURL: config.provider === 'groq' ? 'https://api.groq.com/openai/v1' : undefined,
+      });
+
+      // Check token limit and crop if needed
+      const estimatedTokens = Math.ceil(transcript.length / 4);
+      const maxTokens = config.provider === 'groq' ? 9000 : 100000;
+
+      let processedTranscript = transcript;
+      if (estimatedTokens > maxTokens) {
+        console.log(`[Format] Transcript too long, cropping to ${maxTokens} tokens for formatting`);
+        const maxChars = maxTokens * 4;
+        const sentences = transcript.substring(0, maxChars).split(/[.!?]\s+/);
+        sentences.pop();
+        processedTranscript = sentences.join('. ') + '.';
+      }
+
+      const response = await openai.chat.completions.create({
+        model: config.summarizationModel,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: processedTranscript },
+        ],
+        temperature: 0.2,
+      });
+
+      return response.choices[0].message.content || transcript;
+    }
+
+    return addBasicParagraphs(transcript);
+  } catch (error) {
+    console.error('[Format] Formatting failed:', error);
+    return addBasicParagraphs(transcript);
+  }
+}
+
+/**
+ * Add basic paragraph breaks every ~500 characters at sentence boundaries
+ */
+function addBasicParagraphs(transcript: string): string {
+  const sentences = transcript.split(/([.!?]\s+)/);
+  let result = '';
+  let charCount = 0;
+
+  for (let i = 0; i < sentences.length; i++) {
+    result += sentences[i];
+    charCount += sentences[i].length;
+
+    // Add double newline every ~500 chars at sentence end
+    if (charCount > 500 && sentences[i].match(/[.!?]\s+/)) {
+      result += '\n\n';
+      charCount = 0;
+    }
+  }
+
+  return result.trim();
+}
+
+/**
  * Split transcript into chunks based on token estimate
  * Rough estimate: 1 token ≈ 4 characters
  */
