@@ -478,9 +478,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
                   </button>
                 </div>
                 <div className="prose prose-sm max-w-none">
-                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                    {notes.transcript}
-                  </p>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{notes.transcript}</ReactMarkdown>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
                   <p>Word count: {notes.metadata.wordCount.toLocaleString()}</p>
