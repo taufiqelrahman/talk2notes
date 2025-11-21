@@ -75,6 +75,18 @@ export default function HomePage() {
           with key concepts, definitions, examples, and action items.
         </p>
 
+        {/* Islamic Lectures Highlight */}
+        <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-full">
+          <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm0-10a4 4 0 100 8 4 4 0 000-8z" />
+            <path d="M10 7a1 1 0 011 1v3a1 1 0 11-2 0V8a1 1 0 011-1z" />
+          </svg>
+          <span className="text-sm font-medium text-emerald-800">
+            🕌 Perfect for Islamic Lectures & Islamic Studies
+          </span>
+          <span className="text-xs text-emerald-600">• Preserves Arabic, Dalil & References</span>
+        </div>
+
         {/* History Toggle Button */}
         <div className="mt-6">
           <button
@@ -187,9 +199,9 @@ export default function HomePage() {
           </div>
 
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 rounded-lg mb-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-lg mb-4">
               <svg
-                className="h-6 w-6 text-primary-600"
+                className="h-6 w-6 text-emerald-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -198,16 +210,30 @@ export default function HomePage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Export Notes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">🕌 Islamic Content</h3>
             <p className="text-gray-600">
-              Download your notes as JSON or Markdown files for easy sharing and integration.
+              Specialized for Islamic Studies. Preserves Arabic text with harakat, Quranic verses,
+              Hadith references, transliteration, and translations.
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Islamic Hadith */}
+      <div className="mt-12 text-center pb-8 max-w-3xl mx-auto">
+        <p className="text-2xl font-arabic text-emerald-700 mb-4 leading-relaxed" dir="rtl">
+          مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى
+          الجَنَّةِ
+        </p>
+        <p className="text-base text-gray-700 mb-2">
+          "Whoever follows a path in pursuit of knowledge, Allah will make easy for him a path to
+          Paradise."
+        </p>
+        <p className="text-sm text-gray-500">— Narrated by Muslim (2699)</p>
       </div>
     </div>
   );
