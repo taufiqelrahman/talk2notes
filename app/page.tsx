@@ -1,17 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UploadForm } from '@/components/upload';
 import { NotesDisplay } from '@/components/notes-display';
 import type { LectureNotes } from '@/types';
+
+const STORAGE_KEY = 'talk2notes_last_result';
 
 export default function HomePage() {
   const [lectureNotes, setLectureNotes] = useState<LectureNotes | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Load saved notes from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setLectureNotes(parsed);
+      }
+    } catch (err) {
+      console.error('Failed to load saved notes:', err);
+    }
+  }, []);
+
   const handleSuccess = (notes: LectureNotes) => {
     setLectureNotes(notes);
     setError(null);
+
+    // Save to localStorage
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    } catch (err) {
+      console.error('Failed to save notes:', err);
+    }
   };
 
   const handleError = (errorMessage: string) => {
@@ -22,6 +44,13 @@ export default function HomePage() {
   const handleReset = () => {
     setLectureNotes(null);
     setError(null);
+
+    // Clear from localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (err) {
+      console.error('Failed to clear saved notes:', err);
+    }
   };
 
   return (
@@ -93,7 +122,8 @@ export default function HomePage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Easy Upload</h3>
             <p className="text-gray-600">
-              Drag and drop or click to upload audio and video files. Supports MP3, WAV, MP4, and more.
+              Drag and drop or click to upload audio and video files. Supports MP3, WAV, MP4, and
+              more.
             </p>
           </div>
 
@@ -115,7 +145,8 @@ export default function HomePage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">AI Processing</h3>
             <p className="text-gray-600">
-              Advanced AI transcribes audio and generates structured notes with key concepts and summaries.
+              Advanced AI transcribes audio and generates structured notes with key concepts and
+              summaries.
             </p>
           </div>
 
