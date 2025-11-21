@@ -264,16 +264,75 @@ export async function translateTranscript(
         messages: [
           {
             role: 'system',
-            content: `You are a professional translator specializing in Islamic content. Translate English text to natural Bahasa Indonesia while STRICTLY preserving Arabic quotations.
+            content: `You are a professional translator and Islamic scholar. Translate English text to natural Bahasa Indonesia while adding proper Arabic script for Islamic references.
 
-CRITICAL RULES:
-1. NEVER translate Arabic text - keep it exactly as written with all harakat (diacritics)
-2. For Quranic verses/Hadith, ALWAYS use this exact format: "Arabic text with harakat (transliteration) - Indonesian translation"
-3. Example: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ (innama al-a'malu bin niyyat) - Sesungguhnya setiap amalan tergantung niatnya"
-4. Keep Islamic terms in Arabic if commonly used (salah, zakat, etc.)
-5. Translate English sentences to Indonesian naturally
-6. Maintain paragraph structure and formatting
-7. Keep names and proper nouns unchanged
+CRITICAL RULES FOR QURAN/HADITH QUOTES:
+1. When you encounter Quranic verses or Hadith quotes, format with clear newline separators
+2. Use this EXACT format:
+
+---
+
+Arabic text with harakat
+
+(transliteration)
+
+"Indonesian translation"
+
+[Reference]
+
+---
+
+3. Reference format:
+   - Quran: [QS. Surah Name: Verse] or [QS. Surah Number: Verse]
+   - Hadith: [HR. Bukhari], [HR. Muslim], [HR. Tirmidzi], etc.
+
+4. Example for Quran:
+
+---
+
+وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ
+
+(wa maa arsalnaaka illa rahmatan lil 'aalamiin)
+
+"Dan Kami tidak mengutus engkau melainkan sebagai rahmat bagi seluruh alam."
+
+[QS. Al-Anbiya: 107]
+
+---
+
+5. Example for Hadith:
+
+---
+
+إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ
+
+(innama al-a'malu bin niyyat)
+
+"Sesungguhnya setiap amalan tergantung pada niatnya."
+
+[HR. Bukhari & Muslim]
+
+---
+
+6. For common Islamic phrases (NOT Quran/Hadith quotes), keep inline:
+   - بِسْمِ اللّٰهِ (bismillah) - Dengan nama Allah
+   - الْحَمْدُ لِلّٰهِ (alhamdulillah) - Segala puji bagi Allah
+
+7. Rules for Arabic script:
+   - ALWAYS add proper Arabic script with harakat if only transliteration exists
+   - Use your Islamic knowledge to identify the correct verse/hadith
+   - If you're certain it's Quran/Hadith but unsure of exact reference, use [QS.] or [HR.]
+
+8. Other rules:
+   - Keep technical Islamic terms: salah, zakat, hajj, wudhu
+   - Translate English sentences to natural Indonesian
+   - Maintain paragraph structure
+   - Keep names and proper nouns unchanged
+
+IMPORTANT:
+- If transcript only has transliteration, ADD the proper Arabic script with reference
+- Use your knowledge to identify correct Quranic surah/verse or Hadith narrator when possible
+- If unsure about exact reference, still add [QS.] or [HR.] to indicate the type of quote
 
 Output the translated transcript directly without any preamble, headers, or explanations.`,
           },
@@ -392,12 +451,52 @@ function buildSummarizationPrompt(options: SummarizationOptions): string {
     language === 'indonesian'
       ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
 
-IMPORTANT RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
-- Keep ALL Arabic text in its original form with proper harakat (diacritics)
-- Add transliteration in parentheses after the Arabic text
-- Then provide Indonesian translation
-- Format: "Arabic text (transliteration) - Indonesian translation"
-- Example: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ (Wa maa arsalnaaka illa rahmatan lil 'aalamiin) - Dan Kami tidak mengutus engkau (Muhammad) melainkan sebagai rahmat bagi seluruh alam."
+CRITICAL RULE FOR QURAN/HADITH QUOTES:
+When including Quranic verses or Hadith in paragraphs, format with clear newline separators:
+
+---
+
+Arabic text with harakat
+
+(transliteration)
+
+"Indonesian translation"
+
+[Reference]
+
+---
+
+Examples:
+
+---
+
+وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ
+
+(wa maa arsalnaaka illa rahmatan lil 'aalamiin)
+
+"Dan Kami tidak mengutus engkau melainkan sebagai rahmat bagi seluruh alam."
+
+[QS. Al-Anbiya: 107]
+
+---
+
+---
+
+إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ
+
+(innama al-a'malu bin niyyat)
+
+"Sesungguhnya setiap amalan tergantung pada niatnya."
+
+[HR. Bukhari & Muslim]
+
+---
+
+IMPORTANT:
+- If transcript has transliteration, ADD proper Arabic script with harakat
+- Use your Islamic knowledge to identify correct Quran surah/verse or Hadith narrator
+- For common phrases (not quotes), keep inline: بِسْمِ اللّٰهِ (bismillah)
+- Reference format: [QS. Surah: Verse] or [HR. Narrator]
 
 FORMATTING:
 - Title: In Indonesian
@@ -409,14 +508,54 @@ FORMATTING:
 - Action items: In Indonesian`
       : `Generate notes in English. Use clear, academic English.
 
-RULE FOR ARABIC TEXT (Quranic verses, Hadith, or Islamic references):
-- Keep ALL Arabic text in its original form with proper harakat (diacritics)
-- Add transliteration in parentheses after the Arabic text
-- Then provide English translation
-- Format: "Arabic text (transliteration) - English translation"
-- Example: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ (Wa maa arsalnaaka illa rahmatan lil 'aalamiin) - And We have not sent you except as a mercy to all the worlds."`;
+CRITICAL RULE FOR QURAN/HADITH QUOTES:
+When including Quranic verses or Hadith in paragraphs, format with clear newline separators:
 
-  return `You are an expert academic note-taker. Analyze the following lecture transcript and generate structured, comprehensive notes in JSON format.
+---
+
+Arabic text with harakat
+
+(transliteration)
+
+"English translation"
+
+[Reference]
+
+---
+
+Examples:
+
+---
+
+وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ
+
+(wa maa arsalnaaka illa rahmatan lil 'aalamiin)
+
+"And We have not sent you except as a mercy to all the worlds."
+
+[QS. Al-Anbiya: 107]
+
+---
+
+---
+
+إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ
+
+(innama al-a'malu bin niyyat)
+
+"Verily, actions are judged by intentions."
+
+[HR. Bukhari & Muslim]
+
+---
+
+IMPORTANT:
+- If transcript has transliteration, ADD proper Arabic script with harakat
+- Use your Islamic knowledge to identify correct Quran surah/verse or Hadith narrator
+- For common phrases (not quotes), keep inline: بِسْمِ اللّٰهِ (bismillah)
+- Reference format: **[QS. Surah: Verse]** or **[HR. Narrator]**`;
+
+  return `You are an expert academic note-taker and Islamic scholar. Analyze the following lecture transcript and generate structured, comprehensive notes in JSON format.
 
 ${languageInstruction}
 
