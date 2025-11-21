@@ -359,6 +359,39 @@ Output the translated transcript directly without any preamble, headers, or expl
   }
 }
 
+/**
+ * Split transcript into chunks based on token estimate
+ * Rough estimate: 1 token ≈ 4 characters
+ */
+function chunkTranscript(transcript: string, maxTokens: number = 10000): string[] {
+  const maxChars = maxTokens * 4; // Rough estimate
+
+  if (transcript.length <= maxChars) {
+    return [transcript];
+  }
+
+  const chunks: string[] = [];
+  const sentences = transcript.split(/[.!?]\s+/);
+  let currentChunk = '';
+
+  for (const sentence of sentences) {
+    const testChunk = currentChunk + sentence + '. ';
+
+    if (testChunk.length > maxChars && currentChunk.length > 0) {
+      chunks.push(currentChunk.trim());
+      currentChunk = sentence + '. ';
+    } else {
+      currentChunk = testChunk;
+    }
+  }
+
+  if (currentChunk.trim()) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks;
+}
+
 export async function summarizeTranscript(
   transcript: string,
   originalFilename: string,
@@ -368,6 +401,32 @@ export async function summarizeTranscript(
 
   if (!config.apiKey) {
     throw new Error(`API key not configured for provider: ${config.provider}`);
+  }
+
+  // Check if transcript is too long (estimate tokens)
+  const estimatedTokens = Math.ceil(transcript.length / 4);
+  const maxInputTokens = config.provider === 'groq' ? 9000 : 100000; // Leave some buffer for Groq
+
+  console.log(`[Summarization] Estimated tokens: ${estimatedTokens}, Max: ${maxInputTokens}`);
+
+  // If transcript is too long, crop it (don't process the rest)
+  let processedTranscript = transcript;
+  let wasCropped = false;
+
+  if (estimatedTokens > maxInputTokens) {
+    console.log(
+      `[Summarization] Transcript too long (${estimatedTokens} tokens), cropping to ${maxInputTokens} tokens...`
+    );
+    const maxChars = maxInputTokens * 4;
+
+    // Crop at sentence boundary
+    const sentences = transcript.substring(0, maxChars).split(/[.!?]\s+/);
+    sentences.pop(); // Remove last incomplete sentence
+    processedTranscript = sentences.join('. ') + '.';
+    wasCropped = true;
+
+    const newEstimate = Math.ceil(processedTranscript.length / 4);
+    console.log(`[Summarization] Cropped transcript to ${newEstimate} tokens`);
   }
 
   const systemPrompt = buildSummarizationPrompt(options);
@@ -384,7 +443,7 @@ export async function summarizeTranscript(
       model: config.summarizationModel,
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: transcript },
+        { role: 'user', content: processedTranscript }, // Use cropped transcript
       ],
       temperature: 0.3,
       response_format: { type: 'json_object' },
@@ -405,7 +464,7 @@ export async function summarizeTranscript(
         messages: [
           {
             role: 'user',
-            content: `${systemPrompt}\n\nTranscript:\n${transcript}`,
+            content: `${systemPrompt}\n\nTranscript:\n${processedTranscript}`, // Use cropped transcript
           },
         ],
       }),
@@ -423,15 +482,106 @@ export async function summarizeTranscript(
 
   const parsed = JSON.parse(summaryText);
 
+  // Add note if transcript was cropped
+  let summary = parsed.summary || '';
+  if (wasCropped) {
+    summary = `⚠️ **Note**: Transcript was too long and was cropped to fit within API limits. Only the first ~${maxInputTokens} tokens were processed.\n\n${summary}`;
+  }
+
   return {
     title: parsed.title || 'Untitled Lecture Notes',
-    summary: parsed.summary || '',
+    summary,
     paragraphs: parsed.paragraphs || [],
     bulletPoints: parsed.bulletPoints || [],
     keyConcepts: parsed.keyConcepts || [],
     definitions: parsed.definitions || [],
     exampleProblems: parsed.exampleProblems || [],
     actionItems: parsed.actionItems || [],
+    metadata: {
+      generatedAt: new Date().toISOString(),
+      transcriptionModel: config.transcriptionModel,
+      summarizationModel: config.summarizationModel,
+      originalFilename,
+      wordCount: processedTranscript.split(/\s+/).length,
+      ...(wasCropped && { note: 'Transcript was cropped due to API token limits' }),
+    },
+  };
+}
+
+async function summarizeTranscriptInChunks(
+  transcript: string,
+  originalFilename: string,
+  options: SummarizationOptions,
+  maxTokens: number
+): Promise<LectureNotes> {
+  console.log('[Summarization] Processing transcript in chunks...');
+
+  const chunks = chunkTranscript(transcript, maxTokens);
+  console.log(`[Summarization] Split into ${chunks.length} chunks`);
+
+  const config = getAIConfig();
+  const chunkSummaries: LectureNotes[] = [];
+
+  // Summarize each chunk
+  for (let i = 0; i < chunks.length; i++) {
+    console.log(`[Summarization] Processing chunk ${i + 1}/${chunks.length}`);
+
+    const systemPrompt = buildSummarizationPrompt(options);
+    let summaryText: string;
+
+    if (config.provider === 'openai' || config.provider === 'groq') {
+      const openai = new OpenAI({
+        apiKey: config.apiKey,
+        baseURL: config.provider === 'groq' ? 'https://api.groq.com/openai/v1' : undefined,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: config.summarizationModel,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: chunks[i] },
+        ],
+        temperature: 0.3,
+        response_format: { type: 'json_object' },
+      });
+
+      summaryText = response.choices[0].message.content || '{}';
+    } else {
+      throw new Error(`Chunked summarization only supported for OpenAI/Groq`);
+    }
+
+    const parsed = JSON.parse(summaryText);
+    chunkSummaries.push({
+      title: parsed.title || `Part ${i + 1}`,
+      summary: parsed.summary || '',
+      paragraphs: parsed.paragraphs || [],
+      bulletPoints: parsed.bulletPoints || [],
+      keyConcepts: parsed.keyConcepts || [],
+      definitions: parsed.definitions || [],
+      exampleProblems: parsed.exampleProblems || [],
+      actionItems: parsed.actionItems || [],
+      metadata: {
+        generatedAt: new Date().toISOString(),
+        transcriptionModel: config.transcriptionModel,
+        summarizationModel: config.summarizationModel,
+        originalFilename,
+        wordCount: chunks[i].split(/\s+/).length,
+      },
+    });
+  }
+
+  // Merge all chunk summaries
+  console.log('[Summarization] Merging chunk summaries...');
+
+  return {
+    title: chunkSummaries[0].title,
+    summary: chunkSummaries.map((s) => s.summary).join('\n\n'),
+    paragraphs: chunkSummaries.flatMap((s) => s.paragraphs),
+    bulletPoints: chunkSummaries.flatMap((s) => s.bulletPoints),
+    keyConcepts: chunkSummaries.flatMap((s) => s.keyConcepts),
+    definitions: chunkSummaries.flatMap((s) => s.definitions),
+    exampleProblems: chunkSummaries.flatMap((s) => s.exampleProblems),
+    actionItems: chunkSummaries.flatMap((s) => s.actionItems),
     metadata: {
       generatedAt: new Date().toISOString(),
       transcriptionModel: config.transcriptionModel,

@@ -14,14 +14,17 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 
 ## ✨ Features
 
-- � **Free to Use**: Default Groq integration with generous free tier (no credit card required!)
-- � **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
+- 💰 **Free to Use**: Default Groq integration with generous free tier (no credit card required!)
+- 🎵 **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
+- 🎬 **YouTube Support**: Transcribe directly from YouTube URLs (requires yt-dlp)
 - 🤖 **AI-Powered**: Transcription and summarization using Groq (default), OpenAI, Deepgram, or Anthropic
 - 🌍 **Bilingual Support**: Generate notes in English or Indonesian (Bahasa Indonesia)
 - � **Full Transcript**: View and download complete transcription with translation
 - �📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
 - ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
 - 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
+- 📋 **Copy to Clipboard**: Quick copy functionality for each tab
+- 💾 **Auto-save**: Results persist across page refreshes
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
 - 🎨 **Modern UI**: Clean, responsive interface built with Next.js and Tailwind CSS
 - 🕌 **Islamic Content**: Preserves Arabic text with harakat, transliteration, and translations
@@ -33,6 +36,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 
 - Node.js 18.18+ and pnpm 8+
 - FFmpeg installed on your system
+- yt-dlp (optional, for YouTube support)
 - Groq API key (free, no credit card!) or other AI provider
 
 ### Installation

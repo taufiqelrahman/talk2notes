@@ -76,7 +76,39 @@ pnpm check:ffmpeg
 
 This will verify FFmpeg is properly installed and show the detected paths.
 
-### 3. Get API Keys
+### 3. Install yt-dlp (Optional - For YouTube Support)
+
+If you want to transcribe YouTube videos directly from URL:
+
+**macOS:**
+
+```bash
+brew install yt-dlp
+```
+
+**Ubuntu/Debian:**
+
+```bash
+sudo apt install yt-dlp
+# or
+pip install yt-dlp
+```
+
+**Windows:**
+
+```bash
+winget install yt-dlp
+# or
+pip install yt-dlp
+```
+
+**Verify installation:**
+
+```bash
+yt-dlp --version
+```
+
+### 4. Get API Keys
 
 You need an API key from one of these providers:
 
@@ -101,14 +133,14 @@ You need an API key from one of these providers:
 2. Create account
 3. Get API key from console
 
-### 4. Clone the Repository
+### 5. Clone the Repository
 
 ```bash
 git clone https://github.com/taufiqelrahman/talk2notes.git
 cd talk2notes
 ```
 
-### 5. Install Dependencies
+### 6. Install Dependencies
 
 ```bash
 pnpm install
@@ -124,7 +156,7 @@ This will install all required packages including:
 - Zod
 - And development tools
 
-### 6. Configure Environment Variables
+### 7. Configure Environment Variables
 
 **Copy the example file:**
 
@@ -186,7 +218,7 @@ FFMPEG_PATH=/usr/local/bin/ffmpeg
 FFPROBE_PATH=/usr/local/bin/ffprobe
 ```
 
-### 7. Run the Development Server
+### 8. Run the Development Server
 
 ```bash
 pnpm dev
@@ -194,7 +226,7 @@ pnpm dev
 
 The application will start at [http://localhost:3000](http://localhost:3000)
 
-### 8. Verify Installation
+### 9. Verify Installation
 
 1. Open your browser to `http://localhost:3000`
 2. You should see the Talk2Notes interface
