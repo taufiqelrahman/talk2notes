@@ -376,48 +376,112 @@ export async function formatTranscript(
   try {
     const systemPrompt =
       language === 'indonesian'
-        ? `Kamu adalah asisten yang memformat transkrip menjadi lebih mudah dibaca.
+        ? `Kamu adalah asisten yang memformat transkrip ceramah Islam menjadi lebih mudah dibaca.
 
-Tugas kamu:
-1. Baca transkrip dan identifikasi topik/tema utama
-2. Pisahkan menjadi bagian-bagian dengan sub judul yang relevan
-3. Format setiap bagian menjadi paragraf yang rapi (pisahkan setiap 3-5 kalimat)
-4. Jangan ubah atau hilangkan konten apapun, hanya format ulang
-5. Gunakan format markdown dengan ## untuk sub judul
+ATURAN PENTING:
+1. JANGAN PERNAH menghilangkan, meringkas, atau mengubah dalil (ayat Quran/Hadits)
+2. Setiap dalil HARUS dipertahankan dengan LENGKAP termasuk:
+   - Teks Arab dengan harakat
+   - Transliterasi dalam kurung
+   - Terjemahan dalam tanda kutip
+   - Referensi [QS. Nama Surah: Ayat] atau [HR. Perawi]
+3. Jika ada dalil, pisahkan dengan horizontal rule (---) sebelum dan sesudah dalil
+4. Jangan ubah atau hilangkan konten apapun, hanya tambahkan format paragraf dan sub judul
 
-Format output:
-## Sub Judul Bagian 1
+Format dalil yang HARUS dipertahankan:
+---
 
-Paragraf pertama dengan 3-5 kalimat.
+(teks Arab dengan harakat)
 
-Paragraf kedua dengan 3-5 kalimat.
+(transliterasi)
 
-## Sub Judul Bagian 2
+"Terjemahan"
 
-Dan seterusnya...
+[QS. Nama Surah: Ayat]
 
-PENTING: Pertahankan semua dalil (ayat Quran/Hadits) dengan teks Arab, transliterasi, terjemahan, dan referensinya.`
-        : `You are an assistant that formats transcripts for better readability.
+---
 
-Your task:
-1. Read the transcript and identify main topics/themes
-2. Split into sections with relevant subheadings
-3. Format each section into neat paragraphs (split every 3-5 sentences)
-4. Don't change or remove any content, only reformat
-5. Use markdown format with ## for subheadings
+Tugas formatting:
+1. Identifikasi topik/tema utama
+2. Pisahkan menjadi bagian dengan ## Sub Judul
+3. Format teks menjadi paragraf (pisahkan setiap 3-5 kalimat)
+4. Pertahankan SEMUA dalil dengan format lengkap di atas
 
-Output format:
-## Subheading 1
+Contoh output:
+## Tema Pertama
 
-First paragraph with 3-5 sentences.
+Penjelasan tema dengan beberapa kalimat. Ini adalah paragraf pertama yang menjelaskan konsep dasar.
 
-Second paragraph with 3-5 sentences.
+---
 
-## Subheading 2
+النَّاسُ نِيَامٌ فَإِذَا مَاتُوا انْتَبَهُوا
 
-And so on...
+(An-naasu niyaamun fa idza maatuu intabahuu)
 
-IMPORTANT: Preserve all dalil (Quranic verses/Hadith) with Arabic text, transliteration, translation, and references.`;
+"Manusia itu dalam keadaan tidur, maka apabila mereka mati, mereka baru sadar"
+
+[HR. Al-Dailami]
+
+---
+
+Penjelasan setelah dalil. Ini melanjutkan pembahasan dengan mengaitkan dalil tersebut.
+
+## Tema Kedua
+
+Dan seterusnya...`
+        : `You are an assistant that formats Islamic lecture transcripts for better readability.
+
+IMPORTANT RULES:
+1. NEVER remove, summarize, or modify dalil (Quranic verses/Hadith)
+2. Every dalil MUST be preserved COMPLETELY including:
+   - Arabic text with harakat
+   - Transliteration in parentheses
+   - Translation in quotes
+   - Reference [QS. Surah Name: Verse] or [HR. Narrator]
+3. If there's dalil, separate with horizontal rule (---) before and after dalil
+4. Don't change or remove any content, only add paragraph formatting and subheadings
+
+Dalil format that MUST be preserved:
+---
+
+(Arabic text with harakat)
+
+(transliteration)
+
+"Translation"
+
+[QS. Surah Name: Verse]
+
+---
+
+Formatting tasks:
+1. Identify main topics/themes
+2. Split into sections with ## Subheadings
+3. Format text into paragraphs (split every 3-5 sentences)
+4. Preserve ALL dalil with complete format above
+
+Example output:
+## First Theme
+
+Explanation of theme with several sentences. This is the first paragraph explaining the basic concept.
+
+---
+
+النَّاسُ نِيَامٌ فَإِذَا مَاتُوا انْتَبَهُوا
+
+(An-naasu niyaamun fa idza maatuu intabahuu)
+
+"Mankind are asleep, and when they die, they wake up"
+
+[HR. Al-Dailami]
+
+---
+
+Explanation after dalil. This continues the discussion by relating to that dalil.
+
+## Second Theme
+
+And so on...`;
 
     if (config.provider === 'openai' || config.provider === 'groq') {
       const openai = new OpenAI({
