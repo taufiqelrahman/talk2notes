@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { UploadForm } from '@/components/upload';
 import { NotesDisplay } from '@/components/notes-display';
+import History from '@/components/history';
 import type { LectureNotes } from '@/types';
 
 const STORAGE_KEY = 'talk2notes_last_result';
@@ -10,6 +11,7 @@ const STORAGE_KEY = 'talk2notes_last_result';
 export default function HomePage() {
   const [lectureNotes, setLectureNotes] = useState<LectureNotes | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   // Load saved notes from localStorage on mount
   useEffect(() => {
@@ -53,6 +55,15 @@ export default function HomePage() {
     }
   };
 
+  const handleSelectHistory = (notes: LectureNotes) => {
+    setLectureNotes(notes);
+    setError(null);
+    setShowHistory(false);
+
+    // Scroll to top to show notes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
@@ -63,7 +74,32 @@ export default function HomePage() {
           Upload audio or video files and let AI generate comprehensive, organized lecture notes
           with key concepts, definitions, examples, and action items.
         </p>
+
+        {/* History Toggle Button */}
+        <div className="mt-6">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {showHistory ? 'Hide History' : 'Show History'}
+          </button>
+        </div>
       </div>
+
+      {/* History Section */}
+      {showHistory && (
+        <div className="mb-12">
+          <History onSelectItem={handleSelectHistory} />
+        </div>
+      )}
 
       {error && (
         <div className="max-w-2xl mx-auto mb-8 bg-red-50 border border-red-200 rounded-lg p-4">

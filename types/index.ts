@@ -94,6 +94,17 @@ export interface FileValidationResult {
   fileType?: 'audio' | 'video';
 }
 
+export interface HistoryItem {
+  id: string;
+  title: string;
+  notes: LectureNotes;
+  timestamp: number;
+  language: string;
+  source: 'file' | 'youtube';
+  filename?: string;
+  youtubeUrl?: string;
+}
+
 export interface TranscriptionOptions {
   language?: string;
   prompt?: string;

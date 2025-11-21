@@ -5,6 +5,7 @@ import { ProgressIndicator } from './progress';
 import { ProcessingSteps } from './processing-steps';
 import { ProcessingTips } from './processing-tips';
 import { createTranscriptionMutation } from '@/actions/transcription';
+import { saveToHistory } from '@/utils/history';
 import type { LectureNotes } from '@/types';
 
 interface UploadFormProps {
@@ -151,6 +152,16 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
         setCurrentStep('Complete!');
 
         if (result.success && result.data) {
+          // Save to history
+          saveToHistory({
+            title: result.data.title || 'YouTube Video',
+            notes: result.data,
+            language: language === 'indonesian' ? 'id' : 'en',
+            source: 'youtube',
+            youtubeUrl,
+          });
+          window.dispatchEvent(new Event('historyUpdated'));
+
           onSuccess?.(result.data);
         } else {
           throw new Error(result.error || 'Failed to process YouTube video');
@@ -220,6 +231,16 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
         setProgressDetails('Your lecture notes are ready!');
 
         if (result.data) {
+          // Save to history
+          saveToHistory({
+            title: result.data.title || selectedFile!.name,
+            notes: result.data,
+            language: language === 'indonesian' ? 'id' : 'en',
+            source: 'file',
+            filename: selectedFile!.name,
+          });
+          window.dispatchEvent(new Event('historyUpdated'));
+
           onSuccess?.(result.data);
         }
 
