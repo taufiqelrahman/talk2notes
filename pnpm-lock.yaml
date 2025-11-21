@@ -32,6 +32,9 @@ importers:
       rehype-raw:
         specifier: ^7.0.0
         version: 7.0.0
+      rehype-starry-night:
+        specifier: ^2.2.0
+        version: 2.2.0
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
@@ -39,6 +42,9 @@ importers:
         specifier: ^3.22.4
         version: 3.25.76
     devDependencies:
+      '@tailwindcss/typography':
+        specifier: ^0.5.19
+        version: 0.5.19(tailwindcss@3.4.18)
       '@types/fluent-ffmpeg':
         specifier: ^2.1.24
         version: 2.1.28
@@ -392,6 +398,11 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
+  '@tailwindcss/typography@0.5.19':
+    resolution: {integrity: sha512-w31dd8HOx3k9vPtcQh5QHP9GwKcgbMp87j58qi6xgiBnFFtKEAgCWnDw4qUT8aHwkCp8bKvb/KGKWWHedP0AAg==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
+
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
@@ -604,6 +615,9 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
+
+  '@wooorm/starry-night@3.8.0':
+    resolution: {integrity: sha512-BWRm0tCzWCmv1ucBh6frL2uFRvYFj/LWmJzr+rJsdF/JsJ1+bBkeiyExH1iWQS18IH22HFu7f4QgG99OU1nklA==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -1283,6 +1297,9 @@ packages:
   hast-util-to-parse5@8.0.0:
     resolution: {integrity: sha512-3KKrV5ZVI8if87DVSi1vDeByYrkGzg4mEfeu4alwgmmIeARiBLKCZS2uw5Gb6nU9x9Yufyj3iudm6i7nl52PFw==}
 
+  hast-util-to-string@3.0.1:
+    resolution: {integrity: sha512-XelQVTDWvqcl3axRfI0xSeoVKzyIFPwsAGSLIsKdJKQMXDYJS4WYrBNF/8J7RdhIcFI2BOHgAifggsvsxp/3+A==}
+
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
 
@@ -1309,6 +1326,9 @@ packages:
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
+
+  import-meta-resolve@4.2.0:
+    resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
 
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
@@ -1498,6 +1518,10 @@ packages:
   language-tags@1.0.9:
     resolution: {integrity: sha512-MbjN408fEndfiQXbFQ1vnd+1NoLDsnQW41410oQBXiyXDMYH5z505juWa4KUE1LqxRC7DgOgZDbKLxHIwm27hA==}
     engines: {node: '>=0.10'}
+
+  levenshtein-edit-distance@3.0.1:
+    resolution: {integrity: sha512-/qMCkZbrAF7jZP/voqlkfNrBtEn0TMdhCK7OEBh/zb39t/c3wCnTjwU1ZvrMfQ3OxB8sBQXIpWRMM6FiQJVG3g==}
+    hasBin: true
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -1912,6 +1936,10 @@ packages:
     peerDependencies:
       postcss: ^8.2.14
 
+  postcss-selector-parser@6.0.10:
+    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
+    engines: {node: '>=4'}
+
   postcss-selector-parser@6.1.2:
     resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
     engines: {node: '>=4'}
@@ -1987,6 +2015,9 @@ packages:
 
   rehype-raw@7.0.0:
     resolution: {integrity: sha512-/aE8hCfKlQeA8LmyeyQvQF3eBiLRGNlfBJEvWH7ivp9sBqs7TNqBL5X3v157rM4IFETqDnIOO+z5M/biZbo9Ww==}
+
+  rehype-starry-night@2.2.0:
+    resolution: {integrity: sha512-hAdJb/14aNHPEAsP37Rt1X8HbkTsQb/2pAyL0inJn+VnXqdM714MBAL/9zC5CObCM3/zIjpwOsXMETTayx2iaw==}
 
   remark-gfm@4.0.1:
     resolution: {integrity: sha512-1quofZ2RQ9EWdeN34S79+KExV1764+wCUGop5CPL1WGdD0ocPpu91lzPGbwWMECpEpd42kJGQwzRfyov9j4yNg==}
@@ -2307,6 +2338,12 @@ packages:
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+
+  vscode-oniguruma@2.0.1:
+    resolution: {integrity: sha512-poJU8iHIWnC3vgphJnrLZyI3YdqRlR27xzqDmpPXYzA93R4Gk8z7T6oqDzDoHjoikA2aS82crdXFkjELCdJsjQ==}
+
+  vscode-textmate@9.2.1:
+    resolution: {integrity: sha512-eXiUi2yYFv9bdvgrYtJynA7UemCEkpVNE50S9iBBA08LYG5t9+/TB+8IRS/YoYOubCez2OkSyZ1Q12eQMwzbrw==}
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
@@ -2636,6 +2673,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@tailwindcss/typography@0.5.19(tailwindcss@3.4.18)':
+    dependencies:
+      postcss-selector-parser: 6.0.10
+      tailwindcss: 3.4.18
+
   '@tybys/wasm-util@0.10.1':
     dependencies:
       tslib: 2.8.1
@@ -2851,6 +2893,13 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
+
+  '@wooorm/starry-night@3.8.0':
+    dependencies:
+      '@types/hast': 3.0.4
+      import-meta-resolve: 4.2.0
+      vscode-oniguruma: 2.0.1
+      vscode-textmate: 9.2.1
 
   abort-controller@3.0.0:
     dependencies:
@@ -3737,6 +3786,10 @@ snapshots:
       web-namespaces: 2.0.1
       zwitch: 2.0.4
 
+  hast-util-to-string@3.0.1:
+    dependencies:
+      '@types/hast': 3.0.4
+
   hast-util-whitespace@3.0.0:
     dependencies:
       '@types/hast': 3.0.4
@@ -3765,6 +3818,8 @@ snapshots:
     dependencies:
       parent-module: 1.0.1
       resolve-from: 4.0.0
+
+  import-meta-resolve@4.2.0: {}
 
   imurmurhash@0.1.4: {}
 
@@ -3960,6 +4015,8 @@ snapshots:
   language-tags@1.0.9:
     dependencies:
       language-subtag-registry: 0.3.23
+
+  levenshtein-edit-distance@3.0.1: {}
 
   levn@0.4.1:
     dependencies:
@@ -4558,6 +4615,11 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
 
+  postcss-selector-parser@6.0.10:
+    dependencies:
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
+
   postcss-selector-parser@6.1.2:
     dependencies:
       cssesc: 3.0.0
@@ -4654,6 +4716,15 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       hast-util-raw: 9.1.0
+      vfile: 6.0.3
+
+  rehype-starry-night@2.2.0:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@wooorm/starry-night': 3.8.0
+      hast-util-to-string: 3.0.1
+      levenshtein-edit-distance: 3.0.1
+      unist-util-visit-parents: 6.0.2
       vfile: 6.0.3
 
   remark-gfm@4.0.1:
@@ -5145,6 +5216,10 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
+
+  vscode-oniguruma@2.0.1: {}
+
+  vscode-textmate@9.2.1: {}
 
   web-namespaces@2.0.1: {}
 

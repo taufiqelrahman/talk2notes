@@ -477,7 +477,23 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
                     Download TXT
                   </button>
                 </div>
-                <div className="prose prose-sm max-w-none">
+                <div
+                  className="prose prose-base max-w-none 
+                  prose-headings:text-gray-900 prose-headings:font-bold prose-headings:tracking-tight
+                  prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-primary-200
+                  prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-primary-800
+                  prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
+                  prose-strong:text-gray-900 prose-strong:font-semibold
+                  prose-em:text-gray-600 prose-em:italic
+                  prose-blockquote:border-l-4 prose-blockquote:border-primary-500 prose-blockquote:bg-primary-50 prose-blockquote:pl-6 prose-blockquote:py-3 prose-blockquote:rounded-r-lg prose-blockquote:my-4
+                  prose-ul:text-gray-700 prose-ul:my-4
+                  prose-ol:text-gray-700 prose-ol:my-4
+                  prose-li:my-1
+                  prose-code:text-primary-600 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm
+                  prose-hr:border-gray-300 prose-hr:my-8
+                  prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
+                "
+                >
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{notes.transcript}</ReactMarkdown>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
