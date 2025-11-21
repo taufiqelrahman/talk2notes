@@ -91,10 +91,11 @@ talk2notes/
 │   ├── page.js          # Home page (upload + display)
 │   └── globals.css      # Global styles
 │
-├── components/          # Client components (JavaScript)
-│   ├── upload.js        # File upload with drag-drop
+├── components/          # Client components (JavaScript/TypeScript)
+│   ├── upload.tsx       # File upload with drag-drop
 │   ├── progress.js      # Progress indicator
-│   └── notes-display.js # Tabbed notes viewer
+│   ├── notes-display.js # Tabbed notes viewer
+│   └── history.tsx      # History list with delete
 │
 ├── lib/                 # Core libraries (TypeScript)
 │   ├── ai.ts           # AI provider abstraction
@@ -105,7 +106,8 @@ talk2notes/
 │   └── index.ts        # All interfaces and types
 │
 ├── utils/              # Utility functions (TypeScript)
-│   └── validateFile.ts # File validation logic
+│   ├── validateFile.ts # File validation logic
+│   └── history.ts      # History management (localStorage)
 │
 └── public/             # Static assets
 ```
@@ -115,7 +117,7 @@ talk2notes/
 ### Upload to Notes Pipeline
 
 ```
-1. User uploads file (upload.js)
+1. User uploads file (upload.tsx)
    ↓
 2. FormData sent to /api/transcribe
    ↓
@@ -131,7 +133,34 @@ talk2notes/
    ↓
 5. Return LectureNotes JSON
    ↓
-6. Client displays structured notes (notes-display.js)
+6. Save to history (saveToHistory()) - localStorage
+   ↓
+7. Client displays structured notes (notes-display.js)
+```
+
+### History Management Flow
+
+```
+1. Transcription completes successfully
+   ↓
+2. saveToHistory() called with:
+   - title (filename or YouTube title)
+   - notes (complete LectureNotes)
+   - language (en/id)
+   - source (file/youtube)
+   - timestamp (auto-generated)
+   ↓
+3. Stored in localStorage (max 50 items)
+   ↓
+4. Dispatch 'historyUpdated' event
+   ↓
+5. History component auto-refreshes
+   ↓
+6. User can:
+   - View all past transcriptions
+   - Click to restore notes
+   - Delete individual items
+   - Clear all history
 ```
 
 ## 🔌 AI Provider Abstraction

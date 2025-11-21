@@ -28,10 +28,11 @@ talk2notes/
 │   ├── page.js                   # Home page (upload + display)
 │   └── globals.css               # Global styles with Tailwind
 │
-├── components/                   # React Components (JavaScript)
-│   ├── upload.js                 # File upload form with drag-drop
+├── components/                   # React Components (JavaScript/TypeScript)
+│   ├── upload.tsx                # File upload form with drag-drop
 │   ├── progress.js               # Progress indicator
-│   └── notes-display.js          # Tabbed notes viewer
+│   ├── notes-display.js          # Tabbed notes viewer
+│   └── history.tsx               # History list with delete functionality
 │
 ├── lib/                          # Core Libraries (TypeScript)
 │   ├── ai.ts                     # AI provider abstraction
@@ -64,15 +65,23 @@ talk2notes/
 │       ├── KeyConcept
 │       ├── Definition
 │       ├── ExampleProblem
+│       ├── HistoryItem
 │       ├── MutationResult<T>
 │       └── AIConfig
 │
 ├── utils/                        # Utility Functions (TypeScript)
-│   └── validateFile.ts           # File validation
-│       ├── validateFile()
-│       ├── formatFileSize()
-│       ├── formatDuration()
-│       └── sanitizeFilename()
+│   ├── validateFile.ts           # File validation
+│   │   ├── validateFile()
+│   │   ├── formatFileSize()
+│   │   ├── formatDuration()
+│   │   └── sanitizeFilename()
+│   └── history.ts                # History management
+│       ├── getHistory()
+│       ├── saveToHistory()
+│       ├── deleteFromHistory()
+│       ├── clearHistory()
+│       ├── getHistoryItem()
+│       └── formatTimestamp()
 │
 ├── public/                       # Static Assets
 │   └── (images, icons, etc.)
@@ -112,6 +121,7 @@ talk2notes/
 ## Key Directories Explained
 
 ### `actions/` - Server Actions
+
 Server-side logic using Next.js Server Actions with `'use server'` directive.
 All files are TypeScript for type safety.
 
@@ -120,6 +130,7 @@ All files are TypeScript for type safety.
 **Pattern:** MutationResult<T> return type
 
 ### `app/` - App Router
+
 Next.js 14 App Router for pages and routing.
 Uses JavaScript for flexibility in client components.
 
@@ -128,6 +139,7 @@ Uses JavaScript for flexibility in client components.
 **Pattern:** File-based routing
 
 ### `components/` - UI Components
+
 React client components for the user interface.
 Uses JavaScript for simplicity in UI code.
 
@@ -136,6 +148,7 @@ Uses JavaScript for simplicity in UI code.
 **Pattern:** Functional components with hooks
 
 ### `lib/` - Core Libraries
+
 Business logic and external service integrations.
 TypeScript for type safety and maintainability.
 
@@ -144,6 +157,7 @@ TypeScript for type safety and maintainability.
 **Pattern:** Exported functions with types
 
 ### `types/` - Type Definitions
+
 Centralized TypeScript type definitions.
 Shared across all TypeScript files.
 
@@ -152,6 +166,7 @@ Shared across all TypeScript files.
 **Pattern:** Export interfaces and types
 
 ### `utils/` - Utility Functions
+
 Helper functions used across the application.
 TypeScript for type safety.
 
@@ -186,15 +201,15 @@ import { LectureNotes } from '@/types'
 
 ## Configuration Files
 
-| File | Purpose |
-|------|---------|
-| `next.config.js` | Next.js configuration (body size, experimental features) |
-| `tsconfig.json` | TypeScript compiler options |
-| `tailwind.config.js` | Tailwind CSS theme and configuration |
-| `postcss.config.js` | PostCSS plugins configuration |
-| `.eslintrc.json` | ESLint rules for code quality |
-| `.prettierrc.json` | Prettier formatting rules |
-| `commitlint.config.js` | Conventional commit validation |
+| File                   | Purpose                                                  |
+| ---------------------- | -------------------------------------------------------- |
+| `next.config.js`       | Next.js configuration (body size, experimental features) |
+| `tsconfig.json`        | TypeScript compiler options                              |
+| `tailwind.config.js`   | Tailwind CSS theme and configuration                     |
+| `postcss.config.js`    | PostCSS plugins configuration                            |
+| `.eslintrc.json`       | ESLint rules for code quality                            |
+| `.prettierrc.json`     | Prettier formatting rules                                |
+| `commitlint.config.js` | Conventional commit validation                           |
 
 ## Build Output
 
@@ -220,6 +235,7 @@ When you run `npm run build`, Next.js creates:
 ## Dependencies Overview
 
 ### Core Dependencies
+
 - `next` - React framework
 - `react`, `react-dom` - UI library
 - `openai` - OpenAI API client
@@ -228,6 +244,7 @@ When you run `npm run build`, Next.js creates:
 - `zod` - Schema validation
 
 ### Dev Dependencies
+
 - `typescript` - Type checking
 - `eslint` - Code linting
 - `prettier` - Code formatting
@@ -249,21 +266,25 @@ npm run format:check # Check code formatting
 ## CI/CD Workflows
 
 ### `ci.yml` - Continuous Integration
+
 - Runs on push/PR to main/develop
 - Lint, type check, build
 - Security scan with Snyk
 
 ### `deploy.yml` - Production Deployment
+
 - Runs on push to main
 - Deploys to Vercel
 - Sends deployment notifications
 
 ### `release.yml` - Release Automation
-- Triggered by version tags (v*.*.*)
+
+- Triggered by version tags (v*.*.\*)
 - Creates GitHub release
 - Publishes Docker image
 
 ### `code-quality.yml` - Code Quality
+
 - Runs on PRs
 - Validates conventional commits
 - Comments on PR with results
@@ -271,13 +292,16 @@ npm run format:check # Check code formatting
 ## Docker Structure
 
 ### `Dockerfile`
+
 Multi-stage build:
+
 1. **base** - Node.js + FFmpeg
 2. **dependencies** - Install packages
 3. **build** - Build application
 4. **runner** - Production runtime
 
 ### `docker-compose.yml`
+
 - Single service configuration
 - Volume for uploads
 - Environment variable support

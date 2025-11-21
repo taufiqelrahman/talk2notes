@@ -25,6 +25,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
 - 📋 **Copy to Clipboard**: Quick copy functionality for each tab
 - 💾 **Auto-save**: Results persist across page refreshes
+- 📜 **History Management**: Browse, search, and restore past transcriptions with individual delete
 - ✂️ **Smart Cropping**: Automatically crops long transcripts to fit API limits (preserves sentence boundaries)
 - 🗜️ **Auto Compression**: Compresses large audio files (>24MB YouTube, >10MB uploads) for reliable transcription
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
@@ -156,6 +157,24 @@ Talk2Notes automatically formats transcripts for better readability:
   ```
 - **Smart Cropping**: For long videos, transcripts are cropped at ~9000 tokens (preserves sentence boundaries)
 - **No Content Loss**: All dalil, key points, and technical terms are preserved
+
+### History Management
+
+All transcriptions are automatically saved to your browser's history:
+
+- **Automatic Saving**: Every successful transcription is saved automatically (max 50 items)
+- **Quick Access**: Click "Show History" button to browse past transcriptions
+- **Smart Organization**: Sorted by timestamp (most recent first)
+- **Detailed Info**: View title, source (file/YouTube), language, timestamp, and summary preview
+- **One-Click Restore**: Click any history item to reload its complete notes
+- **Individual Delete**: Remove specific items with the delete button (appears on hover)
+- **Clear All**: Remove all history with confirmation dialog
+- **Cross-Tab Sync**: History updates automatically across multiple browser tabs
+- **Relative Timestamps**: "2 hours ago", "3 days ago" for easy reference
+- **Source Icons**: Visual indicators for YouTube videos vs uploaded files
+- **Persistent Storage**: Stored locally in browser (localStorage)
+
+**Note**: History is stored locally in your browser. Clearing browser data will remove all history.
 
 ### Viewing Notes
 

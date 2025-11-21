@@ -77,6 +77,14 @@ Open http://localhost:3000 🎉
 4. **Wait:** Download + process takes 1-5 min
 5. **View:** Formatted transcript and notes with auto-compression for large videos
 
+**Access History:**
+
+1. **Click "Show History"** button below the title
+2. **Browse** past transcriptions sorted by date
+3. **Click any item** to restore its complete notes
+4. **Delete** individual items by hovering and clicking the trash icon
+5. **Clear All** to remove all history (with confirmation)
+
 ## 🌍 Language Features
 
 **English:** Original transcription and notes in English
