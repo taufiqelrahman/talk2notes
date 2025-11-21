@@ -78,6 +78,8 @@ This will verify FFmpeg is properly installed and show the detected paths.
 
 ### 3. Install yt-dlp (Optional - For YouTube Support)
 
+**Note**: YouTube videos will be automatically compressed if >24MB and transcripts will be cropped if >10K tokens (Groq limit).
+
 If you want to transcribe YouTube videos directly from URL:
 
 **macOS:**

@@ -61,11 +61,21 @@ Open http://localhost:3000 🎉
 
 ## 🎯 Your First Transcription
 
+**From File:**
+
 1. **Select Language:** Choose 🇬🇧 English or 🇮🇩 Indonesian
 2. **Upload:** Drag & drop an audio/video file
 3. **Wait:** Processing takes 30s - 3 min (depending on file size)
-4. **View:** See your structured lecture notes with markdown formatting
+4. **View:** See your formatted transcript with paragraphs, sections, and structured notes
 5. **Download:** Export notes as JSON/Markdown or transcript as TXT
+
+**From YouTube URL:** (requires yt-dlp - see [Setup Guide](SETUP.md))
+
+1. **Toggle to YouTube mode**
+2. **Select Language:** Choose 🇬🇧 English or 🇮🇩 Indonesian
+3. **Paste URL:** Enter YouTube video link
+4. **Wait:** Download + process takes 1-5 min
+5. **View:** Formatted transcript and notes with auto-compression for large videos
 
 ## 🌍 Language Features
 

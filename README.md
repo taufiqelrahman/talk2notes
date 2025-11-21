@@ -19,15 +19,17 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 🎬 **YouTube Support**: Transcribe directly from YouTube URLs (requires yt-dlp)
 - 🤖 **AI-Powered**: Transcription and summarization using Groq (default), OpenAI, Deepgram, or Anthropic
 - 🌍 **Bilingual Support**: Generate notes in English or Indonesian (Bahasa Indonesia)
-- � **Full Transcript**: View and download complete transcription with translation
-- �📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
+- 📝 **Formatted Transcript**: AI-formatted transcript with paragraphs, sections, and subheadings for easy reading
+- 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
 - ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
 - 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
 - 📋 **Copy to Clipboard**: Quick copy functionality for each tab
 - 💾 **Auto-save**: Results persist across page refreshes
+- ✂️ **Smart Cropping**: Automatically crops long transcripts to fit API limits (preserves sentence boundaries)
+- 🗜️ **Auto Compression**: Compresses large audio files (>24MB YouTube, >10MB uploads) for reliable transcription
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
 - 🎨 **Modern UI**: Clean, responsive interface built with Next.js and Tailwind CSS
-- 🕌 **Islamic Content**: Preserves Arabic text with harakat, transliteration, and translations
+- 🕌 **Islamic Content**: Preserves dalil with Arabic text, harakat, transliteration, translations, and references
 - 🔒 **Secure**: File validation and size limits for safe uploads
 
 ## 🚀 Quick Start
@@ -102,12 +104,23 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Basic Usage
 
+**File Upload:**
+
 1. Visit the application homepage
 2. Select your preferred language (🇬🇧 English or 🇮🇩 Indonesian)
-3. Drag and drop or click to upload an audio/video file
+3. Drag and drop or click to upload an audio/video file (MP3, WAV, M4A, MP4, MKV, MOV, etc.)
 4. Wait for processing (transcription + summarization)
 5. View your structured notes with beautiful markdown formatting
 6. Download notes as JSON/Markdown or transcript as TXT
+
+**YouTube URL:**
+
+1. Toggle to "YouTube URL" mode
+2. Select your preferred language
+3. Paste a YouTube video URL (supports youtube.com, youtu.be, etc.)
+4. Wait for processing (download → transcribe → summarize)
+5. View formatted notes and transcript
+6. **Note**: Videos >500MB or >24MB audio will be auto-compressed for reliable transcription
 
 ### Language Support
 
@@ -125,6 +138,25 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
   - Maintains format: "Arabic text (transliteration) - Indonesian translation"
   - Keeps technical Islamic terms in original Arabic when commonly used
 
+### Transcript Formatting
+
+Talk2Notes automatically formats transcripts for better readability:
+
+- **AI-Powered Formatting**: Uses AI to restructure raw transcripts
+- **Paragraph Organization**: Groups sentences into coherent paragraphs (3-5 sentences each)
+- **Topic-Based Sections**: Adds `## Subheadings` based on content topics
+- **Dalil Preservation**: Maintains Islamic references with proper formatting:
+  ```
+  ---
+  (Arabic text with harakat)
+  (transliteration)
+  "Translation"
+  [QS. Surah: Verse] or [HR. Narrator]
+  ---
+  ```
+- **Smart Cropping**: For long videos, transcripts are cropped at ~9000 tokens (preserves sentence boundaries)
+- **No Content Loss**: All dalil, key points, and technical terms are preserved
+
 ### Viewing Notes
 
 The application provides multiple tabs for organized viewing:
@@ -135,7 +167,7 @@ The application provides multiple tabs for organized viewing:
 - **Definitions**: Technical terms and their definitions
 - **Examples**: Sample problems with solutions
 - **Action Items**: Actionable tasks with checkboxes
-- **Full Transcript**: Complete transcription with download option
+- **Full Transcript**: AI-formatted transcription with paragraphs, sections, and download option
 
 ### Markdown Support
 
