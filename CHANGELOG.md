@@ -2,6 +2,60 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.4.0] - 2025-11-22
+
+### 🗂️ History Management
+
+#### Added
+
+- **History Feature**: Automatic saving of all successful transcriptions to localStorage
+  - Browse past transcriptions with "Show/Hide History" button
+  - Maximum 50 history items stored locally
+  - Individual delete functionality (hover to show trash icon)
+  - Clear all history with confirmation dialog
+  - One-click restore to view past notes
+- **Smart History Display**:
+  - Sorted by timestamp (most recent first)
+  - Relative time display ("2 hours ago", "3 days ago")
+  - Preview of summary for each item
+  - Source indicators (YouTube icon vs File icon)
+  - Language info (English/Indonesian flags)
+  - Click any item to restore complete notes
+- **Cross-tab Synchronization**: History updates automatically across browser tabs
+- **Empty State**: Beautiful empty state with icon when no history exists
+
+#### Technical
+
+- New component: `components/history.tsx` - History list with delete functionality
+- New utility: `utils/history.ts` - localStorage management functions
+  - `getHistory()` - Load all history items
+  - `saveToHistory()` - Save new transcription
+  - `deleteFromHistory()` - Remove specific item
+  - `clearHistory()` - Remove all items
+  - `formatTimestamp()` - Format relative time
+- New type: `HistoryItem` interface in `types/index.ts`
+- Auto-save after successful transcription (file and YouTube)
+- Storage events for cross-tab sync
+
+#### Changed
+
+- `app/page.tsx`: Added history toggle button and section
+- `components/upload.tsx`: Auto-save to history after transcription completes
+
+### 📚 Documentation Updates
+
+#### Added
+
+- **History Management section** in README.md with full feature list
+- **Access History section** in QUICKSTART.md with step-by-step guide
+- **History Management Flow** in ARCHITECTURE.md
+- Updated PROJECT-STRUCTURE.md with new files and functions
+
+#### Changed
+
+- Features list updated with "History Management" feature
+- All documentation synchronized with new history functionality
+
 ## [2.3.0] - 2025-11-20
 
 ### 🌍 Bilingual Support & Enhanced Display
