@@ -354,7 +354,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             </div>
           </div>
           <p className="mt-2 text-xs text-blue-600">
-            Max file size: 50MB • Limits reset automatically
+            Max file size: 50MB • Conservative limits for free tier • Resets automatically
           </p>
         </div>
       )}

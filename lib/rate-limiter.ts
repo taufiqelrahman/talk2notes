@@ -104,7 +104,7 @@ export const rateLimiter = new RateLimiter();
 export const RATE_LIMITS = {
   // Transcription limits (most resource-intensive)
   TRANSCRIPTION: {
-    MAX_REQUESTS: 10, // 10 transcriptions per hour
+    MAX_REQUESTS: 5, // 5 transcriptions per hour (reduced for billing safety)
     WINDOW_MS: 60 * 60 * 1000, // 1 hour
   },
 
@@ -121,7 +121,7 @@ export const RATE_LIMITS = {
 
   // Daily limits (prevent monthly quota exhaustion)
   DAILY: {
-    MAX_TRANSCRIPTIONS: 50, // 50 files per day
+    MAX_TRANSCRIPTIONS: 20, // 20 files per day (reduced for billing safety)
     WINDOW_MS: 24 * 60 * 60 * 1000, // 24 hours
   },
 } as const;
