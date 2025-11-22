@@ -1,6 +1,13 @@
 'use client';
 
-import { useState, useRef, type FormEvent, type ChangeEvent, type DragEvent } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  type FormEvent,
+  type ChangeEvent,
+  type DragEvent,
+} from 'react';
 import { ProgressIndicator } from './progress';
 import { ProcessingSteps } from './processing-steps';
 import { ProcessingTips } from './processing-tips';
@@ -23,6 +30,12 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
   const [language, setLanguage] = useState<'english' | 'indonesian'>('english');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Rate limit display
+  const [rateLimits, setRateLimits] = useState<{
+    hourly: { max: number; remaining: number };
+    daily: { max: number; remaining: number };
+  } | null>(null);
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -44,6 +57,27 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
       setSelectedFile(file);
     }
   };
+
+  // Fetch rate limits on mount
+  useEffect(() => {
+    async function fetchLimits() {
+      try {
+        const response = await fetch('/api/limits');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setRateLimits({
+              hourly: data.limits.hourly,
+              daily: data.limits.daily,
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch rate limits:', error);
+      }
+    }
+    fetchLimits();
+  }, []);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -274,6 +308,49 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      {/* Rate Limit Display */}
+      {rateLimits && (
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="text-sm font-medium text-blue-900">Free Tier Limits</span>
+            </div>
+          </div>
+          <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-blue-700">
+                <span className="font-semibold">{rateLimits.hourly.remaining}</span> /{' '}
+                {rateLimits.hourly.max}
+                <span className="text-blue-600"> files this hour</span>
+              </p>
+            </div>
+            <div>
+              <p className="text-blue-700">
+                <span className="font-semibold">{rateLimits.daily.remaining}</span> /{' '}
+                {rateLimits.daily.max}
+                <span className="text-blue-600"> files today</span>
+              </p>
+            </div>
+          </div>
+          <p className="mt-2 text-xs text-blue-600">
+            Max file size: 50MB • Limits reset automatically
+          </p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Toggle between File and YouTube */}
         <div className="flex justify-center gap-2 mb-4">

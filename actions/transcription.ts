@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import type { MutationResult, LectureNotes, UploadedFile, ProcessingState } from '@/types';
 import { validateFile } from '@/utils/validateFile';
 import {
@@ -13,11 +14,48 @@ import {
 import { transcribeAudio, summarizeTranscript, translateTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
 import { promises as fs } from 'fs';
+import { rateLimiter, RATE_LIMITS, getClientId, formatTimeRemaining } from '@/lib/rate-limiter';
 
 export async function createTranscriptionMutation(
   formData: FormData
 ): Promise<MutationResult<LectureNotes>> {
   try {
+    // Get client identifier for rate limiting
+    const headersList = await headers();
+    const clientId = getClientId(new Request('http://localhost', { headers: headersList }));
+
+    // Check hourly rate limit (10 transcriptions per hour)
+    const hourlyAllowed = rateLimiter.check(
+      `transcription:hourly:${clientId}`,
+      RATE_LIMITS.TRANSCRIPTION.MAX_REQUESTS,
+      RATE_LIMITS.TRANSCRIPTION.WINDOW_MS
+    );
+
+    if (!hourlyAllowed) {
+      const status = rateLimiter.getStatus(`transcription:hourly:${clientId}`);
+      const resetIn = status ? formatTimeRemaining(status.resetTime) : 'soon';
+      return {
+        success: false,
+        error: `Rate limit exceeded. You can only transcribe ${RATE_LIMITS.TRANSCRIPTION.MAX_REQUESTS} files per hour on the free tier. Please try again in ${resetIn}.`,
+      };
+    }
+
+    // Check daily rate limit (50 transcriptions per day)
+    const dailyAllowed = rateLimiter.check(
+      `transcription:daily:${clientId}`,
+      RATE_LIMITS.DAILY.MAX_TRANSCRIPTIONS,
+      RATE_LIMITS.DAILY.WINDOW_MS
+    );
+
+    if (!dailyAllowed) {
+      const status = rateLimiter.getStatus(`transcription:daily:${clientId}`);
+      const resetIn = status ? formatTimeRemaining(status.resetTime) : 'tomorrow';
+      return {
+        success: false,
+        error: `Daily limit exceeded. You can transcribe up to ${RATE_LIMITS.DAILY.MAX_TRANSCRIPTIONS} files per day on the free tier. Resets in ${resetIn}.`,
+      };
+    }
+
     const file = formData.get('file') as File | null;
     const youtubeUrl = formData.get('youtubeUrl') as string | null;
     const language = (formData.get('language') as 'english' | 'indonesian') || 'english';

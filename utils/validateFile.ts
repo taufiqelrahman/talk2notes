@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { FileValidationResult } from '@/types';
+import { RATE_LIMITS } from '@/lib/rate-limiter';
 
 const AUDIO_FORMATS = process.env.ALLOWED_AUDIO_FORMATS?.split(',') || [
   'mp3',
@@ -18,7 +19,11 @@ const VIDEO_FORMATS = process.env.ALLOWED_VIDEO_FORMATS?.split(',') || [
   'webm',
 ];
 
-const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE_MB || '100', 10) * 1024 * 1024;
+// Use rate limiter's safe limit for free tier (50MB default)
+const MAX_FILE_SIZE =
+  parseInt(process.env.MAX_FILE_SIZE_MB || String(RATE_LIMITS.FILE_SIZE.MAX_SIZE_MB), 10) *
+  1024 *
+  1024;
 
 const AUDIO_MIME_TYPES = [
   'audio/mpeg',
