@@ -396,16 +396,53 @@ pnpm start
 
 ## 🚢 Deployment
 
-### Vercel (Recommended)
+### Fly.io (Recommended - Free Tier) ⭐
+
+**Full features supported**: Video, YouTube, Large files, FFmpeg, yt-dlp
+
+See complete guide: **[FLY-DEPLOY.md](FLY-DEPLOY.md)**
+
+Quick deploy:
+
+```bash
+# Install Fly CLI
+brew install flyctl
+
+# Login
+flyctl auth login
+
+# Deploy
+flyctl launch
+flyctl secrets set GROQ_API_KEY=your_key_here
+flyctl deploy
+```
+
+**Free tier**: 3 shared-cpu VMs with 256MB RAM (sufficient for most usage)
+
+### Vercel (Limited Features)
+
+⚠️ **Limitations**: No FFmpeg, No yt-dlp, 4.5MB max body size, 10-60s timeout
+
+Only suitable for:
+
+- Audio files only (<4MB)
+- No video processing
+- No YouTube support
 
 1. Push your code to GitHub
 2. Import project in Vercel
 3. Add environment variables
 4. Deploy
 
-**Note:** Ensure FFmpeg is available in your deployment environment. For Vercel, consider using a custom build or serverless FFmpeg solution.
+### Railway (~$5-10/month)
 
-### Docker
+**Full features supported**: All features work perfectly
+
+1. Connect GitHub repository
+2. Add environment variables
+3. Deploy automatically
+
+### Docker (Self-hosted)
 
 ```bash
 docker build -t talk2notes .
@@ -414,12 +451,19 @@ docker run -p 3000:3000 --env-file .env talk2notes
 
 ### Environment Variables for Production
 
-Ensure all required environment variables are set:
+Required secrets:
 
-- `AI_PROVIDER`
-- `OPENAI_API_KEY` (or provider-specific key)
-- `MAX_FILE_SIZE_MB`
+- `AI_PROVIDER` (groq, openai, deepgram, anthropic)
+- `GROQ_API_KEY` or `OPENAI_API_KEY`
+- `GROQ_TRANSCRIPTION_MODEL` (whisper-large-v3)
+- `GROQ_SUMMARIZATION_MODEL` (llama-3.3-70b-versatile)
 - `NODE_ENV=production`
+
+Optional:
+
+- `MAX_FILE_SIZE_MB` (default: 100)
+- `ALLOWED_AUDIO_FORMATS`
+- `ALLOWED_VIDEO_FORMATS`
 
 ## 🤝 Contributing
 

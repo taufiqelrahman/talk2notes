@@ -1,6 +1,9 @@
 FROM node:18-alpine AS base
 
-RUN apk add --no-cache ffmpeg
+RUN apk add --no-cache ffmpeg python3 py3-pip
+
+# Install yt-dlp for YouTube support
+RUN pip3 install --break-system-packages yt-dlp
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@8 --activate
