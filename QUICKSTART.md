@@ -2,6 +2,8 @@
 
 Get Talk2Notes running in 5 minutes with **free Groq API** (no credit card needed!)
 
+🌐 **Want to try it first?** Check out the [live demo](https://talk2notes.fly.dev) before installing!
+
 ## Prerequisites
 
 - ✅ Node.js 18.18+ installed

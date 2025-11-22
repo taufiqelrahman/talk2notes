@@ -2,6 +2,71 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.5.0] - 2025-11-22
+
+### 🛡️ Rate Limiting & Free Tier Protection
+
+#### Added
+
+- **Comprehensive Rate Limiting System**: Prevents abuse and ensures app stays within free tier limits
+  - **Hourly limit**: 10 transcriptions per hour per IP address
+  - **Daily limit**: 50 transcriptions per day per IP address
+  - **File size limit**: Reduced to 50MB (from 100MB) for safer memory usage on 256MB RAM
+  - **YouTube limit**: 100MB maximum for downloaded videos
+- **Rate Limit Display**: Blue info box showing current usage
+  - Real-time display of remaining hourly/daily quota
+  - Shows "X / 10 files this hour" and "Y / 50 files today"
+  - Automatic updates after each transcription
+- **API Endpoint**: `/api/limits` for checking current rate limit status
+  - Returns remaining requests and reset times
+  - Useful for monitoring and debugging
+- **Clear Error Messages**: User-friendly rate limit exceeded messages
+  - Shows exact time until limit resets
+  - Examples: "Try again in 45 minutes" or "Resets in 8 hours"
+
+#### Technical
+
+- New module: `lib/rate-limiter.ts` - Core rate limiting logic
+  - In-memory rate limiter with automatic cleanup
+  - Per-IP tracking using `x-forwarded-for` and `x-real-ip` headers
+  - `RateLimiter` class with check/reset/status methods
+  - Configurable limits via `RATE_LIMITS` constant
+  - Cleanup interval runs every 5 minutes
+- New API route: `app/api/limits/route.ts` - Rate limit status endpoint
+- Updated `actions/transcription.ts`: Rate limit checks before processing
+  - Hourly check with detailed error messages
+  - Daily check for quota protection
+  - Client ID extraction from request headers
+- Updated `components/upload.tsx`: Rate limit display in UI
+  - Fetches limits on component mount
+  - Shows blue info box with current usage
+  - Updates after successful transcription
+- Updated `utils/validateFile.ts`: Integrated with rate limiter for file size limits
+- New documentation: `RATE-LIMITS.md` - Complete rate limiting guide
+  - Configuration instructions
+  - Monitoring guidelines
+  - Troubleshooting tips
+  - Bypass options for development
+
+#### Changed
+
+- File size limit reduced from 100MB to 50MB for free tier safety
+- Memory footprint optimized for 256MB RAM instances
+- Automatic cleanup of expired rate limit entries
+
+#### Security
+
+- Per-IP rate limiting prevents API abuse
+- Protects Groq free tier from exhaustion
+- Prevents memory overflow on small instances
+- Fair usage enforcement across all users
+
+### 🚀 Deployment
+
+- **Live Demo**: Deployed to Fly.io at https://talk2notes.fly.dev
+- Production-ready with rate limiting enabled
+- Running on free tier (256MB RAM, Singapore region)
+
 ## [2.4.0] - 2025-11-22
 
 ### 🗂️ History Management

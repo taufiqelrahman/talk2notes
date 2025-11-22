@@ -2,6 +2,8 @@
 
 Welcome to Talk2Notes documentation. Find the guide you need below.
 
+🌐 **[Try Live Demo](https://talk2notes.fly.dev)** - Test the app without installation!
+
 ## 📖 Getting Started
 
 | Document                              | Purpose                               | Time   |
@@ -10,6 +12,7 @@ Welcome to Talk2Notes documentation. Find the guide you need below.
 | [Setup Guide](SETUP.md)               | Detailed installation & configuration | 15 min |
 | [README](README.md)                   | Project overview & features           | 10 min |
 | [Groq Setup](GROQ-SETUP.md)           | Free AI provider (no credit card)     | 3 min  |
+| [Rate Limits](RATE-LIMITS.md)         | Free tier limits & protection         | 5 min  |
 | [Troubleshooting](TROUBLESHOOTING.md) | Fix common errors                     | -      |
 
 ## 💻 Development

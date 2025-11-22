@@ -10,7 +10,7 @@
 
 Talk2Notes is an open-source web application that automatically transcribes audio and video files and generates well-organized lecture notes complete with summaries, key concepts, definitions, example problems, and action items.
 
-📖 **[Documentation](DOCS.md)** | ⚡ **[Quick Start](QUICKSTART.md)** | 🆓 **[Groq Setup](GROQ-SETUP.md)** | � **[Setup](SETUP.md)** | 🔍 **[Troubleshooting](TROUBLESHOOTING.md)**
+🌐 **[Live Demo](https://talk2notes.fly.dev)** | 📖 **[Documentation](DOCS.md)** | ⚡ **[Quick Start](QUICKSTART.md)** | 🆓 **[Groq Setup](GROQ-SETUP.md)** | 🛡️ **[Rate Limits](RATE-LIMITS.md)** | 🔍 **[Troubleshooting](TROUBLESHOOTING.md)**
 
 ## ✨ Features
 
@@ -26,6 +26,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 📋 **Copy to Clipboard**: Quick copy functionality for each tab
 - 💾 **Auto-save**: Results persist across page refreshes
 - 📜 **History Management**: Browse, search, and restore past transcriptions with individual delete
+- 🛡️ **Rate Limiting**: Smart limits (10/hour, 50/day) to stay within free tier while preventing abuse
 - ✂️ **Smart Cropping**: Automatically crops long transcripts to fit API limits (preserves sentence boundaries)
 - 🗜️ **Auto Compression**: Compresses large audio files (>24MB YouTube, >10MB uploads) for reliable transcription
 - ⚡ **Fast Processing**: Automatic audio extraction from video files using FFmpeg
