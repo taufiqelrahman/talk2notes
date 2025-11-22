@@ -4,6 +4,7 @@
 interface RateLimitEntry {
   count: number;
   resetTime: number;
+  maxRequests: number;
 }
 
 class RateLimiter {
@@ -35,6 +36,7 @@ class RateLimiter {
       this.limits.set(key, {
         count: 1,
         resetTime: now + windowMs,
+        maxRequests: maxRequests,
       });
       return true;
     }
@@ -62,7 +64,7 @@ class RateLimiter {
     }
 
     return {
-      remaining: Math.max(0, 10 - entry.count), // Assuming max 10 requests
+      remaining: Math.max(0, entry.maxRequests - entry.count),
       resetTime: entry.resetTime,
     };
   }
