@@ -6,8 +6,6 @@ talk2notes/
 ├── .github/                      # GitHub configuration
 │   └── workflows/                # GitHub Actions workflows
 │       ├── ci.yml                # Continuous Integration
-│       ├── deploy.yml            # Production deployment
-│       ├── release.yml           # Release automation
 │       └── code-quality.yml      # Code quality checks
 │
 ├── .vscode/                      # VS Code configuration
@@ -270,18 +268,6 @@ npm run format:check # Check code formatting
 - Runs on push/PR to main/develop
 - Lint, type check, build
 - Security scan with Snyk
-
-### `deploy.yml` - Production Deployment
-
-- Runs on push to main
-- Deploys to Vercel
-- Sends deployment notifications
-
-### `release.yml` - Release Automation
-
-- Triggered by version tags (v*.*.\*)
-- Creates GitHub release
-- Publishes Docker image
 
 ### `code-quality.yml` - Code Quality
 
