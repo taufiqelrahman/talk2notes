@@ -107,16 +107,14 @@ async function transcribeWithOpenAI(
     try {
       console.log(`[Transcription] Attempt ${attempt}/${maxAttempts}...`);
 
-      // Read file and create Blob (File API not available in Node.js)
+      // Read file - OpenAI SDK can handle fs.ReadStream or Buffer directly
       const audioBuffer = await fs.readFile(audioPath);
       const blob = new Blob([audioBuffer], { type: 'audio/mpeg' });
-      // Add name property to blob for OpenAI API compatibility
-      Object.defineProperty(blob, 'name', { value: 'audio.mp3' });
 
       console.log(`[Transcription] Uploading ${blob.size} bytes to OpenAI...`);
 
       const response = await openai.audio.transcriptions.create({
-        file: blob as any,
+        file: blob as any, // OpenAI SDK handles Blob in Node.js
         model: config.transcriptionModel,
         language: options.language,
         prompt: options.prompt,
@@ -175,13 +173,12 @@ async function transcribeWithGroq(
   options: TranscriptionOptions
 ): Promise<TranscriptionResult> {
   const audioFile = await fs.readFile(audioPath);
-  // Use Blob instead of File (File API not available in Node.js)
-  const blob = new Blob([audioFile], { type: 'audio/mp3' });
-  // Add name property to blob for API compatibility
-  Object.defineProperty(blob, 'name', { value: 'audio.mp3' });
+  // Create Blob with proper type for Node.js FormData compatibility
+  const blob = new Blob([audioFile], { type: 'audio/mpeg' });
 
   const formData = new FormData();
-  formData.append('file', blob as any);
+  // Append with explicit filename (3rd parameter) for Node.js FormData
+  formData.append('file', blob, 'audio.mp3');
   formData.append('model', config.transcriptionModel);
   if (options.language) formData.append('language', options.language);
   if (options.temperature) formData.append('temperature', options.temperature.toString());
@@ -195,7 +192,8 @@ async function transcribeWithGroq(
   });
 
   if (!response.ok) {
-    throw new Error(`Groq transcription failed: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Groq transcription failed: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
