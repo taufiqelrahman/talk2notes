@@ -58,24 +58,26 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
     }
   };
 
+  // Fetch rate limits function
+  const fetchLimits = async () => {
+    try {
+      const response = await fetch('/api/limits');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setRateLimits({
+            hourly: data.limits.hourly,
+            daily: data.limits.daily,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch rate limits:', error);
+    }
+  };
+
   // Fetch rate limits on mount
   useEffect(() => {
-    async function fetchLimits() {
-      try {
-        const response = await fetch('/api/limits');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setRateLimits({
-              hourly: data.limits.hourly,
-              daily: data.limits.daily,
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch rate limits:', error);
-      }
-    }
     fetchLimits();
   }, []);
 
@@ -196,6 +198,9 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
           });
           window.dispatchEvent(new Event('historyUpdated'));
 
+          // Refresh rate limits to show updated quota
+          fetchLimits();
+
           onSuccess?.(result.data);
         } else {
           throw new Error(result.error || 'Failed to process YouTube video');
@@ -274,6 +279,9 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             filename: selectedFile!.name,
           });
           window.dispatchEvent(new Event('historyUpdated'));
+
+          // Refresh rate limits to show updated quota
+          fetchLimits();
 
           onSuccess?.(result.data);
         }
