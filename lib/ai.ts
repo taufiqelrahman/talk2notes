@@ -107,15 +107,16 @@ async function transcribeWithOpenAI(
     try {
       console.log(`[Transcription] Attempt ${attempt}/${maxAttempts}...`);
 
-      // Read file and create File object
+      // Read file and create Blob (File API not available in Node.js)
       const audioBuffer = await fs.readFile(audioPath);
       const blob = new Blob([audioBuffer], { type: 'audio/mpeg' });
-      const file = new File([blob], 'audio.mp3', { type: 'audio/mpeg' });
+      // Add name property to blob for OpenAI API compatibility
+      Object.defineProperty(blob, 'name', { value: 'audio.mp3' });
 
-      console.log(`[Transcription] Uploading ${file.size} bytes to OpenAI...`);
+      console.log(`[Transcription] Uploading ${blob.size} bytes to OpenAI...`);
 
       const response = await openai.audio.transcriptions.create({
-        file: file,
+        file: blob as any,
         model: config.transcriptionModel,
         language: options.language,
         prompt: options.prompt,
@@ -174,10 +175,13 @@ async function transcribeWithGroq(
   options: TranscriptionOptions
 ): Promise<TranscriptionResult> {
   const audioFile = await fs.readFile(audioPath);
-  const file = new File([audioFile], 'audio.mp3', { type: 'audio/mp3' });
+  // Use Blob instead of File (File API not available in Node.js)
+  const blob = new Blob([audioFile], { type: 'audio/mp3' });
+  // Add name property to blob for API compatibility
+  Object.defineProperty(blob, 'name', { value: 'audio.mp3' });
 
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append('file', blob as any);
   formData.append('model', config.transcriptionModel);
   if (options.language) formData.append('language', options.language);
   if (options.temperature) formData.append('temperature', options.temperature.toString());
