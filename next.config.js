@@ -6,11 +6,6 @@ const nextConfig = {
       bodySizeLimit: '100mb',
     },
   },
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-  },
 };
 
 module.exports = nextConfig;

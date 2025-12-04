@@ -104,8 +104,13 @@ export async function createTranscriptionMutation(
         }
 
         // Transcribe
+        const languageMap: Record<string, string> = {
+          indonesian: 'id',
+          arabic: 'ar',
+          english: 'en',
+        };
         const transcriptionResult = await transcribeAudio(audioPath, {
-          language: language === 'indonesian' ? 'id' : 'en',
+          language: languageMap[language] || 'en',
         });
 
         // Translate if Indonesian

@@ -27,7 +27,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [inputMode, setInputMode] = useState<'file' | 'youtube'>('file');
-  const [language, setLanguage] = useState<'english' | 'indonesian'>('english');
+  const [language, setLanguage] = useState<'english' | 'indonesian' | 'arabic'>('english');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Rate limit display
@@ -192,7 +192,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
           saveToHistory({
             title: result.data.title || 'YouTube Video',
             notes: result.data,
-            language: language === 'indonesian' ? 'id' : 'en',
+            language: language === 'indonesian' ? 'id' : language === 'arabic' ? 'ar' : 'en',
             source: 'youtube',
             youtubeUrl,
           });
@@ -274,7 +274,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
           saveToHistory({
             title: result.data.title || selectedFile!.name,
             notes: result.data,
-            language: language === 'indonesian' ? 'id' : 'en',
+            language: language === 'indonesian' ? 'id' : language === 'arabic' ? 'ar' : 'en',
             source: 'file',
             filename: selectedFile!.name,
           });
@@ -523,7 +523,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
               <label className="block text-sm font-medium text-gray-700">
                 Output Language / Bahasa Output
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setLanguage('english')}
@@ -547,6 +547,18 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
                 >
                   <span className="text-2xl mr-2">🇮🇩</span>
                   <span>Bahasa Indonesia</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('arabic')}
+                  className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${
+                    language === 'arabic'
+                      ? 'border-primary-500 bg-primary-50 text-primary-700 font-medium'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                  }`}
+                >
+                  <span className="text-2xl mr-2">🇸🇦</span>
+                  <span>العربية</span>
                 </button>
               </div>
               <p className="text-xs text-gray-500 mt-1">

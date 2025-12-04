@@ -377,8 +377,39 @@ export async function formatTranscript(
 
   try {
     const systemPrompt =
-      language === 'indonesian'
-        ? `Kamu adalah asisten yang memformat transkrip ceramah Islam menjadi lebih mudah dibaca.
+      language === 'arabic'
+        ? `أنت مساعد يقوم بتنسيق نصوص المحاضرات الإسلامية لتكون أسهل في القراءة.
+
+قواعد مهمة:
+1. لا تحذف أو تلخص أو تعدل الدلائل (آيات القرآن/الأحاديث) أبداً
+2. يجب الحفاظ على كل دليل بشكل كامل بما في ذلك:
+   - النص العربي مع الحركات
+   - النقحرة بين أقواس
+   - الترجمة/التفسير بين علامات اقتباس
+   - المرجع [QS. اسم السورة: الآية] أو [HR. الراوي]
+3. إذا كان هناك دليل، افصله بخط أفقي (---) قبل وبعد الدليل
+4. لا تغير أو تحذف أي محتوى، فقط أضف تنسيق الفقرات والعناوين الفرعية
+
+تنسيق الدليل الذي يجب الحفاظ عليه:
+---
+
+النص العربي مع الحركات
+
+(النقحرة)
+
+"الترجمة/التفسير"
+
+[QS. اسم السورة: الآية]
+
+---
+
+مهام التنسيق:
+1. حدد المواضيع/الثيمات الرئيسية
+2. قسم إلى أقسام مع ## عناوين فرعية
+3. نسق النص في فقرات (افصل كل 3-5 جمل)
+4. احفظ جميع الدلائل مع التنسيق الكامل أعلاه`
+        : language === 'indonesian'
+          ? `Kamu adalah asisten yang memformat transkrip ceramah Islam menjadi lebih mudah dibaca.
 
 ATURAN PENTING:
 1. JANGAN PERNAH menghilangkan, meringkas, atau mengubah dalil (ayat Quran/Hadits)
@@ -431,7 +462,7 @@ Penjelasan setelah dalil. Ini melanjutkan pembahasan dengan mengaitkan dalil ter
 ## Tema Kedua
 
 Dan seterusnya...`
-        : `You are an assistant that formats Islamic lecture transcripts for better readability.
+          : `You are an assistant that formats Islamic lecture transcripts for better readability.
 
 IMPORTANT RULES:
 1. NEVER remove, summarize, or modify dalil (Quranic verses/Hadith)
@@ -784,8 +815,66 @@ function buildSummarizationPrompt(options: SummarizationOptions): string {
   const language = options.language || 'english';
 
   const languageInstruction =
-    language === 'indonesian'
-      ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
+    language === 'arabic'
+      ? `قم بإنشاء الملاحظات باللغة العربية. استخدم لغة عربية رسمية وأكاديمية.
+
+قاعدة حاسمة لاقتباسات القرآن/الحديث:
+عند تضمين آيات قرآنية أو أحاديث في الفقرات، استخدم فواصل أسطر واضحة:
+
+---
+
+النص العربي مع الحركات
+
+(النقحرة)
+
+"الترجمة/التفسير العربي"
+
+[المرجع]
+
+---
+
+أمثلة:
+
+---
+
+وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ
+
+(wa maa arsalnaaka illa rahmatan lil 'aalamiin)
+
+"وما أرسلناك إلا رحمة للعالمين جميعاً."
+
+[QS. الأنبياء: 107]
+
+---
+
+---
+
+إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ
+
+(innama al-a'malu bin niyyat)
+
+"إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى."
+
+[HR. البخاري ومسلم]
+
+---
+
+مهم:
+- إذا كان النص يحتوي على نقحرة، أضف النص العربي الصحيح مع الحركات
+- استخدم معرفتك الإسلامية لتحديد السورة/الآية القرآنية الصحيحة أو راوي الحديث
+- للعبارات الشائعة (وليس الاقتباسات)، احتفظ بها في السطر: بِسْمِ اللّٰهِ
+- تنسيق المرجع: [QS. السورة: الآية] أو [HR. الراوي]
+
+التنسيق:
+- العنوان: بالعربية
+- الملخص: بالعربية
+- الفقرات: بالعربية (احتفظ بالاقتباسات العربية مع النقحرة + الترجمة كما هو محدد)
+- النقاط النقطية: بالعربية
+- المفاهيم: أسماء عربية مع شروحات عربية
+- التعريفات: مصطلحات عربية مع تعريفات عربية
+- عناصر العمل: بالعربية`
+      : language === 'indonesian'
+        ? `Generate notes in Bahasa Indonesia. Use formal, academic Indonesian language.
 
 CRITICAL RULE FOR QURAN/HADITH QUOTES:
 When including Quranic verses or Hadith in paragraphs, format with clear newline separators:
@@ -842,7 +931,7 @@ FORMATTING:
 - Concepts: Indonesian names with Indonesian explanations
 - Definitions: Indonesian terms with Indonesian definitions
 - Action items: In Indonesian`
-      : `Generate notes in English. Use clear, academic English.
+        : `Generate notes in English. Use clear, academic English.
 
 CRITICAL RULE FOR QURAN/HADITH QUOTES:
 When including Quranic verses or Hadith in paragraphs, format with clear newline separators:
@@ -931,7 +1020,7 @@ Generate a JSON object with the following structure:
 Rules:
 - Extract all key concepts, definitions, and examples mentioned
 - Organize information logically and hierarchically
-- Use clear, academic language in the specified language (${language === 'indonesian' ? 'Bahasa Indonesia' : 'English'})
+- Use clear, academic language in the specified language (${language === 'indonesian' ? 'Bahasa Indonesia' : language === 'arabic' ? 'العربية (Arabic)' : 'English'})
 - For Arabic text (Quran, Hadith): ALWAYS preserve original Arabic with harakat, add transliteration, then translation
 - Identify relationships between concepts
 - Highlight important formulas, theories, or frameworks
