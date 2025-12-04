@@ -366,7 +366,7 @@ Output the translated transcript directly without any preamble, headers, or expl
  */
 export async function formatTranscript(
   transcript: string,
-  language: 'english' | 'indonesian' = 'english'
+  language: 'english' | 'indonesian' | 'arabic' = 'english'
 ): Promise<string> {
   const config = getAIConfig();
 
