@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { UploadForm } from '@/components/upload';
 import { NotesDisplay } from '@/components/notes-display';
 import History from '@/components/history';
+import { ErrorBoundary } from '@/components/error-boundary';
 import type { LectureNotes } from '@/types';
 
 const STORAGE_KEY = 'talk2notes_last_result';
@@ -108,9 +109,11 @@ export default function HomePage() {
 
       {/* History Section */}
       {showHistory && (
-        <div className="mb-12">
-          <History onSelectItem={handleSelectHistory} />
-        </div>
+        <ErrorBoundary>
+          <div className="mb-12">
+            <History onSelectItem={handleSelectHistory} />
+          </div>
+        </ErrorBoundary>
       )}
 
       {error && (
@@ -134,21 +137,27 @@ export default function HomePage() {
         </div>
       )}
 
-      {!lectureNotes ? (
-        <UploadForm onSuccess={handleSuccess} onError={handleError} />
-      ) : (
-        <div className="space-y-6">
-          <div className="flex justify-center">
-            <button
-              onClick={handleReset}
-              className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              ← Upload Another File
-            </button>
+      <ErrorBoundary
+        onError={(error, errorInfo) => {
+          console.error('Upload/Display error:', error, errorInfo);
+        }}
+      >
+        {!lectureNotes ? (
+          <UploadForm onSuccess={handleSuccess} onError={handleError} />
+        ) : (
+          <div className="space-y-6">
+            <div className="flex justify-center">
+              <button
+                onClick={handleReset}
+                className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                ← Upload Another File
+              </button>
+            </div>
+            <NotesDisplay notes={lectureNotes} />
           </div>
-          <NotesDisplay notes={lectureNotes} />
-        </div>
-      )}
+        )}
+      </ErrorBoundary>
 
       <div className="mt-16 border-t border-gray-200 pt-12">
         <div className="grid md:grid-cols-3 gap-8">

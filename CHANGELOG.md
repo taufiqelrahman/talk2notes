@@ -2,6 +2,30 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.6.0] - 2026-01-18
+
+### Added
+
+- 🛡️ **Error Boundaries**: Comprehensive error handling system
+  - Page-level error boundary (`app/error.tsx`)
+  - Root-level error boundary (`app/global-error.tsx`)
+  - Reusable error boundary component (`components/error-boundary.tsx`)
+  - Error boundaries in History and Upload/Display sections
+  - Loading state component (`app/loading.tsx`)
+  - Custom 404 page (`app/not-found.tsx`)
+  - Error boundary test page (`/test-error-boundary`)
+  - Complete documentation (`ERROR-BOUNDARY.md`)
+  - Quick reference guide (`ERROR-BOUNDARY-QUICK-REF.md`)
+  - Architecture diagrams (`ERROR-BOUNDARY-DIAGRAM.md`)
+
+### Improved
+
+- App now gracefully handles errors without crashing
+- User-friendly error messages in production
+- Detailed error info for developers in dev mode
+- Independent error recovery per section
+- Better overall stability and reliability
+
 ## [2.5.0] - 2025-11-22
 
 ### 🛡️ Rate Limiting & Free Tier Protection
