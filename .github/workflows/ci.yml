@@ -21,9 +21,9 @@ jobs:
           node-version: '18'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10.14.0
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -64,7 +64,7 @@ jobs:
           node-version: '18'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 10.14.0
 
@@ -110,7 +110,7 @@ jobs:
           node-version: '18'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 10.14.0
 
