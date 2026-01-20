@@ -371,6 +371,24 @@ Extracts audio from video file using FFmpeg.
 
 ## 🧪 Development
 
+### Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in UI mode
+pnpm test:ui
+
+# Run tests once (CI mode)
+pnpm test:run
+
+# Generate coverage report
+pnpm test:coverage
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
+
 ### Type Checking
 
 ```bash

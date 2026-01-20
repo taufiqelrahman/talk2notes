@@ -2,9 +2,21 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
-## [2.6.0] - 2026-01-18
+## [2.6.0] - 2026-01-20
 
 ### Added
+
+- 🧪 **Testing Infrastructure**: Comprehensive testing setup
+  - Vitest testing framework with React Testing Library
+  - 58 integration tests covering core functionality
+  - File validation and security tests (magic bytes, integrity checks)
+  - Rate limiter tests (request counting, window expiration)
+  - AI configuration tests (provider setup, model selection)
+  - History management tests (localStorage operations)
+  - Test UI mode for interactive debugging
+  - Code coverage reporting with v8
+  - Complete testing guide (`TESTING.md`)
+  - Test commands: `pnpm test`, `pnpm test:ui`, `pnpm test:coverage`
 
 - 🛡️ **Error Boundaries**: Comprehensive error handling system
   - Page-level error boundary (`app/error.tsx`)
@@ -22,7 +34,7 @@ All notable changes to Talk2Notes will be documented in this file.
   - Multi-layer security: MIME type, extension, size, signature, content
   - Comprehensive file integrity checks
   - Protection against renamed executables and tampered files
-  - Complete test suite (`lib/__tests__/file-security.test.ts`)
+  - Complete test suite for security features
   - Documentation (`FILE-SECURITY.md`)
   - Supported formats: MP3, WAV, FLAC, OGG, M4A, MP4, MKV, MOV, AVI
 
@@ -35,12 +47,21 @@ All notable changes to Talk2Notes will be documented in this file.
 - Better overall stability and reliability
 - Enhanced file upload security with actual content validation
 - Protection against file tampering and malicious uploads
+- Automated testing for critical functionality
 
 ### Security
 
 - Fixed file upload vulnerability (magic bytes validation)
 - Added executable pattern detection
 - Enhanced file type validation beyond MIME types
+- All security features now have test coverage
+
+### Developer Experience
+
+- Easy-to-run test suite with watch mode
+- Interactive test UI for debugging
+- Comprehensive test documentation
+- Improved confidence in code changes
 
 ## [2.5.0] - 2025-11-22
 
