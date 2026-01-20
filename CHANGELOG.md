@@ -15,8 +15,16 @@ All notable changes to Talk2Notes will be documented in this file.
   - Custom 404 page (`app/not-found.tsx`)
   - Error boundary test page (`/test-error-boundary`)
   - Complete documentation (`ERROR-BOUNDARY.md`)
-  - Quick reference guide (`ERROR-BOUNDARY-QUICK-REF.md`)
-  - Architecture diagrams (`ERROR-BOUNDARY-DIAGRAM.md`)
+
+- 🔒 **File Upload Security**: Magic bytes validation and content scanning
+  - File signature validation (magic bytes) to detect file type spoofing
+  - Content pattern scanning for malicious executables
+  - Multi-layer security: MIME type, extension, size, signature, content
+  - Comprehensive file integrity checks
+  - Protection against renamed executables and tampered files
+  - Complete test suite (`lib/__tests__/file-security.test.ts`)
+  - Documentation (`FILE-SECURITY.md`)
+  - Supported formats: MP3, WAV, FLAC, OGG, M4A, MP4, MKV, MOV, AVI
 
 ### Improved
 
@@ -25,6 +33,14 @@ All notable changes to Talk2Notes will be documented in this file.
 - Detailed error info for developers in dev mode
 - Independent error recovery per section
 - Better overall stability and reliability
+- Enhanced file upload security with actual content validation
+- Protection against file tampering and malicious uploads
+
+### Security
+
+- Fixed file upload vulnerability (magic bytes validation)
+- Added executable pattern detection
+- Enhanced file type validation beyond MIME types
 
 ## [2.5.0] - 2025-11-22
 

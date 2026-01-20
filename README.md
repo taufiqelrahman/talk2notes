@@ -34,6 +34,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 🕌 **Islamic Content**: Preserves dalil with Arabic text, harakat, transliteration, translations, and references
 - 🔒 **Secure**: File validation and size limits for safe uploads
 - 🛡️ **Error Handling**: Robust error boundaries for graceful error recovery
+- 🔐 **File Security**: Magic bytes validation to prevent malicious file uploads
 
 ## 🚀 Quick Start
 
