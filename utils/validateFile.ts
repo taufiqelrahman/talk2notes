@@ -2,6 +2,19 @@ import { z } from 'zod';
 import type { FileValidationResult } from '@/types';
 import { RATE_LIMITS } from '@/lib/rate-limiter';
 
+/**
+ * File validation utility
+ *
+ * Security layers:
+ * 1. MIME type validation (basic check)
+ * 2. File extension validation
+ * 3. File size limits
+ * 4. Magic bytes validation (file signature) - see lib/file-security.ts
+ * 5. Content scanning for malicious patterns - see lib/file-security.ts
+ *
+ * This file handles layers 1-3, while lib/file-security.ts handles layers 4-5
+ */
+
 const AUDIO_FORMATS = process.env.ALLOWED_AUDIO_FORMATS?.split(',') || [
   'mp3',
   'wav',
