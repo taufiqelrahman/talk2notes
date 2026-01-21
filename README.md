@@ -1,5 +1,6 @@
 # Talk2Notes 🎙️📝
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/taufiqelrahman/talk2notes/ci.yml?branch=main)](https://github.com/taufiqelrahman/talk2notes/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
