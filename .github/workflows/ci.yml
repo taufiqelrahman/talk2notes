@@ -84,9 +84,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install tsx for config loading
-        run: pnpm add -D tsx
-
       - name: Run integration tests
         run: pnpm test:run
 
