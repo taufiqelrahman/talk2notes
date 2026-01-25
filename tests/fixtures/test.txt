@@ -1,0 +1,2 @@
+This is a test text file for testing file upload validation.
+It should be rejected because it's not a valid audio/video file.
