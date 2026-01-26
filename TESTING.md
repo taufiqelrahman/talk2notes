@@ -2,9 +2,16 @@
 
 This document describes the testing infrastructure and how to run tests in Talk2Notes.
 
-## Testing Framework
+## Testing Frameworks
 
-We use **Vitest** as our testing framework with **@testing-library/react** for component testing.
+We use:
+
+- **Vitest** for integration/unit tests with **@testing-library/react**
+- **Playwright** for end-to-end (e2e) tests
+
+---
+
+## Integration Testing (Vitest)
 
 ### Key Features
 
@@ -14,9 +21,73 @@ We use **Vitest** as our testing framework with **@testing-library/react** for c
 - 📊 **Coverage**: Built-in code coverage with v8
 - 🎨 **UI Mode**: Interactive test UI for debugging
 
-## Running Tests
+### Running Integration Tests
 
-### Basic Commands
+```bash
+# Run all tests in watch mode
+pnpm test
+
+# Run tests once (CI mode)
+pnpm test:run
+
+# Run tests with UI interface
+pnpm test:ui
+
+# Run tests with coverage report
+pnpm test:coverage
+```
+
+---
+
+## End-to-End Testing (Playwright)
+
+### Key Features
+
+- 🌐 **Cross-browser**: Test on Chromium, Firefox, and WebKit
+- 📱 **Mobile Testing**: Test responsive designs on mobile viewports
+- 🎥 **Trace & Screenshots**: Automatic screenshots and traces on failure
+- 🔄 **Auto-wait**: Smart waiting for elements to be ready
+- 🎯 **Test Generation**: Record tests using Playwright Codegen
+
+### Running E2E Tests
+
+```bash
+# Run all e2e tests
+pnpm test:e2e
+
+# Run with UI mode for debugging
+pnpm test:e2e:ui
+
+# Run in headed mode (see browser)
+pnpm test:e2e:headed
+
+# Run only Chromium tests
+pnpm test:e2e:chromium
+
+# Debug mode with inspector
+pnpm test:e2e:debug
+```
+
+### E2E Test Structure
+
+E2E tests are located in `tests/e2e/`:
+
+```
+tests/
+├── e2e/
+│   ├── homepage.spec.ts          # Homepage tests
+│   ├── file-upload.spec.ts       # File upload flow
+│   ├── history.spec.ts           # History management
+│   └── rate-limiting.spec.ts     # Rate limit display
+└── fixtures/
+    └── test.txt                   # Test files for upload
+```
+
+---
+
+## Running All Tests
+
+### Integration Tests
 
 ```bash
 # Run all tests in watch mode
@@ -115,7 +186,9 @@ Tests for localStorage-based history:
 
 ## Writing Tests
 
-### Basic Test Structure
+### Integration Tests (Vitest)
+
+#### Basic Test Structure
 
 ```typescript
 import { describe, it, expect } from 'vitest';
@@ -128,7 +201,7 @@ describe('Feature Name', () => {
 });
 ```
 
-### Using Mocks
+#### Using Mocks
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
@@ -185,9 +258,65 @@ describe('File Tests', () => {
 });
 ```
 
+### E2E Tests (Playwright)
+
+#### Basic Page Test
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('should load homepage', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page).toHaveTitle(/Talk2Notes/i);
+  await expect(page.getByRole('heading', { name: /talk2notes/i })).toBeVisible();
+});
+```
+
+#### Testing User Interactions
+
+```typescript
+test('should handle file upload', async ({ page }) => {
+  await page.goto('/');
+
+  const fileInput = page.locator('input[type="file"]');
+  await fileInput.setInputFiles('path/to/test/file.mp3');
+
+  const errorMessage = page.locator('text=/error|invalid/i');
+  await expect(errorMessage).toBeVisible();
+});
+```
+
+#### Testing with LocalStorage
+
+```typescript
+test('should load history from localStorage', async ({ page }) => {
+  const mockHistory = [{ id: '1', title: 'Test', content: 'Content' }];
+
+  await page.evaluate((history) => {
+    localStorage.setItem('transcription-history', JSON.stringify(history));
+  }, mockHistory);
+
+  await page.goto('/');
+
+  await expect(page.locator('text=/Test/i')).toBeVisible();
+});
+```
+
+#### Mobile Responsive Testing
+
+```typescript
+test('should be responsive on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/');
+
+  await expect(page.getByRole('heading')).toBeVisible();
+});
+```
+
 ## Test Configuration
 
-### Vitest Config (`vitest.config.ts`)
+### Vitest Config (`vitest.config.mts`)
 
 ```typescript
 import { defineConfig } from 'vitest/config';
@@ -197,6 +326,26 @@ export default defineConfig({
     environment: 'jsdom', // Browser-like environment
     globals: true, // Global test APIs
     setupFiles: ['./tests/setup.ts'],
+  },
+});
+```
+
+### Playwright Config (`playwright.config.ts`)
+
+```typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests/e2e',
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
   },
 });
 ```
@@ -249,6 +398,8 @@ Current coverage (to be improved):
 - **Lines**: TBD
 
 ## Best Practices
+
+### General Testing Principles
 
 ### 1. Test Naming
 
@@ -327,11 +478,55 @@ vi.mock('openai', () => ({
 
 ## Continuous Integration
 
+### E2E Testing Best Practices
+
+1. **Use data-testid for stable selectors**
+
+   ```typescript
+   <button data-testid="submit-btn">Submit</button>
+   await page.locator('[data-testid="submit-btn"]').click();
+   ```
+
+2. **Wait for elements properly**
+
+   ```typescript
+   // ✅ Good: Automatic waiting
+   await expect(page.locator('text=Success')).toBeVisible();
+
+   // ❌ Bad: Manual delays
+   await page.waitForTimeout(5000);
+   ```
+
+3. **Test user flows, not pages**
+   - Test complete user journeys
+   - Upload → Process → View Results → Download
+
+4. **Keep tests independent**
+   - Each test should run in isolation
+   - Use beforeEach for setup
+   - Clean up after tests
+
+5. **Use page object models for complex pages**
+   ```typescript
+   class HomePage {
+     constructor(private page: Page) {}
+
+     async uploadFile(path: string) {
+       await this.page.locator('input[type="file"]').setInputFiles(path);
+     }
+   }
+   ```
+
+## CI Integration
+
 Tests are designed to run in CI environments:
 
 ```bash
-# CI mode (exits after run)
+# Integration tests
 pnpm test:run
+
+# E2E tests
+pnpm test:e2e
 
 # With coverage
 pnpm test:coverage
@@ -339,15 +534,15 @@ pnpm test:coverage
 
 ## Troubleshooting
 
-### Tests Failing Locally
+### Integration Tests
 
-1. **Clear cache**: `rm -rf node_modules/.vitest`
-2. **Reinstall deps**: `pnpm install`
-3. **Check Node version**: Node 18+ required
+1. **Tests Failing Locally**
+   - Clear cache: `rm -rf node_modules/.vitest`
+   - Reinstall deps: `pnpm install`
+   - Check Node version: Node 20+ required
 
-### File System Tests Failing
-
-Make sure test directories are cleaned up:
+2. **File System Tests Failing**
+   Make sure test directories are cleaned up:
 
 ```typescript
 afterEach(async () => {
@@ -357,7 +552,7 @@ afterEach(async () => {
 
 ### Module Resolution Issues
 
-Check `vitest.config.ts` has correct path alias:
+Check `vitest.config.mts` has correct path alias:
 
 ```typescript
 resolve: {
@@ -367,9 +562,30 @@ resolve: {
 },
 ```
 
+### E2E Tests
+
+1. **Port already in use**
+   - Kill process on port 3000: `lsof -ti:3000 | xargs kill -9`
+   - Change port in playwright.config.ts
+
+2. **Browser not installed**
+
+   ```bash
+   pnpm exec playwright install chromium
+   ```
+
+3. **Tests timeout**
+   - Increase timeout in test: `test.setTimeout(60000)`
+   - Check if dev server is starting properly
+
+4. **Flaky tests**
+   - Use proper waits with `toBeVisible()` instead of `waitForTimeout()`
+   - Ensure tests are independent
+   - Check for race conditions
+
 ## Future Improvements
 
-- [ ] Add E2E tests with Playwright
+- [x] Add E2E tests with Playwright ✅
 - [ ] Add API route testing
 - [ ] Add component testing with React Testing Library
 - [ ] Increase code coverage to 80%+
@@ -379,5 +595,6 @@ resolve: {
 ## Resources
 
 - [Vitest Documentation](https://vitest.dev/)
+- [Playwright Documentation](https://playwright.dev/)
 - [Testing Library](https://testing-library.com/)
 - [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
