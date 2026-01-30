@@ -2,6 +2,67 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.7.0] - 2026-01-30
+
+### Added
+
+- 🔗 **Direct URL Support**: Download and transcribe media from any public URL
+  - New input mode: "🔗 URL" alongside File Upload and YouTube
+  - Support for direct links to audio/video files (MP3, MP4, WAV, etc.)
+  - Google Drive and Dropbox public links support
+  - New utility: `lib/media-downloader.ts` for generic URL downloads
+  - HTTP/HTTPS download with redirect handling
+  - Auto-detection of file extension from URL
+  - Same compression and processing pipeline as other sources
+  - History tracking with URL source indicator (🔗 icon)
+  - Documentation: `URL-SOURCE.md` with usage guide and troubleshooting
+
+- 🌍 **Arabic Language Support**: Full Arabic transcription and note generation
+  - Added Arabic (العربية) as third language option
+  - Support for Arabic audio transcription
+  - Proper Arabic text formatting and diacritics preservation
+  - Language selector now shows: 🇬🇧 English, 🇮🇩 Indonesian, 🇸🇦 Arabic
+  - Arabic language indicator in history (🇸🇦)
+
+- 🎨 **UI Improvements**:
+  - Tab selector shows `cursor-default` when active (not clickable)
+  - Tab selector shows `cursor-pointer` when inactive (clickable)
+  - Better visual feedback for current selection
+  - Cleaner 3-tab layout for input modes (📁 File, ▶️ YouTube, 🔗 URL)
+
+### Updated
+
+- 📚 **Documentation**:
+  - Updated README.md with URL support and Arabic language
+  - Added URL-SOURCE.md with complete feature documentation
+  - Updated usage instructions for 3 input modes
+  - Enhanced feature list with new capabilities
+
+### Technical
+
+- New module: `lib/media-downloader.ts` - Generic URL download utility
+  - `downloadMediaFromUrl()` function for any public URL
+  - `isValidMediaUrl()` for URL validation
+  - HTTP/HTTPS protocol support with proper error handling
+  - File streaming with redirect following
+  - Automatic cleanup on errors
+- Updated `actions/transcription.ts`:
+  - Added Media URL handling alongside YouTube
+  - Support for `mediaUrl` form data parameter
+  - Compression for large downloaded media (>24MB)
+- Updated `components/upload.tsx`:
+  - Added third input mode: 'url'
+  - Added `mediaUrl` state management
+  - Added URL input form with instructions
+  - Improved cursor styling for tab selectors
+- Updated `types/index.ts`:
+  - Added 'url' to HistoryItem source union type
+  - Added optional `mediaUrl` field to HistoryItem
+- Updated `components/history.tsx`:
+  - Added URL source icon (🔗) and label
+  - Added Arabic language display support
+  - Better source type differentiation
+
 ## [2.6.0] - 2026-01-20
 
 ### Added
