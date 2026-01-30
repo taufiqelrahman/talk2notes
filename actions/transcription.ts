@@ -58,13 +58,101 @@ export async function createTranscriptionMutation(
 
     const file = formData.get('file') as File | null;
     const youtubeUrl = formData.get('youtubeUrl') as string | null;
+    const mediaUrl = formData.get('mediaUrl') as string | null;
     const language = (formData.get('language') as 'english' | 'indonesian') || 'english';
 
-    if (!file && !youtubeUrl) {
+    if (!file && !youtubeUrl && !mediaUrl) {
       return {
         success: false,
-        error: 'No file or YouTube URL provided',
+        error: 'No file, YouTube URL, or media URL provided',
       };
+    }
+
+    // Handle Media URL (generic URL download)
+    if (mediaUrl) {
+      const { downloadMediaFromUrl, isValidMediaUrl } = await import('@/lib/media-downloader');
+
+      if (!isValidMediaUrl(mediaUrl)) {
+        return {
+          success: false,
+          error: 'Invalid media URL',
+        };
+      }
+
+      let downloadedAudio: { audioPath: string; title: string } | null = null;
+      let compressedAudio: string | null = null;
+
+      try {
+        downloadedAudio = await downloadMediaFromUrl(mediaUrl);
+
+        let audioPath = downloadedAudio.audioPath;
+        const originalFilename = `${downloadedAudio.title}.mp3`;
+
+        // Check file size and compress if needed (Groq limit is ~25MB)
+        const stats = await fs.stat(audioPath);
+        const fileSizeMB = stats.size / (1024 * 1024);
+
+        console.log(`[MediaURL] Downloaded audio size: ${fileSizeMB.toFixed(2)}MB`);
+
+        if (fileSizeMB > 24) {
+          console.log('[MediaURL] Audio too large, compressing...');
+          compressedAudio = await compressAudioIfNeeded(audioPath, 24);
+          audioPath = compressedAudio;
+
+          const newStats = await fs.stat(audioPath);
+          const newSizeMB = newStats.size / (1024 * 1024);
+          console.log(`[MediaURL] Compressed audio size: ${newSizeMB.toFixed(2)}MB`);
+        }
+
+        // Transcribe
+        const languageMap: Record<string, string> = {
+          indonesian: 'id',
+          arabic: 'ar',
+          english: 'en',
+        };
+        const transcriptionResult = await transcribeAudio(audioPath, {
+          language: languageMap[language] || 'en',
+        });
+
+        // Translate if Indonesian
+        let transcriptText = transcriptionResult.text;
+        if (language === 'indonesian') {
+          transcriptText = await translateTranscript(transcriptText, 'indonesian');
+        }
+
+        // Format transcript with paragraphs and sections
+        const { formatTranscript } = await import('@/lib/ai');
+        const formattedTranscript = await formatTranscript(transcriptText, language);
+
+        // Summarize
+        const lectureNotes = await summarizeTranscript(transcriptText, originalFilename, {
+          language,
+          detailLevel: 'detailed',
+        });
+
+        // Cleanup
+        await cleanupUploadedFile(downloadedAudio.audioPath);
+        if (compressedAudio && compressedAudio !== downloadedAudio.audioPath) {
+          await cleanupUploadedFile(compressedAudio);
+        }
+
+        return {
+          success: true,
+          data: {
+            ...lectureNotes,
+            transcript: formattedTranscript,
+          },
+        };
+      } catch (error) {
+        // Cleanup on error
+        if (downloadedAudio?.audioPath) {
+          await cleanupUploadedFile(downloadedAudio.audioPath).catch(() => {});
+        }
+        if (compressedAudio && compressedAudio !== downloadedAudio?.audioPath) {
+          await cleanupUploadedFile(compressedAudio).catch(() => {});
+        }
+        throw error;
+      }
     }
 
     // Handle YouTube URL

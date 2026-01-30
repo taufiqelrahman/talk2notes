@@ -26,7 +26,8 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
   const [currentStep, setCurrentStep] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [inputMode, setInputMode] = useState<'file' | 'youtube'>('file');
+  const [mediaUrl, setMediaUrl] = useState('');
+  const [inputMode, setInputMode] = useState<'file' | 'youtube' | 'url'>('file');
   const [language, setLanguage] = useState<'english' | 'indonesian' | 'arabic'>('english');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -139,6 +140,11 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
       return;
     }
 
+    if (inputMode === 'url' && !mediaUrl) {
+      onError?.('Please enter a media URL');
+      return;
+    }
+
     setIsUploading(true);
     setProgress(5);
 
@@ -149,6 +155,12 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
         setCurrentStep('Downloading from YouTube...');
         setProgressDetails(`URL: ${youtubeUrl}`);
         formData.append('youtubeUrl', youtubeUrl);
+        formData.append('language', language);
+        setEstimatedTime('3-10 minutes');
+      } else if (inputMode === 'url') {
+        setCurrentStep('Downloading from URL...');
+        setProgressDetails(`URL: ${mediaUrl}`);
+        formData.append('mediaUrl', mediaUrl);
         formData.append('language', language);
         setEstimatedTime('3-10 minutes');
       } else {
@@ -204,6 +216,46 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
           onSuccess?.(result.data);
         } else {
           throw new Error(result.error || 'Failed to process YouTube video');
+        }
+      } else if (inputMode === 'url') {
+        setCurrentStep('Processing media from URL...');
+        setProgressDetails('Downloading and extracting audio...');
+        const uploadTimer = simulateProgress(15, 35, 3000);
+
+        // Start actual processing
+        const processingPromise = createTranscriptionMutation(formData);
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        clearInterval(uploadTimer);
+        setProgress(35);
+
+        // Continue with transcription
+        const transcribeStart = 35;
+        setCurrentStep('Transcribing audio to text...');
+        setProgressDetails('Converting speech to text with AI...');
+        simulateProgress(transcribeStart, 70, 15000);
+
+        const result = await processingPromise;
+        setProgress(100);
+        setCurrentStep('Complete!');
+
+        if (result.success && result.data) {
+          // Save to history
+          saveToHistory({
+            title: result.data.title || 'Media from URL',
+            notes: result.data,
+            language: language === 'indonesian' ? 'id' : language === 'arabic' ? 'ar' : 'en',
+            source: 'url',
+            mediaUrl,
+          });
+          window.dispatchEvent(new Event('historyUpdated'));
+
+          // Refresh rate limits to show updated quota
+          fetchLimits();
+
+          onSuccess?.(result.data);
+        } else {
+          throw new Error(result.error || 'Failed to process media from URL');
         }
       } else {
         setCurrentStep('Uploading file...');
@@ -360,7 +412,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Toggle between File and YouTube */}
+        {/* Toggle between File, YouTube, and URL */}
         <div className="flex justify-center gap-2 mb-4">
           <button
             type="button"
@@ -371,7 +423,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            Upload File
+            📁 Upload File
           </button>
           <button
             type="button"
@@ -382,7 +434,18 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            YouTube URL
+            ▶️ YouTube
+          </button>
+          <button
+            type="button"
+            onClick={() => setInputMode('url')}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              inputMode === 'url'
+                ? 'bg-primary-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            🔗 URL
           </button>
         </div>
 
@@ -404,6 +467,34 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
               <p className="mt-2 text-xs text-gray-500">
                 Paste a YouTube video URL to download and transcribe its audio
               </p>
+            </div>
+          </div>
+        ) : inputMode === 'url' ? (
+          <div className="space-y-4">
+            <div className="border-2 border-gray-300 rounded-lg p-6">
+              <label htmlFor="media-url" className="block text-sm font-medium text-gray-700 mb-2">
+                Media URL (Audio/Video)
+              </label>
+              <input
+                type="url"
+                id="media-url"
+                value={mediaUrl}
+                onChange={(e) => setMediaUrl(e.target.value)}
+                placeholder="https://example.com/audio.mp3"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                disabled={isUploading}
+              />
+              <p className="mt-2 text-xs text-gray-500">
+                Paste a direct URL to audio/video file (MP3, MP4, WAV, etc.)
+              </p>
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  <strong>Supported:</strong> Direct links to audio/video files, Google Drive,
+                  Dropbox, etc.
+                  <br />
+                  <strong>Note:</strong> The URL must be a direct download link to the media file.
+                </p>
+              </div>
             </div>
           </div>
         ) : (
@@ -517,7 +608,9 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
         )}
 
         {/* Language Selection */}
-        {((inputMode === 'file' && selectedFile) || (inputMode === 'youtube' && youtubeUrl)) &&
+        {((inputMode === 'file' && selectedFile) ||
+          (inputMode === 'youtube' && youtubeUrl) ||
+          (inputMode === 'url' && mediaUrl)) &&
           !isUploading && (
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -585,6 +678,7 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
           disabled={
             (inputMode === 'file' && !selectedFile) ||
             (inputMode === 'youtube' && !youtubeUrl) ||
+            (inputMode === 'url' && !mediaUrl) ||
             isUploading
           }
           className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

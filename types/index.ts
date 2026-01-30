@@ -100,9 +100,10 @@ export interface HistoryItem {
   notes: LectureNotes;
   timestamp: number;
   language: string;
-  source: 'file' | 'youtube';
+  source: 'file' | 'youtube' | 'url';
   filename?: string;
   youtubeUrl?: string;
+  mediaUrl?: string;
 }
 
 export interface TranscriptionOptions {
