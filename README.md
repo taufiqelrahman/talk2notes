@@ -18,8 +18,9 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 💰 **Free to Use**: Default Groq integration with generous free tier (no credit card required!)
 - 🎵 **Multi-format Support**: Upload MP3, WAV, M4A, MP4, MKV, MOV, and more
 - 🎬 **YouTube Support**: Transcribe directly from YouTube URLs (requires yt-dlp)
+- 🔗 **Direct URL Support**: Download and transcribe media from any public URL
 - 🤖 **AI-Powered**: Transcription and summarization using Groq (default), OpenAI, Deepgram, or Anthropic
-- 🌍 **Bilingual Support**: Generate notes in English or Indonesian (Bahasa Indonesia)
+- 🌍 **Multilingual Support**: Generate notes in English, Indonesian, or Arabic
 - 📝 **Formatted Transcript**: AI-formatted transcript with paragraphs, sections, and subheadings for easy reading
 - 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
 - ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
@@ -112,20 +113,34 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 **File Upload:**
 
 1. Visit the application homepage
-2. Select your preferred language (🇬🇧 English or 🇮🇩 Indonesian)
-3. Drag and drop or click to upload an audio/video file (MP3, WAV, M4A, MP4, MKV, MOV, etc.)
-4. Wait for processing (transcription + summarization)
-5. View your structured notes with beautiful markdown formatting
-6. Download notes as JSON/Markdown or transcript as TXT
+2. Click the **📁 Upload File** tab
+3. Select your preferred language (🇬🇧 English, 🇮🇩 Indonesian, or 🇸🇦 Arabic)
+4. Drag and drop or click to upload an audio/video file (MP3, WAV, M4A, MP4, MKV, MOV, etc.)
+5. Wait for processing (transcription + summarization)
+6. View your structured notes with beautiful markdown formatting
+7. Download notes as JSON/Markdown or transcript as TXT
 
 **YouTube URL:**
 
-1. Toggle to "YouTube URL" mode
+1. Click the **▶️ YouTube** tab
 2. Select your preferred language
 3. Paste a YouTube video URL (supports youtube.com, youtu.be, etc.)
 4. Wait for processing (download → transcribe → summarize)
 5. View formatted notes and transcript
 6. **Note**: Videos >500MB or >24MB audio will be auto-compressed for reliable transcription
+
+**Direct URL:**
+
+1. Click the **🔗 URL** tab
+2. Select your preferred language
+3. Paste a direct URL to an audio/video file
+4. Wait for processing (download → transcribe → summarize)
+5. View formatted notes and transcript
+6. **Supported URLs**:
+   - Direct links to media files (MP3, MP4, WAV, etc.)
+   - Google Drive public links
+   - Dropbox public links
+   - Any publicly accessible media URL
 
 ### Language Support
 
@@ -142,6 +157,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
   - Preserves Arabic text (Quranic verses, Hadith) with harakat
   - Maintains format: "Arabic text (transliteration) - Indonesian translation"
   - Keeps technical Islamic terms in original Arabic when commonly used
+
+**Arabic (العربية)**
+
+- Transcription in Arabic
+- Notes generated in Arabic
+- Preserves proper Arabic text formatting and diacritics
 
 ### Transcript Formatting
 
@@ -169,13 +190,13 @@ All transcriptions are automatically saved to your browser's history:
 - **Automatic Saving**: Every successful transcription is saved automatically (max 50 items)
 - **Quick Access**: Click "Show History" button to browse past transcriptions
 - **Smart Organization**: Sorted by timestamp (most recent first)
-- **Detailed Info**: View title, source (file/YouTube), language, timestamp, and summary preview
+- **Detailed Info**: View title, source (file/YouTube/URL), language, timestamp, and summary preview
 - **One-Click Restore**: Click any history item to reload its complete notes
 - **Individual Delete**: Remove specific items with the delete button (appears on hover)
 - **Clear All**: Remove all history with confirmation dialog
 - **Cross-Tab Sync**: History updates automatically across multiple browser tabs
 - **Relative Timestamps**: "2 hours ago", "3 days ago" for easy reference
-- **Source Icons**: Visual indicators for YouTube videos vs uploaded files
+- **Source Icons**: Visual indicators for YouTube videos (▶️), URLs (🔗), and uploaded files (📁)
 - **Persistent Storage**: Stored locally in browser (localStorage)
 
 **Note**: History is stored locally in your browser. Clearing browser data will remove all history.
@@ -518,6 +539,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - [CLI Reference](CLI-REFERENCE.md) - Complete command-line reference
 - [Architecture](ARCHITECTURE.md) - System design and structure
 - [Project Structure](PROJECT-STRUCTURE.md) - Code organization
+- [URL Source Feature](URL-SOURCE.md) - Using direct URLs for media
 - [Contributing](CONTRIBUTING.md) - How to contribute
 
 ## �📄 License
