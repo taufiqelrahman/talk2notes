@@ -419,8 +419,8 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             onClick={() => setInputMode('file')}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${
               inputMode === 'file'
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-primary-600 text-white cursor-default'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'
             }`}
           >
             📁 Upload File
@@ -430,8 +430,8 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             onClick={() => setInputMode('youtube')}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${
               inputMode === 'youtube'
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-primary-600 text-white cursor-default'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'
             }`}
           >
             ▶️ YouTube
@@ -441,8 +441,8 @@ export function UploadForm({ onSuccess, onError }: UploadFormProps) {
             onClick={() => setInputMode('url')}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${
               inputMode === 'url'
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-primary-600 text-white cursor-default'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'
             }`}
           >
             🔗 URL
