@@ -9,7 +9,7 @@
 
 > Transform audio and video lectures into structured, comprehensive notes using AI
 
-Talk2Notes is an open-source web application that automatically transcribes audio and video files and generates well-organized lecture notes complete with summaries, key concepts, definitions, example problems, and action items.
+Talk2Notes is an open-source web application that automatically transcribes audio and video files and generates well-organized lecture notes complete with summaries, key concepts, definitions, example problems, interactive quizzes, and action items.
 
 🌐 **[Live Demo](https://talk2notes.fly.dev)** | 📖 **[Documentation](DOCS.md)** | ⚡ **[Quick Start](QUICKSTART.md)** | 🆓 **[Groq Setup](GROQ-SETUP.md)** | 🛡️ **[Rate Limits](RATE-LIMITS.md)** | 🔍 **[Troubleshooting](TROUBLESHOOTING.md)**
 
@@ -23,6 +23,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 🌍 **Multilingual Support**: Generate notes in English, Indonesian, or Arabic
 - 📝 **Formatted Transcript**: AI-formatted transcript with paragraphs, sections, and subheadings for easy reading
 - 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
+- 🎯 **Interactive Quiz**: AI-generated multiple choice questions with instant feedback and explanations
 - ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
 - 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
 - 📋 **Copy to Clipboard**: Quick copy functionality for each tab
@@ -210,6 +211,7 @@ The application provides multiple tabs for organized viewing:
 - **Key Concepts**: Important concepts with explanations
 - **Definitions**: Technical terms and their definitions
 - **Examples**: Sample problems with solutions
+- **Quiz**: Interactive multiple choice questions to test understanding with instant feedback
 - **Action Items**: Actionable tasks with checkboxes
 - **Full Transcript**: AI-formatted transcription with paragraphs, sections, and download option
 
