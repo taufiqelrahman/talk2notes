@@ -12,6 +12,8 @@ interface NotesDisplayProps {
 export function NotesDisplay({ notes }: NotesDisplayProps) {
   const [activeTab, setActiveTab] = useState<string>('summary');
   const [copied, setCopied] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
+  const [showResults, setShowResults] = useState(false);
 
   if (!notes) {
     return null;
@@ -23,6 +25,7 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
     { id: 'concepts', label: 'Key Concepts' },
     { id: 'definitions', label: 'Definitions' },
     { id: 'problems', label: 'Examples' },
+    { id: 'quiz', label: 'Quiz' },
     { id: 'actions', label: 'Action Items' },
     { id: 'transcript', label: 'Full Transcript' },
   ];
@@ -124,6 +127,22 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
       });
     }
 
+    if (notes.quizQuestions && notes.quizQuestions.length > 0) {
+      markdown += `## Quiz Questions\n\n`;
+      notes.quizQuestions.forEach((quiz, idx) => {
+        markdown += `### Question ${idx + 1}\n\n`;
+        markdown += `${quiz.question}\n\n`;
+        quiz.options.forEach((option, optIdx) => {
+          const isCorrect = optIdx === quiz.correctAnswer;
+          markdown += `${String.fromCharCode(65 + optIdx)}. ${option}${isCorrect ? ' ✓' : ''}\n`;
+        });
+        markdown += '\n';
+        if (quiz.explanation) {
+          markdown += `**Explanation**: ${quiz.explanation}\n\n`;
+        }
+      });
+    }
+
     if (notes.actionItems.length > 0) {
       markdown += `## Action Items\n\n`;
       notes.actionItems.forEach((item) => {
@@ -197,6 +216,20 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
           actionsText += `- [ ] ${item}\n`;
         });
         return actionsText;
+
+      case 'quiz':
+        if (notes.quizQuestions?.length === 0) return 'No quiz questions available';
+        let quizText = `# ${notes.title}\n\n## Quiz Questions\n\n`;
+        notes.quizQuestions?.forEach((q, idx) => {
+          quizText += `### Question ${idx + 1}\n\n${q.question}\n\n`;
+          q.options.forEach((opt, optIdx) => {
+            const isCorrect = optIdx === q.correctAnswer;
+            quizText += `${String.fromCharCode(65 + optIdx)}. ${opt}${isCorrect ? ' ✓' : ''}\n`;
+          });
+          if (q.explanation) quizText += `\n**Explanation**: ${q.explanation}\n`;
+          quizText += '\n';
+        });
+        return quizText;
 
       case 'transcript':
         return notes.transcript || 'Transcript not available';
@@ -432,6 +465,156 @@ export function NotesDisplay({ notes }: NotesDisplayProps) {
               ))
             ) : (
               <p className="text-gray-500 text-center py-8">No example problems found</p>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'quiz' && (
+          <div className="space-y-6">
+            {notes.quizQuestions && notes.quizQuestions.length > 0 ? (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Test Your Knowledge ({notes.quizQuestions.length} Questions)
+                  </h3>
+                  {showResults && (
+                    <div className="text-sm">
+                      <span className="font-medium">
+                        Score:{' '}
+                        {
+                          Object.keys(selectedAnswers).filter(
+                            (key) =>
+                              selectedAnswers[parseInt(key)] ===
+                              notes.quizQuestions[parseInt(key)].correctAnswer
+                          ).length
+                        }{' '}
+                        / {notes.quizQuestions.length}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {notes.quizQuestions.map((quiz, idx) => (
+                  <div key={idx} className="border border-gray-200 rounded-lg p-6 bg-white">
+                    <h4 className="text-md font-semibold text-gray-900 mb-4">Question {idx + 1}</h4>
+                    <p className="text-gray-700 mb-4">{quiz.question}</p>
+                    <div className="space-y-3">
+                      {quiz.options.map((option, optIdx) => {
+                        const isSelected = selectedAnswers[idx] === optIdx;
+                        const isCorrect = optIdx === quiz.correctAnswer;
+                        const showCorrect = showResults && isCorrect;
+                        const showIncorrect = showResults && isSelected && !isCorrect;
+
+                        return (
+                          <button
+                            key={optIdx}
+                            onClick={() => {
+                              if (!showResults) {
+                                setSelectedAnswers({ ...selectedAnswers, [idx]: optIdx });
+                              }
+                            }}
+                            disabled={showResults}
+                            className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                              showCorrect
+                                ? 'bg-green-50 border-green-500'
+                                : showIncorrect
+                                  ? 'bg-red-50 border-red-500'
+                                  : isSelected
+                                    ? 'bg-primary-50 border-primary-500'
+                                    : 'bg-white border-gray-300 hover:border-gray-400'
+                            } ${showResults ? 'cursor-default' : 'cursor-pointer'}`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div
+                                className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                  showCorrect
+                                    ? 'border-green-600 bg-green-600'
+                                    : showIncorrect
+                                      ? 'border-red-600 bg-red-600'
+                                      : isSelected
+                                        ? 'border-primary-600 bg-primary-600'
+                                        : 'border-gray-400'
+                                }`}
+                              >
+                                {(isSelected || showCorrect) && (
+                                  <svg
+                                    className="w-4 h-4 text-white"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    {showCorrect ? (
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                      />
+                                    ) : showIncorrect ? (
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                      />
+                                    ) : (
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                      />
+                                    )}
+                                  </svg>
+                                )}
+                              </div>
+                              <span
+                                className={
+                                  showCorrect
+                                    ? 'text-green-900 font-medium'
+                                    : showIncorrect
+                                      ? 'text-red-900'
+                                      : 'text-gray-700'
+                                }
+                              >
+                                {String.fromCharCode(65 + optIdx)}. {option}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {showResults && quiz.explanation && (
+                      <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <p className="text-sm font-semibold text-blue-900 mb-2">Explanation:</p>
+                        <p className="text-sm text-blue-800">{quiz.explanation}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <div className="flex justify-center">
+                  {!showResults ? (
+                    <button
+                      onClick={() => setShowResults(true)}
+                      disabled={Object.keys(selectedAnswers).length < notes.quizQuestions.length}
+                      className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Submit Answers
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSelectedAnswers({});
+                        setShowResults(false);
+                      }}
+                      className="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+                    >
+                      Retake Quiz
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-500 text-center py-8">No quiz questions available</p>
             )}
           </div>
         )}

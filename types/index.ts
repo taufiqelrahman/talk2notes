@@ -27,6 +27,7 @@ export interface LectureNotes {
   keyConcepts: KeyConcept[];
   definitions: Definition[];
   exampleProblems: ExampleProblem[];
+  quizQuestions: QuizQuestion[];
   actionItems: string[];
   transcript?: string;
   metadata: NotesMetadata;
@@ -47,6 +48,13 @@ export interface Definition {
 export interface ExampleProblem {
   problem: string;
   solution?: string;
+  explanation?: string;
+}
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: number;
   explanation?: string;
 }
 

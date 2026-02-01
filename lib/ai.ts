@@ -804,6 +804,7 @@ export async function summarizeTranscript(
     keyConcepts: parsed.keyConcepts || [],
     definitions: parsed.definitions || [],
     exampleProblems: parsed.exampleProblems || [],
+    quizQuestions: parsed.quizQuestions || [],
     actionItems: parsed.actionItems || [],
     metadata: {
       generatedAt: new Date().toISOString(),
@@ -867,6 +868,7 @@ async function summarizeTranscriptInChunks(
       keyConcepts: parsed.keyConcepts || [],
       definitions: parsed.definitions || [],
       exampleProblems: parsed.exampleProblems || [],
+      quizQuestions: parsed.quizQuestions || [],
       actionItems: parsed.actionItems || [],
       metadata: {
         generatedAt: new Date().toISOString(),
@@ -889,6 +891,7 @@ async function summarizeTranscriptInChunks(
     keyConcepts: chunkSummaries.flatMap((s) => s.keyConcepts),
     definitions: chunkSummaries.flatMap((s) => s.definitions),
     exampleProblems: chunkSummaries.flatMap((s) => s.exampleProblems),
+    quizQuestions: chunkSummaries.flatMap((s) => s.quizQuestions),
     actionItems: chunkSummaries.flatMap((s) => s.actionItems),
     metadata: {
       generatedAt: new Date().toISOString(),
@@ -1105,11 +1108,24 @@ Generate a JSON object with the following structure:
       "explanation": "Step-by-step explanation"
     }
   ],
+  "quizQuestions": [
+    {
+      "question": "Multiple choice question to test understanding",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 0,
+      "explanation": "Why this answer is correct"
+    }
+  ],
   "actionItems": ["Tasks mentioned", "Assignments", "Follow-up items", "Further reading suggestions"]
 }
 
 Rules:
 - Extract all key concepts, definitions, and examples mentioned
+- Generate 5-10 multiple choice quiz questions that test comprehension of key concepts
+- Quiz questions should cover important topics from the lecture
+- Each quiz question must have 4 options with exactly one correct answer
+- correctAnswer is the index (0-3) of the correct option in the options array
+- Include explanation for each quiz answer to aid learning
 - Organize information logically and hierarchically
 - Use clear, academic language in the specified language (${language === 'indonesian' ? 'Bahasa Indonesia' : language === 'arabic' ? 'العربية (Arabic)' : 'English'})
 - For Arabic text (Quran, Hadith): ALWAYS preserve original Arabic with harakat, add transliteration, then translation
