@@ -1,6 +1,6 @@
 {
   "name": "talk2notes",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "Open-source multilingual web app that converts audio/video lectures into structured notes using AI with markdown formatting",
   "author": "Talk2Notes Contributors",
   "license": "MIT",

@@ -2,6 +2,32 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [2.8.0] - 2026-02-01
+
+### Added
+
+- 🎯 **Interactive Quiz Feature**: AI-generated multiple choice questions to test comprehension
+  - New `QuizQuestion` interface with question, options, correctAnswer, and explanation
+  - Interactive Quiz tab in notes display between Examples and Action Items
+  - 5-10 automatically generated multiple choice questions (A, B, C, D format)
+  - Answer selection with visual feedback (primary blue when selected)
+  - Submit answers to see results with score calculation
+  - Correct answers highlighted in green (✓), incorrect in red (✗)
+  - Optional explanations displayed after submission for learning
+  - Retake quiz functionality to reset and try again
+  - Quiz questions included in markdown export with correct answers marked
+  - AI prompt updated to generate quiz questions covering key lecture topics
+
+### Technical
+
+- Added `QuizQuestion` interface to `types/index.ts`
+- Updated `LectureNotes` interface with `quizQuestions: QuizQuestion[]` field
+- Enhanced AI summarization prompt to generate quiz questions
+- Updated all LectureNotes return objects to include quizQuestions field
+- Added interactive quiz UI in `components/notes-display.tsx` with state management
+- Quiz state management: `selectedAnswers` and `showResults` hooks
+- Copy to clipboard support includes quiz questions
+
 ## [2.7.0] - 2026-01-30
 
 ### Added
