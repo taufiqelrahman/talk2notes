@@ -125,7 +125,8 @@ tests/
     ├── file-security.test.ts         # Magic bytes validation
     ├── rate-limiter.test.ts          # Rate limiting
     ├── ai-config.test.ts             # AI configuration
-    └── history.test.ts               # History management
+    ├── history.test.ts               # History management
+    └── quiz.test.tsx                 # Quiz feature tests
 ```
 
 ### Test Categories
@@ -178,6 +179,22 @@ Tests for AI provider configuration:
 Tests for localStorage-based history:
 
 - Saving transcription history
+
+#### 6. Quiz Feature Tests (`quiz.test.tsx`)
+
+Tests for interactive quiz functionality:
+
+- Quiz tab rendering and navigation
+- Quiz questions display (21 tests total)
+- Answer selection and state management
+- Submit button enable/disable logic
+- Score calculation (correct/incorrect)
+- Visual feedback (green for correct, red for incorrect)
+- Explanation display after submission
+- Retake quiz functionality
+- Copy to clipboard with quiz content
+- Multilingual quiz support
+- Edge cases (single question, no explanation, partial scores)
 - Retrieving history items
 - Deleting specific items
 - Clearing all history
@@ -507,6 +524,7 @@ vi.mock('openai', () => ({
    - Clean up after tests
 
 5. **Use page object models for complex pages**
+
    ```typescript
    class HomePage {
      constructor(private page: Page) {}
