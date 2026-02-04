@@ -2,6 +2,62 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [3.0.0] - 2026-02-04
+
+### Added
+
+- 🎵 **Media Player Feature**: Playback for YouTube and Direct URL sources
+  - **YouTube Integration**: Embedded YouTube player with full controls
+  - **Direct URL Support**: HTML5 video/audio player for direct media URLs
+  - **URL-Only**: Feature limited to YouTube and URL sources (not file uploads)
+  - **Info Banner**: Clear message explaining feature availability for file uploads
+  - Player positioned between source info and content tabs
+  - Clean, responsive UI with Tailwind CSS (16:9 aspect ratio for videos)
+  - **Serverless-Friendly**: No storage needed, streams from original source
+  - **No Storage Costs**: No S3/R2 or file management required
+  - **Unlimited Size**: No file size restrictions since we don't store files
+  - Added `sourceUrl` and `sourceType` fields to `NotesMetadata` interface
+  - Comprehensive documentation in `MEDIA-PLAYER.md`
+  - Full test coverage: 7 integration tests, E2E tests included
+
+### Fixed
+
+- 🐛 **Dynamic Import Issues**: Removed all dynamic imports from server actions
+  - Fixed "Cannot find module" error when uploading files
+  - Converted all `await import()` to static imports for better Next.js compatibility
+  - Improved build stability and production reliability
+
+### Technical
+
+- Added `components/media-player.tsx` with YouTube embed and HTML5 video support
+- Updated `actions/transcription.ts`:
+  - Save sourceUrl and sourceType for YouTube and media URLs
+  - Removed dynamic imports, using static imports only
+  - Improved error handling
+- Updated `types/index.ts` with `sourceUrl?: string` and `sourceType?: 'youtube' | 'url'`
+- Enhanced `components/notes-display.tsx`:
+  - Conditional player rendering based on sourceType
+  - Info banner for file uploads explaining feature limitation
+- YouTube URL parsing and embed conversion
+- Responsive iframe for YouTube (16:9 aspect ratio)
+- HTML5 video element with standard controls for direct URLs
+- Automatic history integration (URLs saved with notes)
+
+### Benefits
+
+- ✅ Perfect for serverless (Vercel/Netlify/Fly.io)
+- ✅ No cloud storage costs
+- ✅ Unlimited video length and quality
+- ✅ Always plays from original source
+- ✅ Simple implementation with no file management
+
+### Limitations
+
+- ⚠️ Only works for YouTube and direct URL sources
+- ⚠️ File uploads are NOT stored (by design)
+- ⚠️ Requires internet connection for playback
+- ⚠️ Dependent on source URL availability
+
 ## [2.8.0] - 2026-02-01
 
 ### Added
