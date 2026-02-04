@@ -65,6 +65,8 @@ export interface NotesMetadata {
   originalFilename: string;
   duration?: number;
   wordCount: number;
+  sourceUrl?: string;
+  sourceType?: 'youtube' | 'url';
 }
 
 export interface ProcessingState {

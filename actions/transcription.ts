@@ -15,6 +15,9 @@ import { transcribeAudio, summarizeTranscript, translateTranscript } from '@/lib
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
 import { promises as fs } from 'fs';
 import { rateLimiter, RATE_LIMITS, getClientId, formatTimeRemaining } from '@/lib/rate-limiter';
+import { downloadMediaFromUrl, isValidMediaUrl } from '@/lib/media-downloader';
+import { downloadYoutubeAudio, isValidYoutubeUrl } from '@/lib/youtube';
+import { formatTranscript } from '@/lib/ai';
 
 export async function createTranscriptionMutation(
   formData: FormData
@@ -70,8 +73,6 @@ export async function createTranscriptionMutation(
 
     // Handle Media URL (generic URL download)
     if (mediaUrl) {
-      const { downloadMediaFromUrl, isValidMediaUrl } = await import('@/lib/media-downloader');
-
       if (!isValidMediaUrl(mediaUrl)) {
         return {
           success: false,
@@ -121,7 +122,6 @@ export async function createTranscriptionMutation(
         }
 
         // Format transcript with paragraphs and sections
-        const { formatTranscript } = await import('@/lib/ai');
         const formattedTranscript = await formatTranscript(transcriptText, language);
 
         // Summarize
@@ -141,6 +141,11 @@ export async function createTranscriptionMutation(
           data: {
             ...lectureNotes,
             transcript: formattedTranscript,
+            metadata: {
+              ...lectureNotes.metadata,
+              sourceUrl: mediaUrl,
+              sourceType: 'url' as const,
+            },
           },
         };
       } catch (error) {
@@ -157,8 +162,6 @@ export async function createTranscriptionMutation(
 
     // Handle YouTube URL
     if (youtubeUrl) {
-      const { downloadYoutubeAudio, isValidYoutubeUrl } = await import('@/lib/youtube');
-
       if (!isValidYoutubeUrl(youtubeUrl)) {
         return {
           success: false,
@@ -208,7 +211,6 @@ export async function createTranscriptionMutation(
         }
 
         // Format transcript with paragraphs and sections
-        const { formatTranscript } = await import('@/lib/ai');
         const formattedTranscript = await formatTranscript(transcriptText, language);
 
         // Summarize
@@ -228,6 +230,11 @@ export async function createTranscriptionMutation(
           data: {
             ...lectureNotes,
             transcript: formattedTranscript,
+            metadata: {
+              ...lectureNotes.metadata,
+              sourceUrl: youtubeUrl,
+              sourceType: 'youtube' as const,
+            },
           },
         };
       } catch (error) {
@@ -311,7 +318,6 @@ export async function createTranscriptionMutation(
     }
 
     // Format transcript with paragraphs and sections
-    const { formatTranscript } = await import('@/lib/ai');
     console.log('[Transcription] Formatting transcript with paragraphs and sections...');
     const formattedTranscript = await formatTranscript(finalTranscript, language);
 
