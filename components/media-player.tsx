@@ -90,7 +90,7 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
     return (
       <div
         ref={playerRef}
-        className={`bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 ${
+        className={`bg-red-50 rounded-lg border border-red-300 transition-all duration-300 ${
           isSticky ? 'fixed top-16 right-4 z-40 shadow-xl w-80' : 'w-full'
         } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'}`}
       >
@@ -102,7 +102,7 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
           >
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
           </svg>
-          <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} font-medium text-gray-700`}>
+          <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} font-medium text-red-900`}>
             YouTube
           </span>
           <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} text-gray-500 truncate flex-1`}>
@@ -110,11 +110,11 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
           </span>
           <button
             onClick={() => setIsMinimized(!isMinimized)}
-            className="p-0.5 hover:bg-gray-200 rounded transition-colors"
+            className="p-0.5 hover:bg-red-100 rounded transition-colors"
             title={isMinimized ? 'Expand player' : 'Minimize player'}
           >
             <svg
-              className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-gray-600`}
+              className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-red-700`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -155,13 +155,13 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
   return (
     <div
       ref={playerRef}
-      className={`bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 ${
+      className={`bg-blue-50 rounded-lg border border-blue-300 transition-all duration-300 ${
         isSticky ? 'fixed top-16 right-4 z-40 shadow-xl w-80' : 'w-full'
       } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'}`}
     >
       <div className="flex items-center gap-1.5 mb-1.5">
         <svg
-          className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-primary-600`}
+          className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-blue-600`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -179,19 +179,19 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
             d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} font-medium text-gray-700`}>
+        <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} font-medium text-blue-900`}>
           Media
         </span>
-        <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} text-gray-500 truncate flex-1`}>
+        <span className={`${isSticky ? 'text-[10px]' : 'text-xs'} text-blue-700 truncate flex-1`}>
           {fileName}
         </span>
         <button
           onClick={() => setIsMinimized(!isMinimized)}
-          className="p-0.5 hover:bg-gray-200 rounded transition-colors"
+          className="p-0.5 hover:bg-blue-100 rounded transition-colors"
           title={isMinimized ? 'Expand player' : 'Minimize player'}
         >
           <svg
-            className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-gray-600`}
+            className={`${isSticky ? 'w-3 h-3' : 'w-4 h-4'} text-blue-700`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
