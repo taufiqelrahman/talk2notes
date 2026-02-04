@@ -24,6 +24,7 @@ Talk2Notes is an open-source web application that automatically transcribes audi
 - 📝 **Formatted Transcript**: AI-formatted transcript with paragraphs, sections, and subheadings for easy reading
 - 📊 **Structured Output**: Organized notes with paragraphs, bullet points, concepts, and definitions
 - 🎯 **Interactive Quiz**: AI-generated multiple choice questions with instant feedback and explanations
+- 🎵 **Media Player**: Playback YouTube videos and direct media URLs while reading transcripts and notes
 - ✨ **Markdown Rendering**: Beautiful formatted display with support for bold, italic, lists, and code blocks
 - 💾 **Export Options**: Download notes as JSON or Markdown, transcript as TXT
 - 📋 **Copy to Clipboard**: Quick copy functionality for each tab
@@ -201,6 +202,18 @@ All transcriptions are automatically saved to your browser's history:
 - **Persistent Storage**: Stored locally in browser (localStorage)
 
 **Note**: History is stored locally in your browser. Clearing browser data will remove all history.
+
+### Media Playback
+
+For YouTube and direct URL sources, a media player is displayed while viewing your notes:
+
+- **YouTube Videos**: Embedded YouTube player with full controls
+- **Direct Media URLs**: HTML5 video/audio player with standard controls
+- **Seamless Integration**: Player appears below source info, above content tabs
+- **Responsive Design**: Automatically adjusts to screen size
+- **Serverless-Friendly**: Streams from original source, no storage needed
+
+**Note**: Media playback is only available for YouTube and URL sources. File uploads are transcribed but not stored for playback (by design for serverless compatibility).
 
 ### Viewing Notes
 
