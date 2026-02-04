@@ -119,13 +119,15 @@ describe('MediaPlayer', () => {
     // Initially player should be expanded (iframe visible)
     let iframe = document.querySelector('iframe');
     expect(iframe).toBeInTheDocument();
+    expect(iframe?.parentElement).not.toHaveClass('hidden');
 
     // Click to minimize
     fireEvent.click(minimizeButton);
 
-    // After minimize, iframe should be hidden
+    // After minimize, iframe container should have hidden class
     iframe = document.querySelector('iframe');
-    expect(iframe).not.toBeInTheDocument();
+    expect(iframe).toBeInTheDocument(); // Still in DOM
+    expect(iframe?.parentElement).toHaveClass('hidden'); // But hidden with CSS
 
     // Button should now show expand
     const expandButton = screen.getByTitle('Expand player');
@@ -134,8 +136,9 @@ describe('MediaPlayer', () => {
     // Click to expand again
     fireEvent.click(expandButton);
 
-    // Iframe should be visible again
+    // Iframe container should not have hidden class anymore
     iframe = document.querySelector('iframe');
     expect(iframe).toBeInTheDocument();
+    expect(iframe?.parentElement).not.toHaveClass('hidden');
   });
 });

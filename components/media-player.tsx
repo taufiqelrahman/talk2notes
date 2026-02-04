@@ -137,16 +137,17 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
             </svg>
           </button>
         </div>
-        {!isMinimized && (
-          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-            <iframe
-              src={embedUrl}
-              className="absolute top-0 left-0 w-full h-full rounded-md"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        )}
+        <div
+          className={`relative w-full ${isMinimized ? 'hidden' : ''}`}
+          style={{ paddingBottom: '56.25%' }}
+        >
+          <iframe
+            src={embedUrl}
+            className="absolute top-0 left-0 w-full h-full rounded-md"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
       </div>
     );
   }
@@ -214,17 +215,15 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
           </svg>
         </button>
       </div>
-      {!isMinimized && (
-        <video
-          controls
-          preload="metadata"
-          className="w-full rounded-md"
-          onError={() => setError('Failed to load media')}
-        >
-          <source src={sourceUrl} />
-          Your browser does not support video playback.
-        </video>
-      )}
+      <video
+        controls
+        preload="metadata"
+        className={`w-full rounded-md ${isMinimized ? 'hidden' : ''}`}
+        onError={() => setError('Failed to load media')}
+      >
+        <source src={sourceUrl} />
+        Your browser does not support video playback.
+      </video>
       {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
     </div>
   );
