@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MediaPlayer } from '@/components/media-player';
 
 describe('MediaPlayer', () => {
@@ -12,7 +12,7 @@ describe('MediaPlayer', () => {
       />
     );
 
-    expect(screen.getByText('YouTube Video')).toBeInTheDocument();
+    expect(screen.getByText('YouTube')).toBeInTheDocument();
     expect(screen.getByText('Test Video')).toBeInTheDocument();
 
     const iframe = document.querySelector('iframe');
@@ -29,7 +29,7 @@ describe('MediaPlayer', () => {
       />
     );
 
-    expect(screen.getByText('Media Playback')).toBeInTheDocument();
+    expect(screen.getByText('Media')).toBeInTheDocument();
     expect(screen.getByText('video.mp4')).toBeInTheDocument();
 
     const videoElement = document.querySelector('video');
@@ -102,5 +102,40 @@ describe('MediaPlayer', () => {
 
     const videoElement = document.querySelector('video');
     expect(videoElement?.getAttribute('preload')).toBe('metadata');
+  });
+
+  it('can minimize and expand player', () => {
+    render(
+      <MediaPlayer
+        sourceUrl="https://www.youtube.com/watch?v=test123"
+        sourceType="youtube"
+        fileName="Test"
+      />
+    );
+
+    const minimizeButton = screen.getByTitle('Minimize player');
+    expect(minimizeButton).toBeInTheDocument();
+
+    // Initially player should be expanded (iframe visible)
+    let iframe = document.querySelector('iframe');
+    expect(iframe).toBeInTheDocument();
+
+    // Click to minimize
+    fireEvent.click(minimizeButton);
+
+    // After minimize, iframe should be hidden
+    iframe = document.querySelector('iframe');
+    expect(iframe).not.toBeInTheDocument();
+
+    // Button should now show expand
+    const expandButton = screen.getByTitle('Expand player');
+    expect(expandButton).toBeInTheDocument();
+
+    // Click to expand again
+    fireEvent.click(expandButton);
+
+    // Iframe should be visible again
+    iframe = document.querySelector('iframe');
+    expect(iframe).toBeInTheDocument();
   });
 });
