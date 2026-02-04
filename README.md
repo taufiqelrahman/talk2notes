@@ -205,12 +205,17 @@ All transcriptions are automatically saved to your browser's history:
 
 ### Media Playback
 
-For YouTube and direct URL sources, a media player is displayed while viewing your notes:
+For YouTube and direct URL sources, a compact floating media player is displayed while viewing your notes:
 
-- **YouTube Videos**: Embedded YouTube player with full controls
-- **Direct Media URLs**: HTML5 video/audio player with standard controls
-- **Seamless Integration**: Player appears below source info, above content tabs
-- **Responsive Design**: Automatically adjusts to screen size
+- **YouTube Videos**: Embedded YouTube player with full controls and red theme
+- **Direct Media URLs**: HTML5 video/audio player with blue theme
+- **Compact Floating Design**: 320px wide player in picture-in-picture style
+- **Smart Sticky Behavior**:
+  - Automatically floats to top-right corner when scrolling past player
+  - Returns to normal position when scrolling back up
+  - Smooth transition animations
+- **Minimize/Expand**: Toggle player visibility to save screen space
+- **Colorful Themes**: Red background for YouTube, blue for media URLs
 - **Serverless-Friendly**: Streams from original source, no storage needed
 
 **Note**: Media playback is only available for YouTube and URL sources. File uploads are transcribed but not stored for playback (by design for serverless compatibility).
