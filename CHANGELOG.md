@@ -9,16 +9,21 @@ All notable changes to Talk2Notes will be documented in this file.
 - 🎵 **Media Player Feature**: Playback for YouTube and Direct URL sources
   - **YouTube Integration**: Embedded YouTube player with full controls
   - **Direct URL Support**: HTML5 video/audio player for direct media URLs
+  - **Compact Floating Design**: Picture-in-picture style player (320px width)
+  - **Smart Sticky Behavior**:
+    - Floats to top-right corner when scrolling past original position
+    - Returns to normal position when scrolling back up
+    - Smooth transition animations
+  - **Minimize/Expand**: Toggle player visibility with button control
+  - **Colorful UI**: Red theme for YouTube, blue theme for media URLs
   - **URL-Only**: Feature limited to YouTube and URL sources (not file uploads)
   - **Info Banner**: Clear message explaining feature availability for file uploads
-  - Player positioned between source info and content tabs
-  - Clean, responsive UI with Tailwind CSS (16:9 aspect ratio for videos)
   - **Serverless-Friendly**: No storage needed, streams from original source
   - **No Storage Costs**: No S3/R2 or file management required
   - **Unlimited Size**: No file size restrictions since we don't store files
   - Added `sourceUrl` and `sourceType` fields to `NotesMetadata` interface
   - Comprehensive documentation in `MEDIA-PLAYER.md`
-  - Full test coverage: 7 integration tests, E2E tests included
+  - Full test coverage: 8 integration tests, E2E tests included
 
 ### Fixed
 
