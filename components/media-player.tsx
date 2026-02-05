@@ -12,8 +12,11 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
   const [error, setError] = useState<string | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const playerRef = useRef<HTMLDivElement>(null);
   const originalTopRef = useRef<number>(0);
+  const dragOffsetRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     // Store original position
@@ -26,12 +29,55 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
         const scrollY = window.scrollY;
         const shouldStick = scrollY > originalTopRef.current - 70;
         setIsSticky(shouldStick);
+
+        // Reset position when becoming sticky
+        if (shouldStick && position.x === 0 && position.y === 0) {
+          setPosition({ x: window.innerWidth - 336, y: 64 }); // 336px = w-80 + padding, 64px = top-16
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [position.x, position.y]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffsetRef.current.x,
+          y: e.clientY - dragOffsetRef.current.y,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isSticky) return;
+
+    const rect = playerRef.current?.getBoundingClientRect();
+    if (rect) {
+      dragOffsetRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+      setIsDragging(true);
+    }
+  };
 
   const getYouTubeEmbedUrl = (url: string): string | null => {
     try {
@@ -91,8 +137,10 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
       <div
         ref={playerRef}
         className={`bg-red-50 rounded-lg border border-red-300 transition-all duration-300 ${
-          isSticky ? 'fixed top-16 right-4 z-40 shadow-xl w-80' : 'w-full'
-        } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'}`}
+          isSticky ? 'fixed z-40 shadow-xl w-80' : 'w-full'
+        } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'} ${isDragging ? 'cursor-grabbing' : isSticky ? 'cursor-grab' : ''}`}
+        style={isSticky ? { left: `${position.x}px`, top: `${position.y}px` } : undefined}
+        onMouseDown={handleMouseDown}
       >
         <div className="flex items-center gap-1.5 mb-1.5">
           <svg
@@ -157,8 +205,10 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
     <div
       ref={playerRef}
       className={`bg-blue-50 rounded-lg border border-blue-300 transition-all duration-300 ${
-        isSticky ? 'fixed top-16 right-4 z-40 shadow-xl w-80' : 'w-full'
-      } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'}`}
+        isSticky ? 'fixed z-40 shadow-xl w-80' : 'w-full'
+      } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'} ${isDragging ? 'cursor-grabbing' : isSticky ? 'cursor-grab' : ''}`}
+      style={isSticky ? { left: `${position.x}px`, top: `${position.y}px` } : undefined}
+      onMouseDown={handleMouseDown}
     >
       <div className="flex items-center gap-1.5 mb-1.5">
         <svg
