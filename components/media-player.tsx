@@ -32,7 +32,7 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
 
         // Reset position when becoming sticky
         if (shouldStick && position.x === 0 && position.y === 0) {
-          setPosition({ x: window.innerWidth - 336, y: 64 }); // 336px = w-80 + padding, 64px = top-16
+          setPosition({ x: window.innerWidth - 336, y: 80 }); // 336px = w-80 + padding, 80px with margin
         }
       }
     };
@@ -43,15 +43,35 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition({
-          x: e.clientX - dragOffsetRef.current.x,
-          y: e.clientY - dragOffsetRef.current.y,
-        });
+      if (isDragging && playerRef.current) {
+        const playerWidth = 320; // w-80 = 320px
+        const playerHeight = playerRef.current.offsetHeight;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let newX = e.clientX - dragOffsetRef.current.x;
+        let newY = e.clientY - dragOffsetRef.current.y;
+
+        // Clamp to viewport boundaries
+        newX = Math.max(0, Math.min(newX, viewportWidth - playerWidth));
+        newY = Math.max(0, Math.min(newY, viewportHeight - playerHeight));
+
+        setPosition({ x: newX, y: newY });
       }
     };
 
     const handleMouseUp = () => {
+      if (isDragging && playerRef.current) {
+        const playerWidth = 320; // w-80 = 320px
+        const viewportWidth = window.innerWidth;
+        const centerX = viewportWidth / 2;
+
+        // Snap to nearest edge (left or right)
+        setPosition((prev) => ({
+          x: prev.x < centerX ? 16 : viewportWidth - playerWidth - 16, // 16px padding
+          y: prev.y,
+        }));
+      }
       setIsDragging(false);
     };
 
