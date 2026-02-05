@@ -32,7 +32,7 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
 
         // Reset position when becoming sticky
         if (shouldStick && position.x === 0 && position.y === 0) {
-          setPosition({ x: window.innerWidth - 336, y: 80 }); // 336px = w-80 + padding, 80px with margin
+          setPosition({ x: window.innerWidth - 352, y: 80 }); // 352px = 320px (w-80) + 32px padding
         }
       }
     };
@@ -52,9 +52,9 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
         let newX = e.clientX - dragOffsetRef.current.x;
         let newY = e.clientY - dragOffsetRef.current.y;
 
-        // Clamp to viewport boundaries
-        newX = Math.max(0, Math.min(newX, viewportWidth - playerWidth));
-        newY = Math.max(0, Math.min(newY, viewportHeight - playerHeight));
+        // Clamp to viewport boundaries with padding
+        newX = Math.max(16, Math.min(newX, viewportWidth - playerWidth - 32)); // 16px left, 32px right
+        newY = Math.max(16, Math.min(newY, viewportHeight - playerHeight - 16)); // 16px top and bottom
 
         setPosition({ x: newX, y: newY });
       }
