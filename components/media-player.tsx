@@ -68,7 +68,7 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
 
         // Snap to nearest edge (left or right)
         setPosition((prev) => ({
-          x: prev.x < centerX ? 16 : viewportWidth - playerWidth - 16, // 16px padding
+          x: prev.x < centerX ? 16 : viewportWidth - playerWidth - 32, // 32px padding on right
           y: prev.y,
         }));
       }
@@ -88,6 +88,8 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isSticky) return;
+
+    e.preventDefault(); // Prevent text selection
 
     const rect = playerRef.current?.getBoundingClientRect();
     if (rect) {
@@ -156,7 +158,9 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
     return (
       <div
         ref={playerRef}
-        className={`bg-red-50 rounded-lg border border-red-300 transition-all duration-300 ${
+        className={`bg-red-50 rounded-lg border border-red-300 select-none ${
+          isDragging ? '' : 'transition-all duration-300'
+        } ${
           isSticky ? 'fixed z-40 shadow-xl w-80' : 'w-full'
         } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'} ${isDragging ? 'cursor-grabbing' : isSticky ? 'cursor-grab' : ''}`}
         style={isSticky ? { left: `${position.x}px`, top: `${position.y}px` } : undefined}
@@ -224,7 +228,9 @@ export function MediaPlayer({ sourceUrl, sourceType, fileName }: MediaPlayerProp
   return (
     <div
       ref={playerRef}
-      className={`bg-blue-50 rounded-lg border border-blue-300 transition-all duration-300 ${
+      className={`bg-blue-50 rounded-lg border border-blue-300 select-none ${
+        isDragging ? '' : 'transition-all duration-300'
+      } ${
         isSticky ? 'fixed z-40 shadow-xl w-80' : 'w-full'
       } ${isMinimized ? 'p-1.5' : isSticky ? 'p-2' : 'p-4'} ${isDragging ? 'cursor-grabbing' : isSticky ? 'cursor-grab' : ''}`}
       style={isSticky ? { left: `${position.x}px`, top: `${position.y}px` } : undefined}
