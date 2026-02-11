@@ -75,6 +75,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
     "jsdom": "^27.4.0",
+    "node-mocks-http": "^1.17.2",
     "playwright": "^1.57.0",
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
