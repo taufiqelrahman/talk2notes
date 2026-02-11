@@ -2,6 +2,41 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [3.1.0] - 2026-02-05
+
+### Added
+
+- 🎯 **Draggable Media Player**: Enhanced floating player with full drag & drop functionality
+  - **Click & Drag**: Reposition player anywhere on screen when in sticky mode
+  - **Smart Edge Snapping**: Automatically snaps to nearest edge (left/right) when released
+  - **Safe Viewport Boundaries**: Player constrained within screen with proper padding
+    - 16px padding from top edge
+    - 16px padding from bottom edge
+    - 16px padding from left edge
+    - 32px padding from right edge (more spacious)
+  - **Text Selection Prevention**: Text doesn't get selected during drag operations
+  - **Responsive Dragging**: Player follows cursor instantly without delay
+  - **Visual Feedback**: Cursor changes to grab/grabbing during drag
+  - **Optimized Transitions**: Transitions disabled during drag for immediate response
+  - Enhanced user experience with intuitive positioning controls
+
+### Fixed
+
+- 🐛 **Initial Floating Position**: Fixed right padding when player first becomes sticky (now properly uses 32px instead of being too close to edge)
+- 🐛 **Viewport Boundaries**: Added top/bottom padding constraints to prevent player from touching screen edges
+
+### Technical
+
+- Added drag state management: `isDragging`, `position`, and `dragOffsetRef`
+- Implemented `handleMouseDown`, `handleMouseMove`, and `handleMouseUp` event handlers
+- Added viewport boundary calculations with safe padding: `Math.max(16, Math.min(newY, viewportHeight - playerHeight - 16))`
+- Smart edge detection: snaps to left (16px) or right (32px padding) based on center position
+- Conditional CSS: `select-none` class and transitions only when not dragging
+- Dynamic cursor styles: `cursor-grab` and `cursor-grabbing`
+- Position persistence during sticky mode with inline styles
+- `e.preventDefault()` to block text selection during drag
+- Fixed initial position calculation: `window.innerWidth - 352` (320px player + 32px padding)
+
 ## [3.0.0] - 2026-02-04
 
 ### Added
