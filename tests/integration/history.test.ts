@@ -45,6 +45,7 @@ describe('History Management', () => {
       },
     ],
     exampleProblems: [],
+    quizQuestions: [],
     actionItems: ['Action 1'],
     metadata: {
       generatedAt: new Date().toISOString(),
