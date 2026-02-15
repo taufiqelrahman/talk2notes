@@ -21,7 +21,9 @@ test.describe('Homepage', () => {
     await page.goto('/');
 
     // History is behind a toggle button
-    const historyButton = page.locator('button:has-text("Show History"), button:has-text("Hide History")');
+    const historyButton = page.locator(
+      'button:has-text("Show History"), button:has-text("Hide History")'
+    );
     await expect(historyButton.first()).toBeVisible();
   });
 
