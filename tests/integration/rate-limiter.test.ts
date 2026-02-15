@@ -101,7 +101,7 @@ describe('Rate Limiter', () => {
     it('should format hours correctly', () => {
       const now = Date.now();
       // Add extra buffer to avoid timing issues
-      const twoHours = now + (2 * 60 * 60 * 1000) + 1000;
+      const twoHours = now + 2 * 60 * 60 * 1000 + 1000;
       const result = formatTimeRemaining(twoHours);
       expect(result).toMatch(/^[12] hours?$/); // Accept "1 hour" or "2 hours" due to timing
     });
