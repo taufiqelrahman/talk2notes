@@ -28,5 +28,18 @@ describe('AI Configuration', () => {
       expect(config.apiKey).toBeDefined();
       expect(config.apiKey).toBe('test-api-key');
     });
+
+    it('should contain all expected keys with correct types', () => {
+      const config = getAIConfig();
+
+      expect(config).toEqual(
+        expect.objectContaining({
+          provider: expect.any(String),
+          transcriptionModel: expect.any(String),
+          summarizationModel: expect.any(String),
+          apiKey: expect.any(String),
+        })
+      );
+    });
   });
 });
