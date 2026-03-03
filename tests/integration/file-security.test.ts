@@ -146,6 +146,18 @@ describe('File Security - Magic Bytes Validation', () => {
       expect(result.valid).toBe(false);
       expect(result.error).toContain('does not match');
     });
+
+    it('should validate M4A file (ftypM4A)', async () => {
+      const m4aHeader = Buffer.from([
+        0x00, 0x00, 0x00, 0x00, 0x66, 0x74, 0x79, 0x70, 0x4d, 0x34, 0x41,
+      ]);
+      const filepath = await createTestFile('test.m4a', m4aHeader);
+
+      const result = await validateFileSignature(filepath);
+      expect(result.valid).toBe(true);
+      expect(result.detectedType).toBe('m4a');
+      expect(result.detectedMime).toBe('audio/m4a');
+    });
   });
 
   describe('validateFileIntegrity', () => {
