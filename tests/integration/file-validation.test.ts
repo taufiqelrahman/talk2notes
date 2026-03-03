@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { validateFile, sanitizeFilename, formatFileSize } from '@/utils/validateFile';
+import {
+  validateFile,
+  sanitizeFilename,
+  formatFileSize,
+  formatDuration,
+} from '@/utils/validateFile';
 
 describe('File Validation', () => {
   describe('validateFile', () => {
@@ -88,6 +93,18 @@ describe('File Validation', () => {
     it('should format decimal values', () => {
       expect(formatFileSize(1536)).toBe('1.5 KB');
       expect(formatFileSize(5.5 * 1024 * 1024)).toBe('5.5 MB');
+    });
+  });
+
+  describe('formatDuration', () => {
+    it('should format minutes and seconds correctly', () => {
+      expect(formatDuration(65)).toBe('1:05');
+      expect(formatDuration(125)).toBe('2:05');
+    });
+
+    it('should format hours, minutes and seconds correctly', () => {
+      expect(formatDuration(3665)).toBe('1:01:05');
+      expect(formatDuration(7322)).toBe('2:02:02');
     });
   });
 });
