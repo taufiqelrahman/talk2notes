@@ -138,6 +138,14 @@ describe('File Security - Magic Bytes Validation', () => {
       const result = await validateFileSignature(filepath);
       expect(result.valid).toBe(false);
     });
+
+    it('should reject an empty file', async () => {
+      const filepath = await createTestFile('empty.mp3', Buffer.alloc(0));
+
+      const result = await validateFileSignature(filepath);
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('does not match');
+    });
   });
 
   describe('validateFileIntegrity', () => {
