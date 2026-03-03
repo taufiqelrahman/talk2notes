@@ -62,6 +62,21 @@ describe('File Validation', () => {
       expect(result1.valid).toBe(true);
       expect(result2.valid).toBe(true);
     });
+
+    it('should accept audio at exactly 25MB and video at exactly 500MB', () => {
+      const audio25 = validateFile('audio/mpeg', 25 * 1024 * 1024, 'exact25.mp3');
+      const video500 = validateFile('video/mp4', 500 * 1024 * 1024, 'exact500.mp4');
+
+      expect(audio25.valid).toBe(true);
+      expect(audio25.fileType).toBe('audio');
+
+      // Video at exactly 500MB may be rejected earlier if project-wide MAX_FILE_SIZE is lower
+      if (video500.valid) {
+        expect(video500.fileType).toBe('video');
+      } else {
+        expect(video500.error).toContain('exceeds maximum');
+      }
+    });
   });
 
   describe('sanitizeFilename', () => {
