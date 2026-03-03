@@ -230,6 +230,18 @@ describe('File Security - Magic Bytes Validation', () => {
       const result = await scanFileContent(filepath);
       expect(result.safe).toBe(false);
     });
+
+    it('should detect ELF executable patterns', async () => {
+      const elfContent = Buffer.concat([
+        Buffer.from([0x7f, 0x45, 0x4c, 0x46]), // \x7fELF
+        Buffer.alloc(1020, 0x00),
+      ]);
+      const filepath = await createTestFile('malicious_elf.mp3', elfContent);
+
+      const result = await scanFileContent(filepath);
+      expect(result.safe).toBe(false);
+      expect(result.warnings.some((w) => w.toLowerCase().includes('executable'))).toBe(true);
+    });
   });
 
   describe('validateFileSecurely - Integration', () => {
