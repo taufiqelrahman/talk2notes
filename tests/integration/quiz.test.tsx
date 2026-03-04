@@ -264,6 +264,32 @@ describe('Quiz Feature', () => {
     });
   });
 
+  describe('Post-Submission Behaviour', () => {
+    it('should disable option buttons after submission', () => {
+      render(<NotesDisplay notes={mockNotesWithQuiz} />);
+      const quizTab = screen.getByRole('button', { name: /quiz/i });
+      fireEvent.click(quizTab);
+
+      // Select first option for each question
+      const firstOptions = screen.getAllByText(/A\./);
+      firstOptions.forEach((option) => {
+        const button = option.closest('button');
+        if (button) fireEvent.click(button);
+      });
+
+      const submitButton = screen.getByRole('button', { name: /Submit Answers/i });
+      fireEvent.click(submitButton);
+
+      // After submission, option buttons should be disabled
+      const optionButtons = screen.getAllByRole('button');
+      const optionLike = optionButtons.filter((b) => /[A-D]\./.test(b.textContent || ''));
+      expect(optionLike.length).toBeGreaterThan(0);
+      optionLike.forEach((b) => {
+        expect(b).toBeDisabled();
+      });
+    });
+  });
+
   describe('Retake Quiz', () => {
     it('should show retake button after submitting answers', () => {
       render(<NotesDisplay notes={mockNotesWithQuiz} />);
