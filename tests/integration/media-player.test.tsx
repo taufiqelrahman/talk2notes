@@ -104,6 +104,24 @@ describe('MediaPlayer', () => {
     expect(videoElement?.getAttribute('preload')).toBe('metadata');
   });
 
+  it('shows error message when direct media fails to load', () => {
+    render(
+      <MediaPlayer
+        sourceUrl="https://example.com/audio.mp3"
+        sourceType="url"
+        fileName="audio.mp3"
+      />
+    );
+
+    const videoElement = document.querySelector('video');
+    expect(videoElement).toBeInTheDocument();
+
+    // Simulate media load error
+    fireEvent.error(videoElement!);
+
+    expect(screen.getByText('Failed to load media')).toBeInTheDocument();
+  });
+
   it('can minimize and expand player', () => {
     render(
       <MediaPlayer
