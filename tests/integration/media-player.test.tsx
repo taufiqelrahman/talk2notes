@@ -122,6 +122,23 @@ describe('MediaPlayer', () => {
     expect(screen.getByText('Failed to load media')).toBeInTheDocument();
   });
 
+  it('YouTube embed wrapper uses 16:9 (56.25%) padding', () => {
+    const { container } = render(
+      <MediaPlayer
+        sourceUrl="https://www.youtube.com/watch?v=test123"
+        sourceType="youtube"
+        fileName="Test"
+      />
+    );
+
+    const iframe = container.querySelector('iframe');
+    expect(iframe).toBeInTheDocument();
+
+    const wrapper = iframe?.parentElement as HTMLElement | null;
+    expect(wrapper).not.toBeNull();
+    expect(wrapper?.style.paddingBottom).toBe('56.25%');
+  });
+
   it('can minimize and expand player', () => {
     render(
       <MediaPlayer
