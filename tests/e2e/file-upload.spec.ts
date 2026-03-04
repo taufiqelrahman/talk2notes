@@ -31,4 +31,12 @@ test.describe('File Upload', () => {
     const fileInput = page.locator('input[type="file"]');
     await expect(fileInput).toHaveCount(1);
   });
+
+  test('file input should accept audio and video types', async ({ page }) => {
+    await page.goto('/');
+
+    const fileInput = page.locator('input[type="file"]');
+    await expect(fileInput).toHaveAttribute('accept', /audio\/*/);
+    await expect(fileInput).toHaveAttribute('accept', /\.mp4|video\/*/);
+  });
 });
