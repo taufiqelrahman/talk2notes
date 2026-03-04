@@ -1,5 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { saveToHistory, getHistory, deleteFromHistory, clearHistory } from '@/utils/history';
+import { describe, it, expect, beforeEach, beforeAll, afterAll, vi } from 'vitest';
+import {
+  saveToHistory,
+  getHistory,
+  deleteFromHistory,
+  clearHistory,
+  getHistoryItem,
+} from '@/utils/history';
 import type { LectureNotes } from '@/types';
 
 // Mock localStorage
@@ -218,6 +224,36 @@ describe('History Management', () => {
       clearHistory();
       const history = getHistory();
       expect(history).toEqual([]);
+    });
+  });
+
+  describe('getHistoryItem and formatTimestamp', () => {
+    it('should return item by id and null for missing id', () => {
+      saveToHistory({
+        title: 'Lookup Test',
+        notes: mockNotes,
+        language: 'en',
+        source: 'file',
+      });
+
+      const history = getHistory();
+      const id = history[0].id;
+
+      const found = getHistoryItem(id);
+      expect(found).not.toBeNull();
+      expect(found?.id).toBe(id);
+
+      const missing = getHistoryItem('does-not-exist');
+      expect(missing).toBeNull();
+    });
+
+    beforeAll(() => {
+      // Freeze time for predictable formatTimestamp
+      vi.setSystemTime(new Date('2026-03-04T12:00:00Z'));
+    });
+
+    afterAll(() => {
+      vi.useRealTimers();
     });
   });
 });
