@@ -5,6 +5,7 @@ import {
   deleteFromHistory,
   clearHistory,
   getHistoryItem,
+  formatTimestamp,
 } from '@/utils/history';
 import type { LectureNotes } from '@/types';
 
@@ -254,6 +255,21 @@ describe('History Management', () => {
 
     afterAll(() => {
       vi.useRealTimers();
+    });
+
+    it('should format recent timestamps correctly', () => {
+      const now = Date.now();
+
+      expect(formatTimestamp(now)).toBe('Just now');
+
+      const fiveMin = now - 5 * 60 * 1000;
+      expect(formatTimestamp(fiveMin)).toBe('5 min ago');
+
+      const twoHours = now - 2 * 3600 * 1000;
+      expect(formatTimestamp(twoHours)).toBe('2 hours ago');
+
+      const threeDays = now - 3 * 24 * 3600 * 1000;
+      expect(formatTimestamp(threeDays)).toBe('3 days ago');
     });
   });
 });
