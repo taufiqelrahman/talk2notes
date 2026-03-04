@@ -39,4 +39,14 @@ test.describe('File Upload', () => {
     await expect(fileInput).toHaveAttribute('accept', /audio\/*/);
     await expect(fileInput).toHaveAttribute('accept', /\.mp4|video\/*/);
   });
+
+  test('upload label is associated with file input', async ({ page }) => {
+    await page.goto('/');
+
+    const label = page.locator('label[for="file-upload"]');
+    await expect(label).toBeVisible();
+
+    const inputById = page.locator('#file-upload');
+    await expect(inputById).toHaveCount(1);
+  });
 });
