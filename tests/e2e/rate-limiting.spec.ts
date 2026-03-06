@@ -25,4 +25,20 @@ test.describe('Rate Limiting', () => {
       await expect(page).toHaveURL(/limit/);
     }
   });
+
+  test('should return limits JSON from api/limits', async ({ page }) => {
+    const res = await page.request.get('/api/limits');
+    await expect(res.ok()).toBeTruthy();
+
+    const body = await res.json();
+    await expect(body.success).toBe(true);
+    await expect(body.limits).toBeTruthy();
+
+    // basic shape checks
+    await expect(body.limits.hourly).toBeTruthy();
+    await expect(body.limits.daily).toBeTruthy();
+    await expect(typeof body.limits.hourly.max).toBe('number');
+    await expect(typeof body.limits.daily.max).toBe('number');
+    await expect(typeof body.limits.fileSize.maxMB).toBe('number');
+  });
 });
