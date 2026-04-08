@@ -18,6 +18,7 @@ import { rateLimiter, RATE_LIMITS, getClientId, formatTimeRemaining } from '@/li
 import { downloadMediaFromUrl, isValidMediaUrl } from '@/lib/media-downloader';
 import { downloadYoutubeAudio, isValidYoutubeUrl } from '@/lib/youtube';
 import { formatTranscript } from '@/lib/ai';
+import { formatApiError } from '@/utils/format-api-error';
 
 export async function createTranscriptionMutation(
   formData: FormData
@@ -351,7 +352,7 @@ export async function createTranscriptionMutation(
     console.error('Transcription mutation failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: formatApiError(error),
     };
   }
 }
@@ -389,7 +390,7 @@ export async function validateFileMutation(
     console.error('File validation failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: formatApiError(error),
     };
   }
 }
