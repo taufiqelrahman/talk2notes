@@ -50,7 +50,7 @@ Add your Groq key:
 AI_PROVIDER=groq
 GROQ_API_KEY=gsk_your_actual_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 ```
 
 ## ▶️ Run

@@ -43,7 +43,7 @@ GROQ_API_KEY=gsk_your_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
 
 # Summarization model (LLM for generating notes)
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 
 # Comment out or remove OpenAI key
 # OPENAI_API_KEY=...
@@ -93,7 +93,7 @@ Upload audio/video file dan cek console logs:
 
 ```bash
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3     # For audio transcription
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile  # For note generation
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b  # For note generation
 ```
 
 Jangan pakai `GROQ_MODEL` (deprecated).

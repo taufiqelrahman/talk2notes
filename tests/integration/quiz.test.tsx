@@ -47,7 +47,7 @@ describe('Quiz Feature', () => {
     metadata: {
       generatedAt: new Date().toISOString(),
       transcriptionModel: 'whisper-large-v3',
-      summarizationModel: 'llama-3.3-70b-versatile',
+      summarizationModel: 'openai/gpt-oss-20b',
       originalFilename: 'test-quiz.mp3',
       wordCount: 500,
     },

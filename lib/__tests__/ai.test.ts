@@ -123,7 +123,7 @@ describe('getAIConfig', () => {
     const config = getAIConfig();
     expect(config.provider).toBe('groq');
     expect(config.transcriptionModel).toBe('whisper-large-v3');
-    expect(config.summarizationModel).toBe('llama-3.3-70b-versatile');
+    expect(config.summarizationModel).toBe('openai/gpt-oss-20b');
     expect(config.apiKey).toBe('test-api-key');
   });
 

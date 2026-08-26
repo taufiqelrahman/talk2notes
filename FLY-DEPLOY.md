@@ -87,7 +87,7 @@ Set your API keys as secrets (they won't be in fly.toml):
 flyctl secrets set AI_PROVIDER=groq
 flyctl secrets set GROQ_API_KEY=gsk_your_key_here
 flyctl secrets set GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-flyctl secrets set GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+flyctl secrets set GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 
 # Or for OpenAI
 flyctl secrets set AI_PROVIDER=openai

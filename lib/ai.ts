@@ -41,7 +41,7 @@ export function getAIConfig(): AIConfig {
       return {
         provider: 'groq',
         transcriptionModel: process.env.GROQ_TRANSCRIPTION_MODEL || 'whisper-large-v3',
-        summarizationModel: process.env.GROQ_SUMMARIZATION_MODEL || 'llama-3.3-70b-versatile',
+        summarizationModel: process.env.GROQ_SUMMARIZATION_MODEL || 'openai/gpt-oss-20b',
         apiKey: process.env.GROQ_API_KEY || '',
       };
     case 'deepgram':

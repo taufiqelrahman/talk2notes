@@ -183,7 +183,7 @@ code .env
 AI_PROVIDER=groq
 GROQ_API_KEY=gsk_your_actual_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 ```
 
 **Alternative: OpenAI (Paid):**
@@ -204,7 +204,7 @@ AI_PROVIDER=groq
 # Groq Configuration
 GROQ_API_KEY=gsk_your_actual_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 
 # Upload Configuration
 MAX_FILE_SIZE_MB=100

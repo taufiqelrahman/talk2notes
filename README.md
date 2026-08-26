@@ -80,7 +80,7 @@ Edit `.env` and add your Groq API key:
 AI_PROVIDER=groq
 GROQ_API_KEY=gsk_your_key_here
 GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
 ```
 
 5. **Install FFmpeg** (if not already installed)
@@ -519,7 +519,7 @@ Required secrets:
 - `AI_PROVIDER` (groq, openai, deepgram, anthropic)
 - `GROQ_API_KEY` or `OPENAI_API_KEY`
 - `GROQ_TRANSCRIPTION_MODEL` (whisper-large-v3)
-- `GROQ_SUMMARIZATION_MODEL` (llama-3.3-70b-versatile)
+- `GROQ_SUMMARIZATION_MODEL` (openai/gpt-oss-20b)
 - `NODE_ENV=production`
 
 Optional:

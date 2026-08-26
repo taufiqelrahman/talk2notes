@@ -57,7 +57,7 @@ describe('History Management', () => {
     metadata: {
       generatedAt: new Date().toISOString(),
       transcriptionModel: 'whisper-large-v3',
-      summarizationModel: 'llama-3.3-70b-versatile',
+      summarizationModel: 'openai/gpt-oss-20b',
       originalFilename: 'test.mp3',
       wordCount: 100,
     },

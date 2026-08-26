@@ -16,7 +16,7 @@ vi.mock('openai', () => ({
 const groqConfig: AIConfig = {
   provider: 'groq',
   transcriptionModel: 'whisper-large-v3',
-  summarizationModel: 'llama-3.3-70b-versatile',
+  summarizationModel: 'openai/gpt-oss-20b',
   apiKey: 'test-groq-key',
 };
 
