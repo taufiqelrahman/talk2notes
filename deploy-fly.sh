@@ -38,6 +38,16 @@ if [ -f "fly.toml" ]; then
     read -p "Deploy to existing app? (y/n): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
+        read -p "Update Gemini summarization secret before deploying? (y/n): " -n 1 -r update_gemini
+        echo ""
+        if [[ $update_gemini =~ ^[Yy]$ ]]; then
+            read -p "Enter your Gemini API Key: " gemini_key
+            flyctl secrets set --stage AI_SUMMARIZATION_PROVIDER=gemini
+            flyctl secrets set --stage GEMINI_API_KEY="$gemini_key"
+            flyctl secrets set --stage GEMINI_SUMMARIZATION_MODEL=gemini-3.6-flash
+            echo "✅ Gemini summarization configuration set"
+        fi
+
         echo "🚀 Deploying to $APP_NAME..."
         flyctl deploy
         exit 0
@@ -62,17 +72,17 @@ read -p "Enter choice (1-2): " provider_choice
 
 if [ "$provider_choice" = "1" ]; then
     read -p "Enter your Groq API Key (gsk_...): " groq_key
-    flyctl secrets set AI_PROVIDER=groq
-    flyctl secrets set GROQ_API_KEY="$groq_key"
-    flyctl secrets set GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-    flyctl secrets set GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
+    flyctl secrets set --stage AI_PROVIDER=groq
+    flyctl secrets set --stage GROQ_API_KEY="$groq_key"
+    flyctl secrets set --stage GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
+    flyctl secrets set --stage GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
     echo "✅ Groq configuration set"
 elif [ "$provider_choice" = "2" ]; then
     read -p "Enter your OpenAI API Key (sk-...): " openai_key
-    flyctl secrets set AI_PROVIDER=openai
-    flyctl secrets set OPENAI_API_KEY="$openai_key"
-    flyctl secrets set OPENAI_TRANSCRIPTION_MODEL=whisper-1
-    flyctl secrets set OPENAI_SUMMARIZATION_MODEL=gpt-4-turbo-preview
+    flyctl secrets set --stage AI_PROVIDER=openai
+    flyctl secrets set --stage OPENAI_API_KEY="$openai_key"
+    flyctl secrets set --stage OPENAI_TRANSCRIPTION_MODEL=whisper-1
+    flyctl secrets set --stage OPENAI_SUMMARIZATION_MODEL=gpt-4-turbo-preview
     echo "✅ OpenAI configuration set"
 fi
 
@@ -86,9 +96,9 @@ echo ""
 
 if [[ $use_gemini =~ ^[Yy]$ ]]; then
     read -p "Enter your Gemini API Key: " gemini_key
-    flyctl secrets set AI_SUMMARIZATION_PROVIDER=gemini
-    flyctl secrets set GEMINI_API_KEY="$gemini_key"
-    flyctl secrets set GEMINI_SUMMARIZATION_MODEL=gemini-3.6-flash
+    flyctl secrets set --stage AI_SUMMARIZATION_PROVIDER=gemini
+    flyctl secrets set --stage GEMINI_API_KEY="$gemini_key"
+    flyctl secrets set --stage GEMINI_SUMMARIZATION_MODEL=gemini-3.6-flash
     echo "✅ Gemini summarization configuration set"
 fi
 
