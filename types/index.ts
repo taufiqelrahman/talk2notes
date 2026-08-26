@@ -67,6 +67,7 @@ export interface NotesMetadata {
   wordCount: number;
   sourceUrl?: string;
   sourceType?: 'youtube' | 'url';
+  note?: string;
 }
 
 export interface ProcessingState {
@@ -89,7 +90,7 @@ export interface MutationResult<T> {
   error?: string;
 }
 
-export type AIProvider = 'openai' | 'groq' | 'deepgram' | 'anthropic';
+export type AIProvider = 'openai' | 'groq' | 'deepgram' | 'anthropic' | 'gemini';
 
 export interface AIConfig {
   provider: AIProvider;

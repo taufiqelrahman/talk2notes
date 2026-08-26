@@ -27,6 +27,13 @@ const openaiConfig: AIConfig = {
   apiKey: 'test-openai-key',
 };
 
+const geminiConfig: AIConfig = {
+  provider: 'gemini',
+  transcriptionModel: '',
+  summarizationModel: 'gemini-3.6-flash',
+  apiKey: 'test-gemini-key',
+};
+
 describe('retryOptions', () => {
   it('returns correct retry config', () => {
     const opts = retryOptions('Test');
@@ -70,6 +77,12 @@ describe('createOpenAIClient', () => {
   it('extra options override defaults', () => {
     const client = createOpenAIClient(groqConfig, { baseURL: 'https://custom.api' }) as any;
     expect(client.opts.baseURL).toBe('https://custom.api');
+  });
+
+  it('sets gemini baseURL for gemini provider', () => {
+    const client = createOpenAIClient(geminiConfig) as any;
+    expect(client.opts.baseURL).toBe('https://generativelanguage.googleapis.com/v1beta/openai/');
+    expect(client.opts.apiKey).toBe('test-gemini-key');
   });
 });
 

@@ -54,8 +54,8 @@ echo ""
 echo "🔑 Setting up environment variables..."
 echo ""
 
-# Prompt for API provider
-echo "Select AI Provider:"
+# Prompt for transcription provider (audio -> text)
+echo "Select transcription provider:"
 echo "1) Groq (Free - Recommended)"
 echo "2) OpenAI (Paid)"
 read -p "Enter choice (1-2): " provider_choice
@@ -65,7 +65,7 @@ if [ "$provider_choice" = "1" ]; then
     flyctl secrets set AI_PROVIDER=groq
     flyctl secrets set GROQ_API_KEY="$groq_key"
     flyctl secrets set GROQ_TRANSCRIPTION_MODEL=whisper-large-v3
-    flyctl secrets set GROQ_SUMMARIZATION_MODEL=llama-3.3-70b-versatile
+    flyctl secrets set GROQ_SUMMARIZATION_MODEL=openai/gpt-oss-20b
     echo "✅ Groq configuration set"
 elif [ "$provider_choice" = "2" ]; then
     read -p "Enter your OpenAI API Key (sk-...): " openai_key
@@ -74,6 +74,22 @@ elif [ "$provider_choice" = "2" ]; then
     flyctl secrets set OPENAI_TRANSCRIPTION_MODEL=whisper-1
     flyctl secrets set OPENAI_SUMMARIZATION_MODEL=gpt-4-turbo-preview
     echo "✅ OpenAI configuration set"
+fi
+
+echo ""
+
+# Prompt for summarization provider (translate/format/summarize), independent from
+# transcription above. Defaults to the transcription provider if skipped.
+echo "Use Gemini for translate/format/summarize instead of the provider above? (y/n)"
+read -p "Enter choice: " -n 1 -r use_gemini
+echo ""
+
+if [[ $use_gemini =~ ^[Yy]$ ]]; then
+    read -p "Enter your Gemini API Key: " gemini_key
+    flyctl secrets set AI_SUMMARIZATION_PROVIDER=gemini
+    flyctl secrets set GEMINI_API_KEY="$gemini_key"
+    flyctl secrets set GEMINI_SUMMARIZATION_MODEL=gemini-3.6-flash
+    echo "✅ Gemini summarization configuration set"
 fi
 
 echo ""

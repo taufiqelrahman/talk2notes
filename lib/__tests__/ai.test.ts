@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getAIConfig, translateTranscript, formatTranscript, summarizeTranscript } from '@/lib/ai';
+import {
+  getAIConfig,
+  getSummarizationConfig,
+  translateTranscript,
+  formatTranscript,
+  summarizeTranscript,
+} from '@/lib/ai';
 import {
   buildSummarizationPrompt,
   FORMAT_PROMPTS,
@@ -135,6 +141,31 @@ describe('getAIConfig', () => {
       summarizationModel: expect.any(String),
       apiKey: expect.any(String),
     });
+  });
+});
+
+describe('getSummarizationConfig', () => {
+  it('falls back to getAIConfig when AI_SUMMARIZATION_PROVIDER is unset', () => {
+    const config = getSummarizationConfig();
+    expect(config).toEqual(getAIConfig());
+  });
+
+  it('returns gemini config when AI_SUMMARIZATION_PROVIDER is gemini', () => {
+    const original = process.env.AI_SUMMARIZATION_PROVIDER;
+    const originalKey = process.env.GEMINI_API_KEY;
+    process.env.AI_SUMMARIZATION_PROVIDER = 'gemini';
+    process.env.GEMINI_API_KEY = 'test-gemini-key';
+
+    const config = getSummarizationConfig();
+    expect(config.provider).toBe('gemini');
+    expect(config.summarizationModel).toBe('gemini-3.6-flash');
+    expect(config.apiKey).toBe('test-gemini-key');
+
+    // Transcription config is untouched by the summarization provider switch
+    expect(getAIConfig().provider).toBe('groq');
+
+    process.env.AI_SUMMARIZATION_PROVIDER = original;
+    process.env.GEMINI_API_KEY = originalKey;
   });
 });
 

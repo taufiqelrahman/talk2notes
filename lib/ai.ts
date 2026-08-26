@@ -25,10 +25,18 @@ import {
 
 export { buildSummarizationPrompt } from '@/lib/ai-prompts';
 
-const AI_PROVIDER =
-  (process.env.AI_PROVIDER as 'openai' | 'groq' | 'deepgram' | 'anthropic') || 'openai';
+// Groq's free tier caps at 8000 tokens/minute (TPM), shared across input + output.
+const GROQ_MAX_INPUT_TOKENS = 4000;
+const GROQ_MAX_OUTPUT_TOKENS = 1500;
+const GROQ_MAX_SUMMARY_OUTPUT_TOKENS = 2000;
 
+// Controls transcription (audio -> text). Independent from getSummarizationConfig(),
+// since transcription (Whisper) and text generation (translate/format/summarize) can run
+// on different providers/rate limits.
 export function getAIConfig(): AIConfig {
+  const AI_PROVIDER =
+    (process.env.AI_PROVIDER as 'openai' | 'groq' | 'deepgram' | 'anthropic') || 'openai';
+
   switch (AI_PROVIDER) {
     case 'openai':
       return {
@@ -63,6 +71,28 @@ export function getAIConfig(): AIConfig {
   }
 }
 
+/**
+ * Config for translate/format/summarize calls. Separate from getAIConfig()
+ * (transcription) so text generation can run on a different provider, e.g.
+ * Gemini for summarization while transcription stays on Groq Whisper.
+ */
+export function getSummarizationConfig(): AIConfig {
+  const SUMMARIZATION_PROVIDER =
+    (process.env.AI_SUMMARIZATION_PROVIDER as 'openai' | 'groq' | 'anthropic' | 'gemini') ||
+    (process.env.AI_PROVIDER as 'openai' | 'groq' | 'deepgram' | 'anthropic') ||
+    'openai';
+
+  if (SUMMARIZATION_PROVIDER === 'gemini') {
+    return {
+      provider: 'gemini',
+      transcriptionModel: '',
+      summarizationModel: process.env.GEMINI_SUMMARIZATION_MODEL || 'gemini-3.6-flash',
+      apiKey: process.env.GEMINI_API_KEY || '',
+    };
+  }
+  return getAIConfig();
+}
+
 export async function transcribeAudio(
   audioPath: string,
   options: TranscriptionOptions = {}
@@ -94,7 +124,7 @@ export async function translateTranscript(
     return transcript; // No translation needed for English
   }
 
-  const config = getAIConfig();
+  const config = getSummarizationConfig();
 
   if (!config.apiKey) {
     throw new Error(`API key not configured for provider: ${config.provider}`);
@@ -103,8 +133,16 @@ export async function translateTranscript(
   console.log(`[Translation] Translating transcript to Indonesian...`);
 
   try {
-    if (config.provider === 'openai' || config.provider === 'groq') {
+    if (
+      config.provider === 'openai' ||
+      config.provider === 'groq' ||
+      config.provider === 'gemini'
+    ) {
       const openai = createOpenAIClient(config);
+      const processedTranscript =
+        config.provider === 'groq'
+          ? cropToTokenLimit(transcript, GROQ_MAX_INPUT_TOKENS)
+          : transcript;
 
       const response = await openai.chat.completions.create({
         model: config.summarizationModel,
@@ -115,10 +153,11 @@ export async function translateTranscript(
           },
           {
             role: 'user',
-            content: transcript,
+            content: processedTranscript,
           },
         ],
         temperature: 0.3,
+        ...(config.provider === 'groq' && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
       });
 
       const translated = response.choices[0].message.content || transcript;
@@ -143,16 +182,20 @@ export async function formatTranscript(
   transcript: string,
   language: 'english' | 'indonesian' | 'arabic' = 'english'
 ): Promise<string> {
-  const config = getAIConfig();
+  const config = getSummarizationConfig();
 
   if (!config.apiKey) return addBasicParagraphs(transcript);
 
   try {
     const langKey =
       language === 'arabic' ? 'arabic' : language === 'indonesian' ? 'indonesian' : 'english';
-    if (config.provider === 'openai' || config.provider === 'groq') {
+    if (
+      config.provider === 'openai' ||
+      config.provider === 'groq' ||
+      config.provider === 'gemini'
+    ) {
       const openai = createOpenAIClient(config);
-      const maxTokens = config.provider === 'groq' ? 9000 : 100000;
+      const maxTokens = config.provider === 'groq' ? GROQ_MAX_INPUT_TOKENS : 100000;
       const estimatedTokens = Math.ceil(transcript.length / 4);
       let processedTranscript = transcript;
       if (estimatedTokens > maxTokens) {
@@ -166,6 +209,7 @@ export async function formatTranscript(
           { role: 'user', content: processedTranscript },
         ],
         temperature: 0.2,
+        ...(config.provider === 'groq' && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
       });
       return response.choices[0].message.content || transcript;
     }
@@ -181,13 +225,13 @@ export async function summarizeTranscript(
   originalFilename: string,
   options: SummarizationOptions = {}
 ): Promise<LectureNotes> {
-  const config = getAIConfig();
+  const config = getSummarizationConfig();
 
   if (!config.apiKey) {
     throw new Error(`API key not configured for provider: ${config.provider}`);
   }
 
-  const maxInputTokens = config.provider === 'groq' ? 9000 : 100000;
+  const maxInputTokens = config.provider === 'groq' ? GROQ_MAX_INPUT_TOKENS : 100000;
   const estimatedTokens = Math.ceil(transcript.length / 4);
   console.log(`[Summarization] Estimated tokens: ${estimatedTokens}, Max: ${maxInputTokens}`);
 
@@ -208,7 +252,11 @@ export async function summarizeTranscript(
   const systemPrompt = buildSummarizationPrompt(options);
   let summaryText: string;
 
-  if (config.provider === 'openai' || config.provider === 'groq') {
+  if (
+    config.provider === 'openai' ||
+    config.provider === 'groq' ||
+    config.provider === 'gemini'
+  ) {
     const openai = createOpenAIClient(config, { maxRetries: 0 });
     summaryText = await pRetry(async (attemptNumber) => {
       console.log(`[Summarization] Attempt ${attemptNumber}...`);
@@ -220,6 +268,7 @@ export async function summarizeTranscript(
         ],
         temperature: 0.3,
         response_format: { type: 'json_object' },
+        ...(config.provider === 'groq' && { max_tokens: GROQ_MAX_SUMMARY_OUTPUT_TOKENS }),
       });
       return response.choices[0].message.content || '{}';
     }, retryOptions('Summarization'));
@@ -275,7 +324,7 @@ export async function summarizeTranscript(
     actionItems: parsed.actionItems || [],
     metadata: {
       generatedAt: new Date().toISOString(),
-      transcriptionModel: config.transcriptionModel,
+      transcriptionModel: getAIConfig().transcriptionModel,
       summarizationModel: config.summarizationModel,
       originalFilename,
       wordCount: processedTranscript.split(/\s+/).length,

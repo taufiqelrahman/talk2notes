@@ -17,13 +17,18 @@ export function retryOptions(label: string): Parameters<typeof pRetry>[1] {
   };
 }
 
+const PROVIDER_BASE_URLS: Partial<Record<AIConfig['provider'], string>> = {
+  groq: 'https://api.groq.com/openai/v1',
+  gemini: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+};
+
 export function createOpenAIClient(
   config: AIConfig,
   extraOpts: ConstructorParameters<typeof OpenAI>[0] = {}
 ): OpenAI {
   return new OpenAI({
     apiKey: config.apiKey,
-    baseURL: config.provider === 'groq' ? 'https://api.groq.com/openai/v1' : undefined,
+    baseURL: PROVIDER_BASE_URLS[config.provider],
     ...extraOpts,
   });
 }
