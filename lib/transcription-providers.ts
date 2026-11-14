@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { promises as fs } from 'fs';
 import pRetry, { AbortError } from 'p-retry';
 import type { AIConfig, TranscriptionOptions, TranscriptionResult } from '@/types';
-import { retryOptions, createOpenAIClient } from '@/lib/ai-utils';
+import { retryOptions, HttpError, parseRetryAfter } from '@/lib/ai-utils';
 
 export async function transcribeWithOpenAI(
   audioPath: string,
@@ -63,6 +63,13 @@ export async function transcribeWithOpenAI(
     } catch (error: any) {
       console.error(`[Transcription] Attempt ${attemptNumber} failed:`, error.message);
       if (error.status === 401 || error.status === 400) throw new AbortError(error.message);
+      if (error.status === 429) {
+        throw new HttpError(
+          error.message,
+          429,
+          parseRetryAfter(error.headers?.['retry-after'] ?? null)
+        );
+      }
       throw error;
     }
   }, retryOptions('Transcription')).catch((error) => {
@@ -89,25 +96,43 @@ export async function transcribeWithGroq(
     const formData = new FormData();
     formData.append('file', blob, 'audio.mp3');
     formData.append('model', config.transcriptionModel);
+    formData.append('response_format', 'verbose_json');
+    formData.append('temperature', String(options.temperature ?? 0));
     if (options.language) formData.append('language', options.language);
-    if (options.temperature) formData.append('temperature', options.temperature.toString());
+    if (options.prompt) formData.append('prompt', options.prompt);
 
     const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
       method: 'POST',
       headers: { Authorization: `Bearer ${config.apiKey}` },
       body: formData,
+      signal: AbortSignal.timeout(600000),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      if (response.status === 401 || response.status === 400) {
-        throw new AbortError(`Groq transcription failed: ${response.statusText} - ${errorText}`);
+      const msg = `Groq transcription failed: ${response.status} ${response.statusText} - ${errorText}`;
+      if (response.status === 429 || response.status === 408 || response.status >= 500) {
+        throw new HttpError(
+          msg,
+          response.status,
+          parseRetryAfter(response.headers?.get?.('retry-after') ?? null)
+        );
       }
-      throw new Error(`Groq transcription failed: ${response.statusText} - ${errorText}`);
+      throw new AbortError(msg);
     }
 
     const data = await response.json();
-    return { text: data.text, duration: data.duration, language: data.language };
+    return {
+      text: data.text,
+      duration: data.duration,
+      language: data.language,
+      segments: data.segments?.map((seg: any, idx: number) => ({
+        id: idx,
+        start: seg.start,
+        end: seg.end,
+        text: seg.text,
+      })),
+    };
   }, retryOptions('Groq'));
 }
 

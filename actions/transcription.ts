@@ -11,7 +11,7 @@ import {
   checkFFmpegAvailable,
   getFFmpegValidationDetails,
 } from '@/lib/ffmpeg';
-import { transcribeAudio, summarizeTranscript, translateTranscript } from '@/lib/ai';
+import { transcribeAudioChunked as transcribeAudio, summarizeTranscript, translateTranscript } from '@/lib/ai';
 import { saveUploadedFile, cleanupUploadedFile } from '@/lib/upload';
 import { promises as fs } from 'fs';
 import { rateLimiter, RATE_LIMITS, getClientId, formatTimeRemaining } from '@/lib/rate-limiter';
@@ -123,13 +123,13 @@ export async function createTranscriptionMutation(
         }
 
         // Format transcript with paragraphs and sections
-        const formattedTranscript = await formatTranscript(transcriptText, language);
-
-        // Summarize
-        const lectureNotes = await summarizeTranscript(transcriptText, originalFilename, {
-          language,
-          detailLevel: 'detailed',
-        });
+        const [formattedTranscript, lectureNotes] = await Promise.all([
+          formatTranscript(transcriptText, language),
+          summarizeTranscript(transcriptText, originalFilename, {
+            language,
+            detailLevel: 'detailed',
+          }),
+        ]);
 
         // Cleanup
         await cleanupUploadedFile(downloadedAudio.audioPath);
@@ -212,13 +212,13 @@ export async function createTranscriptionMutation(
         }
 
         // Format transcript with paragraphs and sections
-        const formattedTranscript = await formatTranscript(transcriptText, language);
-
-        // Summarize
-        const lectureNotes = await summarizeTranscript(transcriptText, originalFilename, {
-          language,
-          detailLevel: 'detailed',
-        });
+        const [formattedTranscript, lectureNotes] = await Promise.all([
+          formatTranscript(transcriptText, language),
+          summarizeTranscript(transcriptText, originalFilename, {
+            language,
+            detailLevel: 'detailed',
+          }),
+        ]);
 
         // Cleanup
         await cleanupUploadedFile(downloadedAudio.audioPath);
@@ -293,19 +293,7 @@ export async function createTranscriptionMutation(
 
     console.log(`[Transcription] Audio file size: ${sizeMB.toFixed(2)}MB`);
 
-    // Auto-compress if file > 10MB for better reliability
-    if (sizeMB > 10) {
-      console.log(`[Transcription] File > 10MB, compressing for better reliability...`);
-      compressedAudioPath = await compressAudioIfNeeded(audioPath, 8); // Target 8MB
-
-      // Use compressed version for transcription
-      audioPath = compressedAudioPath;
-
-      const newStats = await fs.stat(audioPath);
-      const newSizeMB = newStats.size / (1024 * 1024);
-      console.log(`[Transcription] Using compressed audio: ${newSizeMB.toFixed(2)}MB`);
-    }
-
+    // Indonesian output is translated from English transcription (Whisper handles English best here)
     const transcriptionResult = await transcribeAudio(audioPath, {
       language: 'en',
       temperature: 0,
@@ -320,12 +308,14 @@ export async function createTranscriptionMutation(
 
     // Format transcript with paragraphs and sections
     console.log('[Transcription] Formatting transcript with paragraphs and sections...');
-    const formattedTranscript = await formatTranscript(finalTranscript, language);
-
-    const lectureNotes = await summarizeTranscript(finalTranscript, uploadedFile.originalFilename, {
-      detailLevel: 'detailed',
-      language: language,
-    });
+    // Format and summarize are independent: run concurrently for speed
+    const [formattedTranscript, lectureNotes] = await Promise.all([
+      formatTranscript(finalTranscript, language),
+      summarizeTranscript(finalTranscript, uploadedFile.originalFilename, {
+        detailLevel: 'detailed',
+        language: language,
+      }),
+    ]);
 
     // Add full transcript to the response (already formatted)
     const notesWithTranscript = {

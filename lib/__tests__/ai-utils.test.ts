@@ -38,10 +38,10 @@ describe('retryOptions', () => {
   it('returns correct retry config', () => {
     const opts = retryOptions('Test');
     expect(opts).toMatchObject({
-      retries: 3,
+      retries: 5,
       factor: 2,
       minTimeout: 2000,
-      maxTimeout: 10000,
+      maxTimeout: 30000,
       randomize: true,
     });
   });

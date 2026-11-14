@@ -17,6 +17,11 @@ const { mockCreate, mockTranscriptionsCreate } = vi.hoisted(() => ({
   mockTranscriptionsCreate: vi.fn(),
 }));
 
+vi.mock('@/lib/ai-utils', async (orig) => ({
+  ...(await orig<typeof import('@/lib/ai-utils')>()),
+  paceTokens: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('openai', () => ({
   default: class MockOpenAI {
     chat = { completions: { create: mockCreate } };
@@ -288,17 +293,19 @@ describe('summarizeTranscript', () => {
     expect(result.metadata.generatedAt).toBeTruthy();
   });
 
-  it('adds crop warning for transcripts exceeding token limits', async () => {
-    const longTranscript = 'word '.repeat(40000);
-    mockCreate.mockResolvedValueOnce({
-      choices: [{ message: { content: JSON.stringify(MOCK_SUMMARY_RESPONSE) } }],
-    });
+  it('condenses long transcripts in chunks instead of cropping', async () => {
+    const longTranscript = 'word. '.repeat(40000);
+    mockCreate.mockImplementation(async (args: any) =>
+      args.response_format
+        ? { choices: [{ message: { content: JSON.stringify(MOCK_SUMMARY_RESPONSE) } }] }
+        : { choices: [{ message: { content: 'digest' } }] }
+    );
 
     const result = await summarizeTranscript(longTranscript, 'long-lecture.mp3');
 
-    expect(result.summary).toContain('⚠️');
-    expect(result.summary).toContain('cropped');
-    expect(result.metadata).toHaveProperty('note');
+    expect(mockCreate.mock.calls.length).toBeGreaterThan(2);
+    expect(result.summary).not.toContain('cropped');
+    mockCreate.mockReset();
   });
 
   it('includes word count and model info in metadata', async () => {

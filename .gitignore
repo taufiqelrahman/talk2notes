@@ -59,3 +59,5 @@ next-env.d.ts
 # testing
 /test-results/
 /playwright-report/
+
+/bench/real.mp3

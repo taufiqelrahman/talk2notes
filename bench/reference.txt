@@ -1,0 +1,71 @@
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.
+
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.
+
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.
+
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.
+
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.
+
+Today we will discuss how neural networks learn. A network is made of layers of neurons, and each neuron computes a weighted sum of its inputs followed by a nonlinear activation such as ReLU or sigmoid. Training adjusts the weights to minimize a loss function using gradient descent.
+
+Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule from the output layer back to the input layer. The learning rate controls the step size. If it is too large, training diverges. If it is too small, convergence is painfully slow.
+
+Overfitting happens when the model memorizes the training data instead of learning general patterns. We fight it with regularization, dropout, early stopping, and more data. Always evaluate on a held out validation set, and report final results on a separate test set.
+
+Convolutional networks exploit spatial structure in images. A convolution slides a small filter across the image and detects features like edges and textures. Pooling layers reduce resolution, and deeper layers combine simple features into complex shapes such as faces and vehicles.
+
+Transformers replaced recurrent networks for most language tasks. The key idea is self attention, where every token looks at every other token and decides how much to weigh it. Positional encodings give the model a sense of order, and large pretraining on text produces surprisingly general abilities.
+
+To summarize, remember three points. First, data quality matters more than model size. Second, monitor both training and validation loss. Third, start simple, establish a baseline, and only then add complexity. Thank you for listening, and please review the reading list before next week.

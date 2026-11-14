@@ -2,6 +2,33 @@
 
 All notable changes to Talk2Notes will be documented in this file.
 
+## [3.2.0] - 2026-11-14
+
+### Added
+
+- ⚡ **Chunked transcription**: Audio is split into 10-minute chunks (mono, 16kHz, 64kbps MP3) and sent sequentially, so long files no longer hit the 25MB upload cap or per-minute request limits. Segment timestamps are offset per chunk.
+- 🚦 **Token pacer** (`paceTokens`) for Groq's tokens-per-minute budget, shared by translate, format and summarize calls.
+- 🧩 **Chunked text processing**: Translation and formatting run per ~2500-token part on Groq instead of cropping the transcript.
+- 📝 **Two-stage summarization**: Transcripts exceeding the input limit are condensed chunk by chunk, then summarized, instead of being cropped (no more silently dropped content).
+- 🔁 **Rate-limit aware retries**: 429, 408 and 5xx responses are retried (5 retries, up to 30s backoff) and honor `Retry-After` (capped at 60s). 400/401 are not retried.
+- 🧪 **Benchmark** (`bench/`): Script comparing old vs new transcription (`vitest run --config bench/bench.config.mts`; `BENCH_AUDIO`, `BENCH_SEC`, `BENCH_LANG`, `BENCH_MODEL` env vars).
+
+### Changed
+
+- Groq transcription now sends `temperature` 0 (default), `prompt` and `verbose_json` (returns duration and segments), with a 10-minute request timeout.
+- Each chunk is prompted with the tail of the previous chunk for continuity of terms across boundaries.
+- Format and summarize now run concurrently for faster results.
+- Uploaded files are no longer pre-compressed (avoids double lossy encoding).
+
+### Fixed
+
+- 🐛 `retryOptions` logging printed `undefined` because `p-retry` v7 passes a context object to `onFailedAttempt`.
+
+### Notes
+
+- Benchmarked on a real 7-minute Indonesian lecture: silence removal gave 0% quota savings and shifted results, and 32kbps audio mis-transcribed Arabic/Indonesian terms (e.g. "silsilah"), so both were dropped. `whisper-large-v3` remains the default Groq model (turbo showed no quota benefit and diverged more on this content).
+- Recommended free-tier setup: `AI_SUMMARIZATION_PROVIDER=gemini` so Groq quota is used only for Whisper.
+
 ## [3.1.0] - 2026-02-05
 
 ### Added

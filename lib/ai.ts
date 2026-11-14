@@ -16,7 +16,11 @@ import {
   createOpenAIClient,
   cropToTokenLimit,
   addBasicParagraphs,
+  chunkText,
+  paceTokens,
 } from '@/lib/ai-utils';
+import { prepareAudioChunks } from '@/lib/ffmpeg';
+import { promises as fsp } from 'fs';
 import {
   transcribeWithOpenAI,
   transcribeWithGroq,
@@ -29,6 +33,8 @@ export { buildSummarizationPrompt } from '@/lib/ai-prompts';
 const GROQ_MAX_INPUT_TOKENS = 4000;
 const GROQ_MAX_OUTPUT_TOKENS = 1500;
 const GROQ_MAX_SUMMARY_OUTPUT_TOKENS = 2000;
+// Per-chunk input size for translate/format/condense so each call fits in the TPM budget.
+const GROQ_CHUNK_TOKENS = 2500;
 
 // Controls transcription (audio -> text). Independent from getSummarizationConfig(),
 // since transcription (Whisper) and text generation (translate/format/summarize) can run
@@ -116,6 +122,52 @@ export async function transcribeAudio(
   }
 }
 
+/**
+ * Free-tier friendly transcription: chunked audio sent sequentially
+ * (1 request at a time keeps us under RPM limits). The tail of the previous chunk is passed
+ * as the prompt so names/terms and sentence flow stay consistent across boundaries.
+ */
+export async function transcribeAudioChunked(
+  audioPath: string,
+  options: TranscriptionOptions = {}
+): Promise<TranscriptionResult> {
+  const { chunks, dir } = await prepareAudioChunks(audioPath, 600);
+  console.log(`[Transcription] Split into ${chunks.length} chunk(s)`);
+  try {
+    const texts: string[] = [];
+    const segments: NonNullable<TranscriptionResult['segments']> = [];
+    let duration = 0;
+    let language: string | undefined;
+    for (let i = 0; i < chunks.length; i++) {
+      console.log(`[Transcription] Chunk ${i + 1}/${chunks.length}`);
+      const tail = texts.length ? texts[texts.length - 1].slice(-200) : '';
+      const result = await transcribeAudio(chunks[i].path, {
+        ...options,
+        prompt: [options.prompt, tail].filter(Boolean).join(' ').slice(-800) || undefined,
+      });
+      texts.push(result.text.trim());
+      duration += result.duration || 0;
+      language = language || result.language;
+      result.segments?.forEach((seg) =>
+        segments.push({
+          id: segments.length,
+          start: seg.start + chunks[i].offsetSeconds,
+          end: seg.end + chunks[i].offsetSeconds,
+          text: seg.text,
+        })
+      );
+    }
+    return {
+      text: texts.join('\n\n'),
+      duration,
+      language,
+      ...(segments.length && { segments }),
+    } as TranscriptionResult;
+  } finally {
+    await fsp.rm(dir, { recursive: true, force: true }).catch(() => {});
+  }
+}
+
 export async function translateTranscript(
   transcript: string,
   targetLanguage: 'english' | 'indonesian'
@@ -139,30 +191,24 @@ export async function translateTranscript(
       config.provider === 'gemini'
     ) {
       const openai = createOpenAIClient(config);
-      const processedTranscript =
-        config.provider === 'groq'
-          ? cropToTokenLimit(transcript, GROQ_MAX_INPUT_TOKENS)
-          : transcript;
-
-      const response = await openai.chat.completions.create({
-        model: config.summarizationModel,
-        messages: [
-          {
-            role: 'system',
-            content: TRANSLATE_TO_INDONESIAN_PROMPT,
-          },
-          {
-            role: 'user',
-            content: processedTranscript,
-          },
-        ],
-        temperature: 0.3,
-        ...(config.provider === 'groq' && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
-      });
-
-      const translated = response.choices[0].message.content || transcript;
-      console.log(`[Translation] ✓ Translation complete`);
-      return translated;
+      const isGroq = config.provider === 'groq';
+      const parts = isGroq ? chunkText(transcript, GROQ_CHUNK_TOKENS) : [transcript];
+      const out: string[] = [];
+      for (const part of parts) {
+        if (isGroq) await paceTokens(Math.ceil(part.length / 4) + GROQ_MAX_OUTPUT_TOKENS);
+        const response = await openai.chat.completions.create({
+          model: config.summarizationModel,
+          messages: [
+            { role: 'system', content: TRANSLATE_TO_INDONESIAN_PROMPT },
+            { role: 'user', content: part },
+          ],
+          temperature: 0.3,
+          ...(isGroq && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
+        });
+        out.push(response.choices[0].message.content || part);
+      }
+      console.log(`[Translation] ✓ Translation complete (${parts.length} part(s))`);
+      return out.join('\n\n');
     } else {
       // For other providers, return original transcript
       console.log(`[Translation] Translation not supported for provider: ${config.provider}`);
@@ -195,23 +241,23 @@ export async function formatTranscript(
       config.provider === 'gemini'
     ) {
       const openai = createOpenAIClient(config);
-      const maxTokens = config.provider === 'groq' ? GROQ_MAX_INPUT_TOKENS : 100000;
-      const estimatedTokens = Math.ceil(transcript.length / 4);
-      let processedTranscript = transcript;
-      if (estimatedTokens > maxTokens) {
-        console.log(`[Format] Transcript too long, cropping to ${maxTokens} tokens for formatting`);
-        processedTranscript = cropToTokenLimit(transcript, maxTokens);
+      const isGroq = config.provider === 'groq';
+      const parts = isGroq ? chunkText(transcript, GROQ_CHUNK_TOKENS) : [transcript];
+      const out: string[] = [];
+      for (const part of parts) {
+        if (isGroq) await paceTokens(Math.ceil(part.length / 4) + GROQ_MAX_OUTPUT_TOKENS);
+        const response = await openai.chat.completions.create({
+          model: config.summarizationModel,
+          messages: [
+            { role: 'system', content: FORMAT_PROMPTS[langKey] },
+            { role: 'user', content: part },
+          ],
+          temperature: 0.2,
+          ...(isGroq && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
+        });
+        out.push(response.choices[0].message.content || part);
       }
-      const response = await openai.chat.completions.create({
-        model: config.summarizationModel,
-        messages: [
-          { role: 'system', content: FORMAT_PROMPTS[langKey] },
-          { role: 'user', content: processedTranscript },
-        ],
-        temperature: 0.2,
-        ...(config.provider === 'groq' && { max_tokens: GROQ_MAX_OUTPUT_TOKENS }),
-      });
-      return response.choices[0].message.content || transcript;
+      return out.join('\n\n');
     }
     return addBasicParagraphs(transcript);
   } catch (error) {
@@ -239,14 +285,38 @@ export async function summarizeTranscript(
   let wasCropped = false;
 
   if (estimatedTokens > maxInputTokens) {
-    console.log(
-      `[Summarization] Transcript too long (${estimatedTokens} tokens), cropping to ${maxInputTokens} tokens...`
-    );
-    processedTranscript = cropToTokenLimit(transcript, maxInputTokens);
-    wasCropped = true;
-    console.log(
-      `[Summarization] Cropped transcript to ${Math.ceil(processedTranscript.length / 4)} tokens`
-    );
+    // Map step: condense each chunk into dense notes (no information cropped), then
+    // summarize the combined digest in the final call.
+    console.log(`[Summarization] Transcript too long (${estimatedTokens} tokens), condensing in chunks...`);
+    const isGroq = config.provider === 'groq';
+    const client = createOpenAIClient(config, { maxRetries: 0 });
+    const parts = chunkText(transcript, isGroq ? GROQ_CHUNK_TOKENS : 30000);
+    const digests: string[] = [];
+    for (const part of parts) {
+      if (isGroq) await paceTokens(Math.ceil(part.length / 4) + 800);
+      const digest = await pRetry(async () => {
+        const r = await client.chat.completions.create({
+          model: config.summarizationModel,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'Condense this lecture transcript segment into dense bullet notes. Keep every key concept, definition, example, number and name. Same language as the input. No preamble.',
+            },
+            { role: 'user', content: part },
+          ],
+          temperature: 0.2,
+          max_tokens: 800,
+        });
+        return r.choices[0].message.content || '';
+      }, retryOptions('Condense'));
+      digests.push(digest);
+    }
+    processedTranscript = digests.join('\n\n');
+    if (Math.ceil(processedTranscript.length / 4) > maxInputTokens) {
+      processedTranscript = cropToTokenLimit(processedTranscript, maxInputTokens);
+      wasCropped = true;
+    }
   }
 
   const systemPrompt = buildSummarizationPrompt(options);
@@ -260,6 +330,9 @@ export async function summarizeTranscript(
     const openai = createOpenAIClient(config, { maxRetries: 0 });
     summaryText = await pRetry(async (attemptNumber) => {
       console.log(`[Summarization] Attempt ${attemptNumber}...`);
+      if (config.provider === 'groq') {
+        await paceTokens(Math.ceil(processedTranscript.length / 4) + GROQ_MAX_SUMMARY_OUTPUT_TOKENS);
+      }
       const response = await openai.chat.completions.create({
         model: config.summarizationModel,
         messages: [

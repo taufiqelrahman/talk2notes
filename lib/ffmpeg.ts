@@ -365,3 +365,43 @@ export async function getAudioMetadata(filePath: string): Promise<{
     });
   });
 }
+
+export interface AudioChunk {
+  path: string;
+  offsetSeconds: number;
+}
+
+/**
+ * Prep for transcription: mono 16kHz 64kbps mp3 (32kbps measurably hurt accuracy on
+ * Indonesian/Arabic terms), split into fixed-length chunks so every request stays far
+ * below the 25MB upload cap.
+ */
+export async function prepareAudioChunks(
+  inputPath: string,
+  chunkSeconds: number = 600,
+  outputRoot: string = '/tmp'
+): Promise<{ chunks: AudioChunk[]; dir: string }> {
+  const dir = path.join(outputRoot, `chunks_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+  await fs.mkdir(dir, { recursive: true });
+  const pattern = path.join(dir, 'chunk_%03d.mp3');
+
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(inputPath)
+      .noVideo()
+      .audioChannels(1)
+      .audioFrequency(16000)
+      .audioBitrate(64)
+      .audioCodec('libmp3lame')
+      .outputOptions(['-f', 'segment', '-segment_time', String(chunkSeconds), '-reset_timestamps', '1'])
+      .on('end', () => resolve())
+      .on('error', (err) => reject(new Error(`Audio chunking failed: ${err.message}`)))
+      .save(pattern);
+  });
+
+  const files = (await fs.readdir(dir)).filter((f) => f.endsWith('.mp3')).sort();
+  if (files.length === 0) throw new Error('No audio found (file may be silent)');
+  return {
+    dir,
+    chunks: files.map((f, i) => ({ path: path.join(dir, f), offsetSeconds: i * chunkSeconds })),
+  };
+}
